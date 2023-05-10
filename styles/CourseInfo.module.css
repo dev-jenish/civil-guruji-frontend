@@ -1,0 +1,113 @@
+.contentWrapper {
+  color: white;
+}
+
+.flex {
+  display: flex;
+  gap: 20px;
+}
+
+.points {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.points span {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  width: 100%;
+  height: max-content;
+}
+
+.points span p {
+  font-size: 16px;
+}
+
+.points .icon {
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px !important;
+  min-height: 16px !important;
+}
+
+.career {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.career > div {
+  display: flex;
+  gap: 12px;
+}
+
+.career .icon {
+  font-size: 24px;
+}
+
+.feedbacks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.feedbackCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: var(--card-bg);
+}
+
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.skills span {
+  padding: 6px 12px;
+  border-radius: 6px;
+  background-color: #1d1d1d;
+}
+
+.reviewer {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.reviewer img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+}
+
+.reviewer p {
+  font-size: 18px;
+}
+
+.review {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-grow: 1;
+}
+
+.review p:first-child {
+  font-size: 14px;
+  color: var(--gray);
+}
+
+.review p:last-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  color: #dd9e15;
+}

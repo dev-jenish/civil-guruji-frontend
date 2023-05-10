@@ -1,0 +1,151 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&family=Poppins:wght@300;400;500;600;700;800&display=swap");
+
+:root {
+  --primary: #0d52a7;
+  --secondary: #d6bcfa;
+  /* --secondary: #f6e05e; */
+  --gray: #bebebe;
+  --link: #0d7ae0;
+  --red: #d42424;
+  --bg: #0f0f0f;
+  --card-bg: #151515;
+  --shadow: 0px 0px 6px #00000025;
+  --border: 1px solid #1a1a1a;
+  --nav-height: 70px;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  font-family: "Poppins", sans-serif !important;
+  min-height: 100vh;
+  color: white;
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+img {
+  user-select: none;
+}
+
+button {
+  transition: transform 0.2s ease;
+}
+
+button:active {
+  transform: scale(0.9);
+}
+
+button:active:disabled {
+  transform: scale(1);
+}
+
+::selection {
+  background-color: #ffffff;
+  color: black;
+}
+
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 6px solid rgba(0, 0, 0, 0);
+  background-color: rgb(36, 36, 36);
+  background-clip: padding-box;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(52, 52, 52);
+}
+
+/* ::-webkit-calendar-picker-indicator {
+  filter: invert(1) !important;
+} */
+
+.wrapper {
+  padding: 2rem 0;
+  padding-top: 3rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.courseCards .swiper-slide {
+  width: auto !important;
+}
+
+.bannerSwiper .swiper-button-prev,
+.bannerSwiper .swiper-button-next {
+  background-color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.bannerSwiper .swiper-button-prev::after,
+.bannerSwiper .swiper-button-next::after {
+  font-size: 20px;
+  font-weight: 800;
+  color: #000000;
+}
+
+.bannerSwiper .swiper-button-prev::after {
+  translate: -15%;
+}
+
+.bannerSwiper .swiper-button-next::after {
+  translate: 15%;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.511);
+  backdrop-filter: blur(5px);
+  z-index: 50;
+}
+
+#rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+#rating p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#rating p:first-child {
+  color: #dd9e15 !important;
+}
+
+@media only screen and (max-width: 740px) {
+  .wrapper {
+    padding: 1.5rem !important;
+  }
+
+  ::-webkit-scrollbar {
+    width: 0px;
+  }
+}

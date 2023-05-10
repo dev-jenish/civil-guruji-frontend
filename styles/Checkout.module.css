@@ -1,0 +1,60 @@
+.container {
+  display: flex;
+}
+
+.left,
+.right {
+  --pad-inline: 3rem;
+  padding-block: 2rem;
+}
+
+.left {
+  flex: 6;
+  display: grid;
+  padding-inline: var(--pad-inline);
+}
+
+.right {
+  background-color: #131313;
+  flex: 4;
+  padding-inline: var(--pad-inline);
+  position: sticky;
+  top: 0;
+  height: calc(100vh - var(--nav-height));
+}
+
+.left .content {
+  width: 100%;
+  max-width: 650px;
+  justify-self: flex-end;
+}
+
+.right .content {
+  width: 100%;
+  max-width: 400px;
+}
+
+.left .section,
+.right .section {
+  margin-top: 2rem;
+}
+
+.right .section:first-child {
+  margin-top: 4.8rem;
+}
+
+.courseDetail {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.courseDetail img {
+  width: 80px;
+  aspect-ratio: 16 / 9;
+}
+
+.highlight {
+  color: var(--secondary);
+}

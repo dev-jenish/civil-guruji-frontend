@@ -1,0 +1,92 @@
+.container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  
+  #logo {
+    position: absolute;
+    top: 36px;
+    left: 48px;
+    font-weight: 600;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+
+.step {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    padding: 1.6rem;
+  }
+
+
+
+.cardContainer {
+    display: flex;
+  }
+
+.card {
+    padding: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2rem;
+    background-color: var(--card-bg);
+}
+
+.card:first-child{
+    display: flex;
+    background-color: #2F2876;
+    padding-top: 10rem;
+    padding-bottom: 10rem;
+}
+
+.card:nth-child(2){
+    display: flex;
+    justify-content: flex-start;
+    padding-top: 8rem
+}
+
+.dotsContainer{
+    display: flex;
+    gap: 10px;
+}
+
+.socialMediaContainer{
+    display: flex;
+    align-items: center;
+}
+
+.socialMediaText{
+    margin-right: 12px;
+}
+
+.linksContainer{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.description {
+    font-size: 14px;
+}
+
+.logoSecondary {
+    position: absolute;
+}
+
+.xs_text {
+    font-size: 12px;
+}

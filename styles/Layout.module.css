@@ -1,0 +1,6 @@
+.children {
+  background-color: var(--bg);
+  height: calc(100vh - 70px);
+  overflow: auto;
+  color: white;
+}

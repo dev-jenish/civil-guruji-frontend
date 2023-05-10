@@ -1,0 +1,70 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.container > p {
+  font-size: 18px;
+}
+
+.courses {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  cursor: pointer;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.card:hover {
+  background-color: var(--card-bg);
+}
+
+.card:hover .details h2 {
+  text-decoration: underline;
+}
+
+.card img {
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+}
+
+.details h2 {
+  font-size: 20px;
+}
+
+.details p {
+  font-size: 14px;
+  color: #b0b0b0;
+}
+
+.more {
+  margin-top: 1rem;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.more p {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#price {
+  color: #dd9e15;
+  gap: 2px;
+}
