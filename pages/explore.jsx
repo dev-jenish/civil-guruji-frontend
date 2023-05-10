@@ -47,9 +47,9 @@ export default function Explore() {
             })
           } */}
           {
-            courses && courses?.map((course) => {
+            courses && courses?.map((course, index) => {
               if(course){
-                return <CourseCarousel title={course?.name} courses={course?.data || []} />
+                return <CourseCarousel key={index} title={course?.name} courses={course?.data || []} />
               }
             })
           }

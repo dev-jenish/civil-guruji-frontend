@@ -8,6 +8,7 @@ import useScrollObserver from "@/hooks/useScrollObserver";
 import styles from "@/styles/CourseDetail.module.css";
 import { Button } from "@chakra-ui/react";
 import moment from "moment/moment";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -116,31 +117,31 @@ export default function CourseDetail({}) {
               <div className={styles.jobCardContainer}>
                 <div className={styles.jobCard}>
                   <div className={styles.Imagepart}>
-                    <img src="/assets/Group 1.svg" alt="studentImage" />
+                    <Image src="/assets/Group 1.svg" alt="studentImage" />
                   </div>
                   <div className={styles.DetailsPart}></div>
                 </div>
                 <div className={styles.jobCard}>
                   <div className={styles.Imagepart}>
-                    <img src="/assets/Group 1.svg" alt="studentImage" />
+                    <Image src="/assets/Group 1.svg" alt="studentImage" />
                   </div>
                   <div className={styles.DetailsPart}></div>
                 </div>
                 <div className={styles.jobCard}>
                   <div className={styles.Imagepart}>
-                    <img src="/assets/Group 1.svg" alt="studentImage" />
+                    <Image src="/assets/Group 1.svg" alt="studentImage" />
                   </div>
                   <div className={styles.DetailsPart}></div>
                 </div>
                 <div className={styles.jobCard}>
                   <div className={styles.Imagepart}>
-                    <img src="/assets/Group 1.svg" alt="studentImage" />
+                    <Image src="/assets/Group 1.svg" alt="studentImage" />
                   </div>
                   <div className={styles.DetailsPart}></div>
                 </div>
                 <div className={styles.jobCard}>
                   <div className={styles.Imagepart}>
-                    <img src="/assets/Group 1.svg" alt="studentImage" />
+                    <Image src="/assets/Group 1.svg" alt="studentImage" />
                   </div>
                   <div className={styles.DetailsPart}></div>
                 </div>
