@@ -38,7 +38,7 @@ export default function Card({
         {showPreview ? (
           <>
             <iframe
-              src="https://iframe.mediadelivery.net/embed/1159/08f6a19c-2bbd-485d-a9cb-8474b434373b"
+              src={'https://iframe.mediadelivery.net/embed/42375/03a64964-f428-4638-b044-6d172f48f4ea?autoplay=true'}
               title="How does a blockchain work?"
               allow="autoplay"
               allowFullScreen

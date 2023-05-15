@@ -146,7 +146,7 @@ function StepTwo({ back, nextStep, isPopup, user, setUser, onClose }) {
         ...user,
         ...response?.data
       })
-      if(Object.keys(response?.data?.userDetail)?.length > 0){
+      if(response?.data?.userDetail && Object.keys(response?.data?.userDetail)?.length > 0){
         router.push("/explore");
         if (isPopup) onClose();
       }else{
@@ -236,7 +236,7 @@ function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
         userId = response?.data?._id
       }
       let response = await api('/user/details', 'post', {
-        userId: userId,
+        userId: userId || user?._id,
         name: name,
         email: email,
         username: username,
@@ -354,8 +354,9 @@ function StepFour({ isPopup, onClose, user, setUser }) {
           que: item?.question,
           options: item?.options?.map((option) => {
             return {
-              opt: option,
-              img: ""
+              opt: option?.name,
+              img: "",
+              optSkills: option?.skills
             }
           })
         }
@@ -396,13 +397,22 @@ function StepFour({ isPopup, onClose, user, setUser }) {
   const submit = async () => {
 
     try{
+
+      let selectedSkills = []
+      Object.keys(selected).map((key) => {  if(selected?.[key]?.['skills'] && selected?.[key]?.['skills']?.length>0){
+        selected?.[key]?.['skills'].map((skill) => {
+          selectedSkills.push(skill)
+        })
+      }  })
+
       let response = await api('/user/reccomendations', 'post', {
         userId: user._id,
-        choice: Object.keys(selected).map((key) => { return selected?.[key] })
+        choice: selectedSkills
       })
       console.log(response, 'this is submit recc response!')
       setUser(response?.data)
       toast.success("Done, All the best!")
+      localStorage.setItem("userId", user._id)
       router.push("/explore");
       if (isPopup) onClose();
     }catch(error){
@@ -447,9 +457,9 @@ function StepFour({ isPopup, onClose, user, setUser }) {
           <div className={styles.options}>
             {question?.options.map((opt, idx) => (
               <span
-                className={selected[queNum] === opt.opt ? styles.selected : ""}
+                className={selected[queNum]?.['name'] === opt.opt ? styles.selected : ""}
                 onClick={() => {
-                  setSelected((prev) => ({ ...prev, [queNum]: opt.opt }));
+                  setSelected((prev) => ({ ...prev, [queNum]: { name: opt.opt, skills: opt.optSkills } }));
                 }}
                 key={idx}
               >

@@ -219,6 +219,10 @@
   background-color: #0000000e;
 }
 
+.activeSubmodule {
+  color: whitesmoke;
+}
+
 .gap {
   color: var(--gray);
   font-size: 14px;
