@@ -248,13 +248,17 @@
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.358);
 }
 
-.customHeader h1 {
+.customHeader h1{
   font-size: 24px;
   font-weight: 700;
   color: white;
   cursor: pointer;
 }
-
+.customHeader h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+}
 .buttonWithDate {
   display: flex;
   flex-direction: column;

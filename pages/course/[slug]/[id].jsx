@@ -37,156 +37,162 @@ import { api } from "utils/urls";
 import { toast } from "react-hot-toast";
 
 export default function Topic({ topic, course }) {
+  const courseId = "64532c7adb65b45ce71ec505";
 
-  const courseId = "64532c7adb65b45ce71ec505"
-  
-
-  const [courseData, setCourseData] = useState({})
-  const [selectedTopic, setSelectedTopic] = useState({ module: {}, subModule: {} })
+  const [courseData, setCourseData] = useState({});
+  const [selectedTopic, setSelectedTopic] = useState({
+    module: {},
+    subModule: {},
+  });
   const [videoProgeress, setVideoProgress] = useState(0);
   const [learningPercentage, setLearningPercentage] = useState(0);
-  const [savedPro, setSavedPro] = useState(0)
+  const [savedPro, setSavedPro] = useState(0);
 
-
-  const iframeRef = useRef(null)
-  let playerRef = useRef(null)
-
+  const iframeRef = useRef(null);
+  let playerRef = useRef(null);
 
   const getLearningPercentage = async () => {
-    try{
-      let response = await api(`/course/learningPercentage`, 'get');
-      if(response?.data?.learningPercentage){
-        setLearningPercentage(response?.data?.learningPercentage)
+    try {
+      let response = await api(`/course/learningPercentage`, "get");
+      if (response?.data?.learningPercentage) {
+        setLearningPercentage(response?.data?.learningPercentage);
       }
-    }catch(error){
-      console.log(error)
+    } catch (error) {
+      console.log(error);
     }
-  }
-  
-    
+  };
+
   const getCourseData = async () => {
-    try{
-      let response = await api(`/course/course-details/${courseId}`, 'get');
-      if(response?.data?._id){
-        setCourseData(response?.data)
+    try {
+      let response = await api(`/course/course-details/${courseId}`, "get");
+      if (response?.data?._id) {
+        setCourseData(response?.data);
       }
-    }catch(error){
-      console.log(error)
+    } catch (error) {
+      console.log(error);
     }
-  }
+  };
 
   const handleSaveProgress = async (progress) => {
-    try{
-      let response = await api('/course/video/progress', 'post', {
+    try {
+      let response = await api("/course/video/progress", "post", {
         progress,
-        id: "645de6877a142bdcdbe3d9a4"
-      })
-      console.log(response?.data)
-      toast.success("Progress saved!")
-    }catch(error){
-      console.log(error)
-      toast.error("Error happened while saving progress!")
+        id: "645de6877a142bdcdbe3d9a4",
+      });
+      console.log(response?.data);
+      toast.success("Progress saved!");
+    } catch (error) {
+      console.log(error);
+      toast.error("Error happened while saving progress!");
     }
-  }
+  };
 
   const handleProgress = async (event) => {
     const newPlayedPercent = event.played;
     // Check if the video has been played to 20%
-    if (newPlayedPercent >= 0.2 && savedPro < 20 && videoProgeress < 0.20) {
+    if (newPlayedPercent >= 0.2 && savedPro < 20 && videoProgeress < 0.2) {
       // Call method for 20% point
-      await handleSaveProgress(0.20)
-      setSavedPro(20)
+      await handleSaveProgress(0.2);
+      setSavedPro(20);
     }
 
     // Check if the video has been played to 45%
     if (newPlayedPercent >= 0.45 && savedPro < 45 && videoProgeress < 0.45) {
-      console.log('Video played to 45%');
+      console.log("Video played to 45%");
       // Call method for 45% point
-      await handleSaveProgress(0.45)
-      setSavedPro(45)
+      await handleSaveProgress(0.45);
+      setSavedPro(45);
     }
 
     // Check if the video has been played to 60%
-    if (newPlayedPercent >= 0.6 && savedPro < 60 && videoProgeress < 0.60) {
-      console.log('Video played to 60%');
+    if (newPlayedPercent >= 0.6 && savedPro < 60 && videoProgeress < 0.6) {
+      console.log("Video played to 60%");
       // Call method for 60% point
-      await handleSaveProgress(0.6)
-      setSavedPro(60)
+      await handleSaveProgress(0.6);
+      setSavedPro(60);
     }
 
     // Check if the video has been played to 80%
-    if (newPlayedPercent >= 0.8 && savedPro < 80 && videoProgeress < 0.80) {
-      console.log('Video played to 80%');
+    if (newPlayedPercent >= 0.8 && savedPro < 80 && videoProgeress < 0.8) {
+      console.log("Video played to 80%");
       // Call method for 80% point
-      await handleSaveProgress(0.8)
-      setSavedPro(80)
+      await handleSaveProgress(0.8);
+      setSavedPro(80);
     }
 
     // Check if the video has been played to 100%
     if (newPlayedPercent >= 1 && savedPro < 100 && videoProgeress < 1) {
-      console.log('Video played to 80%');
+      console.log("Video played to 80%");
       // Call method for 80% point
-      await handleSaveProgress(1)
-      setSavedPro(100)
+      await handleSaveProgress(1);
+      setSavedPro(100);
     }
-
-  }
+  };
 
   const getVideoProgress = async () => {
-    try{
-      let response = await api('/course/video/progress', 'get')
-      console.log(response?.data, "<=== saved response in database!")
-      handleSeek(response?.data?.progress)
-      setVideoProgress(response?.data?.[0]?.progress)
+    try {
+      let response = await api("/course/video/progress", "get");
+      console.log(response?.data, "<=== saved response in database!");
+      handleSeek(response?.data?.progress);
+      setVideoProgress(response?.data?.[0]?.progress);
       // saved=response?.data?.[0]?.progress
-      setSavedPro(response?.data?.[0]?.progress * 100)
-    }catch(error){
-      console.log(error)
-      toast.error("Error happened while fetching saved progress!")
+      setSavedPro(response?.data?.[0]?.progress * 100);
+    } catch (error) {
+      console.log(error);
+      toast.error("Error happened while fetching saved progress!");
     }
-  }
+  };
 
   function handleSeek(progress) {
     if (playerRef.current) {
-      console.log(progress, "<=== progress")
-      playerRef.current.seekTo(progress, 'fraction');
+      console.log(progress, "<=== progress");
+      playerRef.current.seekTo(progress, "fraction");
     }
   }
 
   let loaded = false;
 
   useEffect(() => {
-    getCourseData()
-    getVideoProgress()
-    getLearningPercentage()
-  }, [])
+    getCourseData();
+    getVideoProgress();
+    getLearningPercentage();
+  }, []);
 
   useEffect(() => {
-    if(courseData?.courseDetail?.courseContents?.length > 0){
+    if (courseData?.courseDetail?.courseContents?.length > 0) {
       setSelectedTopic({
         module: courseData?.courseDetail?.courseContents[0],
-        subModule: courseData?.courseDetail?.courseContents[0]?.courseSubContents[0]
-      })
+        subModule:
+          courseData?.courseDetail?.courseContents[0]?.courseSubContents[0],
+      });
     }
-  }, [courseData])
+  }, [courseData]);
 
-
-
-    // new added for customheader
-    const customHeader = <div className={styles.customHeader}>
-        <Link href="/">
+  // new added for customheader
+  const customHeader = (
+    <div className={styles.customHeader}>
+      <Link href="/">
         <h1>Civil Guruji</h1>
       </Link>
+      <h2>{courseData.name}</h2>
       <div className={styles.buttonWithDate}>
-        <Button style={{ fontSize: "0.90rem" }} >PAY EMI</Button>
-        <p style={{ fontSize: "0.75rem" }} >06 | May | 2023</p>
+        <Button style={{ fontSize: "0.90rem" }}>PAY EMI</Button>
+        <p style={{ fontSize: "0.75rem" }}>06 | May | 2023</p>
       </div>
-      </div>
+    </div>
+  );
 
   return (
     <Layout customHeader={customHeader}>
       <div className={styles.container}>
-        <SideNav savedPro={savedPro} learningPercentage={learningPercentage} videoProgeress={videoProgeress} selectedTopic={selectedTopic} setSelectedTopic={setSelectedTopic} modules={courseData?.courseDetail?.courseContents || []} />
+        <SideNav
+          savedPro={savedPro}
+          learningPercentage={learningPercentage}
+          videoProgeress={videoProgeress}
+          selectedTopic={selectedTopic}
+          setSelectedTopic={setSelectedTopic}
+          modules={courseData?.courseDetail?.courseContents || []}
+        />
         <div className={styles.markdown}>
           <div className={styles.breadcrumbs}>
             <Link href="/explore">Explore</Link>
@@ -203,55 +209,54 @@ export default function Topic({ topic, course }) {
             </Link>
           </div>
           <h1 id={styles.title}>{selectedTopic?.subModule?.name}</h1>
-          {
-            selectedTopic?.subModule?.type == 1 && (
-              <div className={styles.iframe}>
-                <ReactPlayer 
-                  url={selectedTopic?.subModule?.url}
-                  playing={true}
-                  controls={true}
-                  onProgress={(event) => handleProgress(event)}
-                  ref={playerRef}
-                  onReady={() => {if(!loaded){
-                    handleSeek(videoProgeress)
-                    loaded=true
-                  }}}
-                  config={{
-                    file: {
-                      attributes: {
-                        controlsList: 'nodownload', // Disable download when right-clicking on the video
-                        onContextMenu: (e) => e.preventDefault()
-                      },
+          {selectedTopic?.subModule?.type == 1 && (
+            <div className={styles.iframe}>
+              <ReactPlayer
+                url={selectedTopic?.subModule?.url}
+                playing={true}
+                controls={true}
+                onProgress={(event) => handleProgress(event)}
+                ref={playerRef}
+                onReady={() => {
+                  if (!loaded) {
+                    handleSeek(videoProgeress);
+                    loaded = true;
+                  }
+                }}
+                config={{
+                  file: {
+                    attributes: {
+                      controlsList: "nodownload", // Disable download when right-clicking on the video
+                      onContextMenu: (e) => e.preventDefault(),
                     },
-                  }}
-                />
-              </div>
-            )
-          }
+                  },
+                }}
+              />
+            </div>
+          )}
 
-          {
-            selectedTopic?.subModule?.type == 5 && (
-              <div className={styles.iframe}>
-                <Quiz subModule={selectedTopic?.subModule} />
-              </div>
-            )
-          }
-          {
-            selectedTopic?.subModule?.type == 2 && (
-              <div className={styles.iframe}>
-                <iframe src={selectedTopic?.subModule?.url} ></iframe>
-              </div>
-            )
-          }
-          {
-            selectedTopic?.subModule?.type == 3 && (
-              <div className={styles.iframe}>
-                <iframe allowfullscreen="" frameborder="0" height="480" loading="lazy" src={selectedTopic?.subModule?.url} width="640"></iframe>
-              </div>
-            )
-          }
-
-          
+          {selectedTopic?.subModule?.type == 5 && (
+            <div className={styles.iframe}>
+              <Quiz subModule={selectedTopic?.subModule} />
+            </div>
+          )}
+          {selectedTopic?.subModule?.type == 2 && (
+            <div className={styles.iframe}>
+              <iframe src={selectedTopic?.subModule?.url}></iframe>
+            </div>
+          )}
+          {selectedTopic?.subModule?.type == 3 && (
+            <div className={styles.iframe}>
+              <iframe
+                allowfullscreen=""
+                frameborder="0"
+                height="480"
+                loading="lazy"
+                src={selectedTopic?.subModule?.url}
+                width="640"
+              ></iframe>
+            </div>
+          )}
 
           <div className={styles.topicInfo}>
             <Tabs variant="button">
@@ -268,12 +273,12 @@ export default function Topic({ topic, course }) {
                     <p>Comment</p>
                   </span>
                 </Tab>
-                <Tab>
+                {selectedTopic?.subModule?.type == 1 && <Tab>
                   <span className={styles.tab}>
                     <BiCube />
                     <p>3D Models</p>
                   </span>
-                </Tab>
+                </Tab>}
                 <Tab>
                   <span className={styles.tab}>
                     <ImAttachment />
@@ -290,16 +295,14 @@ export default function Topic({ topic, course }) {
 
               <TabPanels>
                 <TabPanel>
-                  <p>
-                    {selectedTopic?.subModule?.description}
-                  </p>
+                  <p>{selectedTopic?.subModule?.description}</p>
                 </TabPanel>
                 <TabPanel>
-                  <p>Coming Soon!</p>
+                  <p>Comment Coming Soon!</p>
                 </TabPanel>
-                <TabPanel>
+                {selectedTopic?.subModule?.type == 1 && <TabPanel>
                   <p>Coming Soon!</p>
-                </TabPanel>
+                </TabPanel>}
                 <TabPanel>
                   <p>Coming Soon!</p>
                 </TabPanel>
@@ -338,7 +341,14 @@ export default function Topic({ topic, course }) {
   );
 }
 
-function SideNav({ savedPro, learningPercentage, videoProgeress, modules, selectedTopic, setSelectedTopic }) {
+function SideNav({
+  savedPro,
+  learningPercentage,
+  videoProgeress,
+  modules,
+  selectedTopic,
+  setSelectedTopic,
+}) {
   const [showNav, setShowNav] = useState(false);
   const [search, setSearch] = useState("");
   const router = useRouter();
@@ -352,9 +362,10 @@ function SideNav({ savedPro, learningPercentage, videoProgeress, modules, select
 
   let searchModules = modules.filter((module) => {
     let bool = false;
-    console.log(module)
+    console.log(module);
     module.courseSubContents.forEach((topic) => {
-      if (topic?.name?.toLowerCase().includes(search.toLowerCase())) bool = true;
+      if (topic?.name?.toLowerCase().includes(search.toLowerCase()))
+        bool = true;
     });
 
     return bool;
@@ -382,33 +393,41 @@ function SideNav({ savedPro, learningPercentage, videoProgeress, modules, select
         {/* new added for tab part and button */}
         <div className={styles.tabWrapper}>
           <Tabs variant="button">
-              <TabList>
-                <Tab>
-                  <span className={styles.tab}>
-                    <p>Content</p>
-                  </span>
-                </Tab>
-                <Tab>
-                  <span className={styles.tab}>
-                    <p>Live Class</p>
-                  </span>
-                </Tab>
-              </TabList>
+            <TabList>
+              <Tab>
+                <span className={styles.tab}>
+                  <p>Content</p>
+                </span>
+              </Tab>
+              <Tab>
+                <span className={styles.tab}>
+                  <p>Live Class</p>
+                </span>
+              </Tab>
+            </TabList>
 
-              <TabPanels>
-                <TabPanel>
-                    <div className={styles.modules}>
-                      {searchModules.map((module, i) => (
-                        <Accordian savedPro={savedPro} learningPercentage={learningPercentage} videoProgeress={videoProgeress} key={i} module={module} selectedTopic={selectedTopic} setSelectedTopic={setSelectedTopic} />
-                      ))}
-                    </div>
-                </TabPanel>
-                <TabPanel>
-                  <SessionCard isLive />
-                  <SessionCard />
-                  <SessionCard />
-                </TabPanel>
-              </TabPanels>
+            <TabPanels>
+              <TabPanel>
+                <div className={styles.modules}>
+                  {searchModules.map((module, i) => (
+                    <Accordian
+                      savedPro={savedPro}
+                      learningPercentage={learningPercentage}
+                      videoProgeress={videoProgeress}
+                      key={i}
+                      module={module}
+                      selectedTopic={selectedTopic}
+                      setSelectedTopic={setSelectedTopic}
+                    />
+                  ))}
+                </div>
+              </TabPanel>
+              <TabPanel>
+                <SessionCard isLive />
+                <SessionCard />
+                <SessionCard />
+              </TabPanel>
+            </TabPanels>
           </Tabs>
           <Button className={styles.downloadBtn}>Attempt Final Quiz</Button>
         </div>
@@ -417,7 +436,14 @@ function SideNav({ savedPro, learningPercentage, videoProgeress, modules, select
   );
 }
 
-function Accordian({ savedPro, learningPercentage, videoProgeress, module, selectedTopic, setSelectedTopic }) {
+function Accordian({
+  savedPro,
+  learningPercentage,
+  videoProgeress,
+  module,
+  selectedTopic,
+  setSelectedTopic,
+}) {
   const [showTopics, setShowTopics] = useState(true);
   const router = useRouter();
 
@@ -437,7 +463,11 @@ function Accordian({ savedPro, learningPercentage, videoProgeress, module, selec
         )}
         <p>{module?.courseContentName}</p>
         <span className={styles.gap}>
-          <p>0/{module.courseSubContents && (module.courseSubContents?.length || 0)}</p>
+          <p>
+            0/
+            {module.courseSubContents &&
+              (module.courseSubContents?.length || 0)}
+          </p>
           <BsPlayBtn />
         </span>
       </div>
@@ -445,24 +475,43 @@ function Accordian({ savedPro, learningPercentage, videoProgeress, module, selec
         <div style={{ marginBottom: 20 }} className={styles.topics}>
           {/* {console.log(module, "<== debug this")} */}
           {module.courseSubContents.map((topic) => {
-            
             return (
-            <div
-              key={topic._id}
-              className={`${styles.topic} ${
-                selectedTopic?.subModule === topic ? styles.activeSubmodule : ""
-              }`}
-              onClick={() => {setSelectedTopic({ module: module, subModule: topic })}}
-            >
-              {
-                topic?.type == 1 ?
-                <IoMdRadioButtonOn className={styles.accIcon} style={ savedPro>videoProgeress ? (savedPro>=learningPercentage ? { color: 'green' } : savedPro<learningPercentage && savedPro>0 ? { color: 'orange' } : {}) : (videoProgeress*100>=learningPercentage ? { color: "green" } : videoProgeress*100<learningPercentage && videoProgeress*100>0 ? { color: "orange" } : {})} />
-                :
-                <IoMdRadioButtonOff className={styles.accIcon} />
-              }
-              <p>{topic?.name}</p>
-            </div>
-          )})}
+              <div
+                key={topic._id}
+                className={`${styles.topic} ${
+                  selectedTopic?.subModule === topic
+                    ? styles.activeSubmodule
+                    : ""
+                }`}
+                onClick={() => {
+                  setSelectedTopic({ module: module, subModule: topic });
+                }}
+              >
+                {topic?.type == 1 ? (
+                  <IoMdRadioButtonOn
+                    className={styles.accIcon}
+                    style={
+                      savedPro > videoProgeress
+                        ? savedPro >= learningPercentage
+                          ? { color: "green" }
+                          : savedPro < learningPercentage && savedPro > 0
+                          ? { color: "orange" }
+                          : {}
+                        : videoProgeress * 100 >= learningPercentage
+                        ? { color: "green" }
+                        : videoProgeress * 100 < learningPercentage &&
+                          videoProgeress * 100 > 0
+                        ? { color: "orange" }
+                        : {}
+                    }
+                  />
+                ) : (
+                  <IoMdRadioButtonOff className={styles.accIcon} />
+                )}
+                <p>{topic?.name}</p>
+              </div>
+            );
+          })}
         </div>
       )}
     </>
