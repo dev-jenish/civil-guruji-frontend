@@ -213,6 +213,8 @@ export default function Topic({ topic, course }) {
             <div className={styles.iframe}>
               <ReactPlayer
                 url={selectedTopic?.subModule?.url}
+                width={"100%"}
+                height={"100%"}
                 playing={true}
                 controls={true}
                 onProgress={(event) => handleProgress(event)}
