@@ -37,7 +37,8 @@ import { api } from "utils/urls";
 import { toast } from "react-hot-toast";
 
 export default function Topic({ topic, course }) {
-  const courseId = "64532c7adb65b45ce71ec505";
+  // const courseId = "64532c7adb65b45ce71ec505";
+  const courseId = "645f61fa62124b49514c2054";
 
   const [courseData, setCourseData] = useState({});
   const [selectedTopic, setSelectedTopic] = useState({
@@ -274,24 +275,27 @@ export default function Topic({ topic, course }) {
                     <p>Description</p>
                   </span>
                 </Tab>
-                <Tab>
+                {/* <Tab>
                   <span className={styles.tab}>
                     <BiCommentDetail />
                     <p>Comment</p>
                   </span>
-                </Tab>
-                {selectedTopic?.subModule?.type == 1 && <Tab>
+                </Tab> */}
+                {selectedTopic?.subModule?.type == 1 && selectedTopic?.subModule?.modelUrl && <Tab>
                   <span className={styles.tab}>
                     <BiCube />
                     <p>3D Models</p>
                   </span>
                 </Tab>}
-                <Tab>
-                  <span className={styles.tab}>
-                    <ImAttachment />
-                    <p>Attachment</p>
-                  </span>
-                </Tab>
+                {
+                  selectedTopic?.subModule?.attachments && selectedTopic?.subModule?.attachments?.length>0 && <Tab>
+                    <span className={styles.tab}>
+                      <ImAttachment />
+                      <p>Attachment</p>
+                    </span>
+                  </Tab>
+                }
+                
                 {/* <Tab>
                   <span className={styles.tab}>
                     <BsPlayBtn />
@@ -302,22 +306,36 @@ export default function Topic({ topic, course }) {
 
               <TabPanels>
                 <TabPanel>
-                  <p>{selectedTopic?.subModule?.description}</p>
+                  { selectedTopic?.subModule?.description && <p dangerouslySetInnerHTML={{ __html: selectedTopic?.subModule?.description}} ></p>}
+                  { !selectedTopic?.subModule?.description && <p>No description...</p>}
                 </TabPanel>
-                <TabPanel>
+                {/* <TabPanel>
                   <p>Comment Coming Soon!</p>
-                </TabPanel>
-                {selectedTopic?.subModule?.type == 1 && <TabPanel>
-                  <p>Coming Soon!</p>
+                </TabPanel> */}
+                {selectedTopic?.subModule?.type  == 1 && selectedTopic?.subModule?.modelUrl && <TabPanel>
+                  <div className={styles.iframe}>
+                    <iframe
+                      allowfullscreen=""
+                      frameborder="0"
+                      height="480"
+                      loading="lazy"
+                      src={selectedTopic?.subModule?.modelUrl}
+                      width="640"
+                    ></iframe>
+                  </div>
                 </TabPanel>}
                 <TabPanel>
-                  <p>Coming Soon!</p>
-                </TabPanel>
-                <TabPanel>
-                  <SessionCard isLive />
-                  <SessionCard />
-                  <SessionCard />
-                  <SessionCard />
+                  {
+                    selectedTopic?.subModule?.attachments && selectedTopic?.subModule?.attachments?.length>0 && selectedTopic?.subModule?.attachments.map((attachment, index) => {
+                      return <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }} >
+                        {/* <div> */}
+                        <span>{index + 1 + ". "}</span>
+                        <span style={{ marginRight: "1rem", marginLeft: '6px' }} >{attachment?.label}</span>
+                        {/* </div> */}
+                        <a target="_blank" style={{ backgroundColor: '#D6BCFA', padding: "5px 10px", color: "black", borderRadius: '5px' }} href={attachment?.data}>Download</a>
+                      </div>
+                    })
+                  }
                 </TabPanel>
               </TabPanels>
             </Tabs>
