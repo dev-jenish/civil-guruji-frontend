@@ -13,6 +13,25 @@ export default function ForYou() {
   const [courses, setCourses] = useState([])
   const [userId, setUserId] = useState('')
   const [loading, setLoading] = useState(false)
+  const [recommendedCourses, setReccomendedCourses] = useState([])
+
+  const getAllCourses = async () => {
+    try{
+      let coursesResult = await api('/course/landing-page-courses', 'get')
+      // if(Object?.keys(coursesResult?.data)?.length > 0){
+      //   setCourses(coursesResult?.data)
+      // }
+      let priorityWiseCourses = []
+      coursesResult?.data && Object.keys(coursesResult?.data).map((key) => {
+        priorityWiseCourses[coursesResult?.data?.[key]?.priority] = { name: key, data: coursesResult?.data?.[key]?.data }
+      })
+      setCourses(priorityWiseCourses)
+      console.log(priorityWiseCourses, "course result")
+    }catch(error){
+      console.log(error)
+      toast.error('Error while fetching courses')
+    }
+  }
     
     const getRecoomendedCourses = async () => {
         try{
@@ -20,12 +39,12 @@ export default function ForYou() {
         console.log(localUserId)
         if(!localUserId){ return toast.error("No saved user found!") }
         let coursesResult = await api(`/course/foryou/${localUserId}`, 'get')
-        let priorityWiseCourses = []
-      coursesResult?.data && Object.keys(coursesResult?.data).map((key) => {
-        priorityWiseCourses[coursesResult?.data?.[key]?.priority] = { name: key, data: coursesResult?.data?.[key]?.data }
-      })
-      setCourses(priorityWiseCourses)
-      console.log(priorityWiseCourses, "course result")
+        // let priorityWiseCourses = []
+      // coursesResult?.data && Object.keys(coursesResult?.data).map((key) => {
+      //   priorityWiseCourses[coursesResult?.data?.[key]?.priority] = { name: key, data: coursesResult?.data?.[key]?.data }
+      // })
+      setReccomendedCourses(coursesResult?.data)
+      // console.log(coursesResult?.data, "course result")
     }catch(error){
         console.log(error)
     }
@@ -52,6 +71,7 @@ export default function ForYou() {
 
   useEffect(() => {
     getRecoomendedCourses()
+    getAllCourses()
   }, [])
 
 
@@ -65,6 +85,13 @@ export default function ForYou() {
               return <CourseCarousel title={category} courses={courses?.[category]?.data || []} />
             })
           } */}
+          {
+              // if(course){
+              //   return <CourseCarousel key={index} title={"Reccomendations"} courses={recommendedCourses || []} />
+              // }
+              recommendedCourses && recommendedCourses?.length>0 && <CourseCarousel key={'reccomendations'} title={"Reccomendations"} courses={recommendedCourses || []} />
+              
+          }
           {
             courses && courses?.map((course, index) => {
               if(course){
