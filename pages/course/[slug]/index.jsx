@@ -139,56 +139,31 @@ export default function CourseDetail({}) {
               <div className={styles.jobCardContainer}>
                 <div className={styles.jobCard}>
                   <div className={styles.Imagepart}>
-                    <Image
-                      src="/assets/Group 1.svg"
-                      alt="studentImage"
-                      width={300}
-                      height={200}
-                    />
+                    <Image width={180} height={250} src="/assets/Group 1.svg" alt="studentImage" />
                   </div>
                   <div className={styles.DetailsPart}></div>
                 </div>
                 <div className={styles.jobCard}>
                   <div className={styles.Imagepart}>
-                    <Image
-                      src="/assets/Group 1.svg"
-                      alt="studentImage"
-                      width={300}
-                      height={200}
-                    />
+                    <Image width={180} height={250} src="/assets/Group 1.svg" alt="studentImage" />
                   </div>
                   <div className={styles.DetailsPart}></div>
                 </div>
                 <div className={styles.jobCard}>
                   <div className={styles.Imagepart}>
-                    <Image
-                      src="/assets/Group 1.svg"
-                      alt="studentImage"
-                      width={300}
-                      height={200}
-                    />
+                    <Image width={180} height={250} src="/assets/Group 1.svg" alt="studentImage" />
                   </div>
                   <div className={styles.DetailsPart}></div>
                 </div>
                 <div className={styles.jobCard}>
                   <div className={styles.Imagepart}>
-                    <Image
-                      src="/assets/Group 1.svg"
-                      alt="studentImage"
-                      width={300}
-                      height={200}
-                    />
+                    <Image width={180} height={250} src="/assets/Group 1.svg" alt="studentImage" />
                   </div>
                   <div className={styles.DetailsPart}></div>
                 </div>
                 <div className={styles.jobCard}>
                   <div className={styles.Imagepart}>
-                    <Image
-                      src="/assets/Group 1.svg"
-                      alt="studentImage"
-                      width={300}
-                      height={200}
-                    />
+                    <Image width={180} height={250} src="/assets/Group 1.svg" alt="studentImage" />
                   </div>
                   <div className={styles.DetailsPart}></div>
                 </div>

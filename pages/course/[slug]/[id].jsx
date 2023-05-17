@@ -209,33 +209,38 @@ export default function Topic({ topic, course }) {
             </Link>
           </div>
           <h1 id={styles.title}>{selectedTopic?.subModule?.name}</h1>
-          {selectedTopic?.subModule?.type == 1 && (
-            <div className={styles.iframe}>
-              <ReactPlayer
-                url={selectedTopic?.subModule?.url}
-                width={"100%"}
-                height={"100%"}
-                playing={true}
-                controls={true}
-                onProgress={(event) => handleProgress(event)}
-                ref={playerRef}
-                onReady={() => {
-                  if (!loaded) {
-                    handleSeek(videoProgeress);
-                    loaded = true;
-                  }
-                }}
-                config={{
-                  file: {
-                    attributes: {
-                      controlsList: "nodownload", // Disable download when right-clicking on the video
-                      onContextMenu: (e) => e.preventDefault(),
+          {
+            selectedTopic?.subModule?.type == 1 && (
+              <div className={styles.iframe}>
+                <ReactPlayer 
+                  url={selectedTopic?.subModule?.url}
+                  width={"100%"}
+                  height={"100%"}
+                  playing={true}
+                  controls={true}
+                  onProgress={(event) => handleProgress(event)}
+                  ref={playerRef}
+                  onReady={() => {if(!loaded){
+                    handleSeek(videoProgeress)
+                    loaded=true
+                  }}}
+                  config={{
+                    file: {
+                      attributes: {
+                        controlsList: 'nodownload', // Disable download when right-clicking on the video
+                        onContextMenu: (e) => e.preventDefault()
+                      },
                     },
-                  },
-                }}
-              />
-            </div>
-          )}
+                  }}
+                >
+                </ReactPlayer>
+                <div style={{ position: "absolute", left: "50%", top: "50%", transform: 'translate(-50%, -50%)', color: "black" }} >
+                  <p>7201021241</p>
+                  <p>jenishdpc66@gmail.com</p>
+                </div>
+              </div>
+            )
+          }
 
           {selectedTopic?.subModule?.type == 5 && (
             <div className={styles.iframe}>
