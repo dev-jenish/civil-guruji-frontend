@@ -35,6 +35,7 @@ import { IoMdRadioButtonOff, IoMdRadioButtonOn } from "react-icons/io";
 import ReactPlayer from "react-player";
 import { api } from "utils/urls";
 import { toast } from "react-hot-toast";
+import QuizComponent from "@/components/course/QuizComponent";
 
 export default function Topic({ topic, course }) {
 
@@ -203,6 +204,25 @@ export default function Topic({ topic, course }) {
             </Link>
           </div>
           <h1 id={styles.title}>{selectedTopic?.subModule?.name}</h1>
+
+          <div className={styles.cta}>
+            <div className={styles.prev}>
+              <Button leftIcon={<BsArrowLeft />} variant="outline" isDisabled mt={2}>
+                Previous
+              </Button>
+            </div>
+            <div className={styles.next}>
+              <p >Why do we need blockchain?</p>
+              <Button
+                rightIcon={<BsArrowRight />}
+                disabled={false}
+                variant="outline"
+                mt={2}
+                >
+                Next
+              </Button>
+            </div>
+          </div>
           {
             selectedTopic?.subModule?.type == 1 && (
               <div className={styles.iframe}>
@@ -239,7 +259,8 @@ export default function Topic({ topic, course }) {
           {
             selectedTopic?.subModule?.type == 5 && (
               <div className={styles.iframe}>
-                <Quiz subModule={selectedTopic?.subModule} />
+                {/* <Quiz subModule={selectedTopic?.subModule} /> */}
+                <QuizComponent subModule={selectedTopic.subModule} />
               </div>
             )
           }
@@ -320,24 +341,23 @@ export default function Topic({ topic, course }) {
             </Tabs>
           </div>
 
-          <div className={styles.cta}>
+          {/* <div className={styles.cta}>
             <div className={styles.prev}>
               <Button leftIcon={<BsArrowLeft />} variant="outline" isDisabled>
                 Previous
               </Button>
-              <p>Why do we need blockchain?</p>
             </div>
             <div className={styles.next}>
               <Button
                 rightIcon={<BsArrowRight />}
                 disabled={false}
                 variant="outline"
-              >
+                >
                 Next
               </Button>
-              <p>Mempool, Polyscan, Etherscan</p>
+                <p>Why do we need blockchain?</p>
             </div>
-          </div>
+          </div> */}
         </div>
         {/* <Navigator slug={topic.slug} /> */}
       </div>
