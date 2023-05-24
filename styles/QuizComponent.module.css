@@ -322,7 +322,7 @@
 .leftPart .quesHeadPart .points span.minusPoint {
   color: #ff0000;
 }
-.leftPart .questionBlock {
+.questionBlock {
   display: flex;
   width: 100%;
   flex-direction: column;
@@ -505,4 +505,167 @@
   line-height: 21px;
   color: #fff;
   margin-bottom: 25px;
+}
+.resultScreenMain {
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+  overflow-y: hidden;
+  background-color: #d7d7d7;
+  padding: 1rem;
+  gap: 10px;
+  position: relative;
+}
+.progressBar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 25px;
+}
+.textLabel {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  color: #e01c46;
+  margin: 0;
+}
+.progressValue {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  color: #165dff;
+}
+.chartPart {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 50px;
+}
+.chart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+.indication {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  flex: 2;
+  height: 100%;
+  gap: 30px;
+  padding-left: 50px;
+  padding-bottom: 20px;
+}
+.indicatorBlock {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-left: 25px;
+  gap: 20px;
+}
+.correct {
+  display: block;
+  width: 22px;
+  height: 23px;
+  background-color: #2bb970;
+}
+.answerMethod,
+.answersNo {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  color: #000000;
+}
+.answersNo {
+  margin-inline-start: 50px;
+}
+.notAnswered {
+  display: block;
+  width: 22px;
+  height: 23px;
+  background-color: #292a2e;
+}
+.wrongAnswered {
+  display: block;
+  width: 22px;
+  height: 23px;
+  background-color: #ff0000;
+}
+.quesPart {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background-color: #fcfcfc;
+  margin-top: 15px;
+}
+.quesionContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1 1 auto;
+  padding: 15px;
+  border-bottom: 1px solid #000000;
+}
+.quesionContainer .questionBlock {
+  border: none;
+}
+.answerPart {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  background: #eaeaea;
+  padding: 1rem;
+  height: 85%;
+  width: 60%;
+}
+
+.wrongAnswer, .rightAnswer,.skippedAnswer {
+  display: inline-flex;
+  padding-right: 15px;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 20px;
+  color: #ff0000;
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+.rightAnswer {
+  color: #2bb970;
+}
+.skippedAnswer {
+  color: #292a2e;
+}
+.correctAns {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  color: #000000;
+}
+.yourAns {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  color: #000000;
+  margin-bottom: 1rem;
+}
+.gotMark {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  margin: 0;
+  color: #000000;
 }

@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-import { Box, Button} from "@chakra-ui/react";
+import { Box, Button, Progress } from "@chakra-ui/react";
 import styles from "@/styles/QuizComponent.module.css";
 import { BsArrowsFullscreen } from "react-icons/bs";
+import { PieChart } from "react-minimal-pie-chart";
+import { FaTimes, FaCheck, FaRegCircle, FaMinusCircle } from "react-icons/fa";
+import { MdDoNotDisturbAlt } from "react-icons/md";
 
 const QuizComponent = () => {
-    const [activeScreen, setActiveScreen] = useState('MainScreen');
-  
+  const [activeScreen, setActiveScreen] = useState("MainScreen");
+
   const QuizInstructionScreen = () => {
     return (
       <Box className={styles.instructionScreen}>
@@ -135,15 +138,20 @@ const QuizComponent = () => {
             Obcaecati.
           </p>
         </Box>
-        <button className={styles.startBtn} onClick={(e) => handleClick(e, 'QuizQuestionsScreen')}>Start</button>
+        <button
+          className={styles.startBtn}
+          onClick={(e) => handleClick(e, "QuizQuestionsScreen")}
+        >
+          Start
+        </button>
       </Box>
     );
   };
 
-  const handleClick = (e,screen) => {
+  const handleClick = (e, screen) => {
     e.preventDefault();
     setActiveScreen(screen);
-  }
+  };
 
   const MainScreen = () => {
     return (
@@ -152,8 +160,7 @@ const QuizComponent = () => {
         <span className={styles.dividerLine}></span>
         <Box mb={4}>
           <p className={styles.labelText}>
-            Total Questions:{" "}
-            <span className={styles.valueText}>10</span>
+            Total Questions: <span className={styles.valueText}>10</span>
           </p>
           <p className={styles.labelText}>
             Total Time: <span className={styles.valueText}>2 minutes</span>
@@ -166,7 +173,11 @@ const QuizComponent = () => {
           justifyContent="space-between"
           className={styles.buttonDiv}
         >
-          <Button colorScheme="blue" mr={2} onClick={(e) => handleClick(e, 'QuizInstructionScreen')}>
+          <Button
+            colorScheme="blue"
+            mr={2}
+            onClick={(e) => handleClick(e, "QuizInstructionScreen")}
+          >
             Start Quiz
           </Button>
           <Button colorScheme="white" variant="outline" isDisabled>
@@ -239,7 +250,12 @@ const QuizComponent = () => {
                 <button className={styles.clearBtn}>Clear Response</button>
               </div>
               <div className={styles.submitTest}>
-                <button className={styles.submitBtn} onClick={(e) => handleClick(e, 'QuizSubmitScreen')}>Submit Test</button>
+                <button
+                  className={styles.submitBtn}
+                  onClick={(e) => handleClick(e, "QuizSubmitScreen")}
+                >
+                  Submit Test
+                </button>
               </div>
             </div>
           </div>
@@ -425,19 +441,188 @@ const QuizComponent = () => {
                 <span>08</span>
               </div>
               <button className={styles.continueBtn}>Continue</button>
-              <button className={styles.responseBtn}>See Responses</button>
+              <button
+                className={styles.responseBtn}
+                onClick={(e) => handleClick(e, "ResultScreen")}
+              >
+                See Responses
+              </button>
             </div>
           </div>
         </div>
       </Box>
     );
   };
+
+  const ResultScreen = () => {
+    return (
+      <Box className={styles.resultScreenMain}>
+        <Box className={styles.progressBar}>
+          <p className={styles.textLabel}>Result:</p>
+          <span className={styles.progressValue}>30%</span>
+          <Progress value={30} size="lg" />
+        </Box>
+        <Box className={styles.chartPart}>
+          <div className={styles.chart}>
+            <PieChart
+              data={[
+                { title: "One", value: 10, color: "#2BB970" },
+                { title: "Two", value: 15, color: "#FF0000" },
+                { title: "Three", value: 20, color: "#292A2E" },
+              ]}
+            />
+          </div>
+          <div className={styles.indication}>
+            <div className={styles.indicatorBlock}>
+              <span className={styles.correct}></span>
+              <span className={styles.answerMethod}>Correct Answers:</span>
+              <span className={styles.answersNo}>04/10</span>
+            </div>
+            <div className={styles.indicatorBlock}>
+              <span className={styles.wrongAnswered}></span>
+              <span className={styles.answerMethod}>Wrong Answers:</span>
+              <span className={styles.answersNo}>02/10</span>
+            </div>
+            <div className={styles.indicatorBlock}>
+              <span className={styles.notAnswered}></span>
+              <span className={styles.answerMethod}>Not Answered:</span>
+              <span className={styles.answersNo}>04/10</span>
+            </div>
+          </div>
+        </Box>
+        <Box className={styles.quesPart}>
+          <div className={styles.quesionContainer}>
+            <div className={styles.questionBlock}>
+              <h5>1. Where does it come from?</h5>
+              <div className={styles.queOption}>
+                <span
+                  className={styles.optionIndex}
+                  style={{ backgroundColor: "#2BB970" }}
+                >
+                  A
+                </span>
+                <span
+                  className={styles.optionText}
+                  style={{ backgroundColor: "#2BB970" }}
+                >
+                  Option: 1
+                </span>
+              </div>
+              <div className={styles.queOption}>
+                <span className={styles.optionIndex}>B</span>
+                <span className={styles.optionText}>Option: 2</span>
+              </div>
+              <div className={styles.queOption}>
+                <span className={styles.optionIndex} style={{ backgroundColor: "#FF0000" }}>C</span>
+                <span className={styles.optionText} style={{ backgroundColor: "#FF0000" }}>Option: 3</span>
+              </div>
+              <div className={styles.queOption}>
+                <span className={styles.optionIndex}>D</span>
+                <span className={styles.optionText}>Option: 4</span>
+              </div>
+            </div>
+            <div className={styles.answerPart}>
+              <div className={styles.wrongAnswer}>
+                <FaTimes />
+                Your answer is wrong
+              </div>
+              <p className={styles.correctAns}>Correct Answer: A</p>
+              <p className={styles.yourAns}>Your Answer: C</p>
+              <p className={styles.gotMark}>Got Marks: -1.00</p>
+            </div>
+          </div>
+          <div className={styles.quesionContainer}>
+            <div className={styles.questionBlock}>
+              <h5>2. Where does it come from?</h5>
+              <div className={styles.queOption}>
+                <span
+                  className={styles.optionIndex}
+                  style={{ backgroundColor: "#2BB970" }}
+                >
+                  A
+                </span>
+                <span
+                  className={styles.optionText}
+                  style={{ backgroundColor: "#2BB970" }}
+                >
+                  Option: 1
+                </span>
+              </div>
+              <div className={styles.queOption}>
+                <span className={styles.optionIndex}>B</span>
+                <span className={styles.optionText}>Option: 2</span>
+              </div>
+              <div className={styles.queOption}>
+                <span className={styles.optionIndex}>C</span>
+                <span className={styles.optionText}>Option: 3</span>
+              </div>
+              <div className={styles.queOption}>
+                <span className={styles.optionIndex}>D</span>
+                <span className={styles.optionText}>Option: 4</span>
+              </div>
+            </div>
+            <div className={styles.answerPart}>
+              <div className={styles.rightAnswer}>
+                <FaCheck />
+                Your answer is correct
+              </div>
+              <p className={styles.correctAns}>Correct Answer: A</p>
+              <p className={styles.yourAns}>Your Answer: A</p>
+              <p className={styles.gotMark}>Got Marks: +2.00</p>
+            </div>
+          </div>
+          <div className={styles.quesionContainer}>
+            <div className={styles.questionBlock}>
+              <h5>3. Where does it come from?</h5>
+              <div className={styles.queOption}>
+                <span
+                  className={styles.optionIndex}
+                  style={{ backgroundColor: "#2BB970" }}
+                >
+                  A
+                </span>
+                <span
+                  className={styles.optionText}
+                  style={{ backgroundColor: "#2BB970" }}
+                >
+                  Option: 1
+                </span>
+              </div>
+              <div className={styles.queOption}>
+                <span className={styles.optionIndex}>B</span>
+                <span className={styles.optionText}>Option: 2</span>
+              </div>
+              <div className={styles.queOption}>
+                <span className={styles.optionIndex}>C</span>
+                <span className={styles.optionText}>Option: 3</span>
+              </div>
+              <div className={styles.queOption}>
+                <span className={styles.optionIndex}>D</span>
+                <span className={styles.optionText}>Option: 4</span>
+              </div>
+            </div>
+            <div className={styles.answerPart}>
+              <div className={styles.skippedAnswer}>
+              <MdDoNotDisturbAlt />
+                You Have Skipped.
+              </div>
+              <p className={styles.correctAns}>Correct Answer: A</p>
+              <p className={styles.yourAns}>Your Answer: -</p>
+              <p className={styles.gotMark}>Got Marks: 0.00</p>
+            </div>
+          </div>
+        </Box>
+      </Box>
+    );
+  };
+
   return (
     <Box display="flex" flexDirection="column">
-      {activeScreen === 'MainScreen' && <MainScreen />}
-      {activeScreen === 'QuizInstructionScreen' &&<QuizInstructionScreen />}
-      {activeScreen === 'QuizQuestionsScreen' && <QuizQuestionsScreen />}
-      {activeScreen === 'QuizSubmitScreen' && <QuizSubmitScreen />}
+      {activeScreen === "MainScreen" && <MainScreen />}
+      {activeScreen === "QuizInstructionScreen" && <QuizInstructionScreen />}
+      {activeScreen === "QuizQuestionsScreen" && <QuizQuestionsScreen />}
+      {activeScreen === "QuizSubmitScreen" && <QuizSubmitScreen />}
+      {activeScreen === "ResultScreen" && <ResultScreen />}
     </Box>
   );
 };
