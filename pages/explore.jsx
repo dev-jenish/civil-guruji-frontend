@@ -11,6 +11,7 @@ import { api } from "utils/urls";
 export default function Explore() {
 
   const [courses, setCourses] = useState([])
+  const [packages, setPackages] = useState([])
 
 
   const getAllCourses = async () => {
@@ -24,15 +25,24 @@ export default function Explore() {
         priorityWiseCourses[coursesResult?.data?.[key]?.priority] = { name: key, data: coursesResult?.data?.[key]?.data }
       })
       setCourses(priorityWiseCourses)
-      console.log(priorityWiseCourses, "course result")
     }catch(error){
       console.log(error)
       toast.error('Error while fetching courses')
     }
   }
 
+  const getAllPackages = async () => {
+    try{
+      let response = await api('/course/packages/all', 'get')
+      setPackages(response?.data)
+    }catch(error){
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
     getAllCourses()
+    getAllPackages()
   }, [])
 
 
@@ -53,6 +63,7 @@ export default function Explore() {
               }
             })
           }
+          {/* { packages && <PackageCarousel title={"Packages"} packagesData={packagesData} /> } */}
           {/* <CourseCarousel title="Online Courses" courses={courses?.onlineCourses || []} />
           <PackageCarousel title="Top Packages" />
           <CourseCarousel title="Free Courses" courses={courses?.['freeCourses'] || []} /> */}

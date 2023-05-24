@@ -23,7 +23,6 @@ export default function CourseDetail({}) {
   const [courseData, setCourseData] = useState({});
 
   useEffect(() => {
-    console.log(router?.query, "<== this is router query");
     if (router?.query?.slug) {
       setCourseId(router.query?.slug);
     }
@@ -33,7 +32,6 @@ export default function CourseDetail({}) {
     try {
       let response = await api(`/course/course-details/${id}`, "get");
       if (response?.data) {
-        console.log(response?.data, "<==== fetched course");
         setCourseData(response?.data);
       }
     } catch (error) {

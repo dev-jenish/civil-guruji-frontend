@@ -35,10 +35,11 @@ import { IoMdRadioButtonOff, IoMdRadioButtonOn } from "react-icons/io";
 import ReactPlayer from "react-player";
 import { api } from "utils/urls";
 import { toast } from "react-hot-toast";
+import ZoomComponent from "@/components/zoom/ZoomComponent";
 
 export default function Topic({ topic, course }) {
-  // const courseId = "64532c7adb65b45ce71ec505";
-  const courseId = "645f61fa62124b49514c2054";
+  const courseId = "64532c7adb65b45ce71ec505";
+  // const courseId = "645f61fa62124b49514c2054";
 
   const [courseData, setCourseData] = useState({});
   const [selectedTopic, setSelectedTopic] = useState({
@@ -80,8 +81,7 @@ export default function Topic({ topic, course }) {
         progress,
         id: "645de6877a142bdcdbe3d9a4",
       });
-      console.log(response?.data);
-      toast.success("Progress saved!");
+      // toast.success("Progress saved!");
     } catch (error) {
       console.log(error);
       toast.error("Error happened while saving progress!");
@@ -99,7 +99,6 @@ export default function Topic({ topic, course }) {
 
     // Check if the video has been played to 45%
     if (newPlayedPercent >= 0.45 && savedPro < 45 && videoProgeress < 0.45) {
-      console.log("Video played to 45%");
       // Call method for 45% point
       await handleSaveProgress(0.45);
       setSavedPro(45);
@@ -107,7 +106,6 @@ export default function Topic({ topic, course }) {
 
     // Check if the video has been played to 60%
     if (newPlayedPercent >= 0.6 && savedPro < 60 && videoProgeress < 0.6) {
-      console.log("Video played to 60%");
       // Call method for 60% point
       await handleSaveProgress(0.6);
       setSavedPro(60);
@@ -115,7 +113,6 @@ export default function Topic({ topic, course }) {
 
     // Check if the video has been played to 80%
     if (newPlayedPercent >= 0.8 && savedPro < 80 && videoProgeress < 0.8) {
-      console.log("Video played to 80%");
       // Call method for 80% point
       await handleSaveProgress(0.8);
       setSavedPro(80);
@@ -123,7 +120,6 @@ export default function Topic({ topic, course }) {
 
     // Check if the video has been played to 100%
     if (newPlayedPercent >= 1 && savedPro < 100 && videoProgeress < 1) {
-      console.log("Video played to 80%");
       // Call method for 80% point
       await handleSaveProgress(1);
       setSavedPro(100);
@@ -133,7 +129,6 @@ export default function Topic({ topic, course }) {
   const getVideoProgress = async () => {
     try {
       let response = await api("/course/video/progress", "get");
-      console.log(response?.data, "<=== saved response in database!");
       handleSeek(response?.data?.progress);
       setVideoProgress(response?.data?.[0]?.progress);
       // saved=response?.data?.[0]?.progress
@@ -146,7 +141,6 @@ export default function Topic({ topic, course }) {
 
   function handleSeek(progress) {
     if (playerRef.current) {
-      console.log(progress, "<=== progress");
       playerRef.current.seekTo(progress, "fraction");
     }
   }
@@ -199,7 +193,6 @@ export default function Topic({ topic, course }) {
             <Link href="/explore">Explore</Link>
             <span>{">"}</span>
             <Link href="/course/blockchain-developer-course">
-              {console.log(courseData, "<==== this is course")}
               {courseData?.name}
             </Link>
             <span>{">"}</span>
@@ -214,7 +207,7 @@ export default function Topic({ topic, course }) {
             selectedTopic?.subModule?.type == 1 && (
               <div className={styles.iframe}>
                 <ReactPlayer 
-                  url={selectedTopic?.subModule?.url}
+                  url={selectedTopic?.subModule?.url || selectedTopic?.subModule?.videoUrl}
                   width={"100%"}
                   height={"100%"}
                   playing={true}
@@ -235,7 +228,7 @@ export default function Topic({ topic, course }) {
                   }}
                 >
                 </ReactPlayer>
-                <div style={{ position: "absolute", left: "50%", top: "50%", transform: 'translate(-50%, -50%)', color: "black" }} >
+                <div style={{ opacity: "0.2", position: "absolute", left: "50%", top: "50%", transform: 'translate(-50%, -50%)', color: "black" }} >
                   <p>7201021241</p>
                   <p>jenishdpc66@gmail.com</p>
                 </div>
@@ -250,8 +243,9 @@ export default function Topic({ topic, course }) {
           )}
           {selectedTopic?.subModule?.type == 2 && (
             <div className={styles.iframe}>
-              <iframe src={selectedTopic?.subModule?.url}></iframe>
+              <iframe src={selectedTopic?.subModule?.url || selectedTopic?.subModule?.documentUrl}></iframe>
             </div>
+            // <ZoomComponent meetingNumber={'82240134111'} password={'H2r2SC'} username={"from lms"} />
           )}
           {selectedTopic?.subModule?.type == 3 && (
             <div className={styles.iframe}>
@@ -260,7 +254,7 @@ export default function Topic({ topic, course }) {
                 frameborder="0"
                 height="480"
                 loading="lazy"
-                src={selectedTopic?.subModule?.url}
+                src={selectedTopic?.subModule?.url || selectedTopic?.subModule?.modelUrl}
                 width="640"
               ></iframe>
             </div>
@@ -387,7 +381,6 @@ function SideNav({
 
   let searchModules = modules.filter((module) => {
     let bool = false;
-    console.log(module);
     module.courseSubContents.forEach((topic) => {
       if (topic?.name?.toLowerCase().includes(search.toLowerCase()))
         bool = true;
@@ -498,7 +491,6 @@ function Accordian({
       </div>
       {showTopics && (
         <div style={{ marginBottom: 20 }} className={styles.topics}>
-          {/* {console.log(module, "<== debug this")} */}
           {module.courseSubContents.map((topic) => {
             return (
               <div

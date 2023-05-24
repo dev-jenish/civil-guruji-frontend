@@ -14,7 +14,6 @@ import FeedbackCard from "./FeedbackCard";
 
 export default function CourseInfo({ learnings = [] }) {
 
-  console.log(learnings)
   if (!learnings?.length) return;
 
   return (

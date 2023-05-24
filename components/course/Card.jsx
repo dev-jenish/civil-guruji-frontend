@@ -16,14 +16,20 @@ export default function Card({
 }) {
   const router = useRouter();
 
-  console.log(course, "needed")
-
   const handleClick = () => {
-    console.log(course?._id)
-    router.push({
-      pathname: `/course/${course?._id}`,
-      query: {id: course?._id}
-    }, `/course/${course?._id}`);
+
+    if(course?.isPackage){
+      router.push({
+        pathname: `/package/${course?._id}`,
+        query: {id: course?._id}
+      }, `/package/${course?._id}`);
+    }else{
+      router.push({
+        pathname: `/course/${course?._id}`,
+        query: {id: course?._id}
+      }, `/course/${course?._id}`);
+    }
+
   };
 
   return (

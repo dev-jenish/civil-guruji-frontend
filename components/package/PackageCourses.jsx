@@ -2,51 +2,63 @@
 import styles from "@/styles/PackageCourses.module.css";
 import { Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { AiOutlineTrophy } from "react-icons/ai";
-import { BsLaptop } from "react-icons/bs";
+import { AiOutlineDown, AiOutlineTrophy, AiOutlineUp } from "react-icons/ai";
+import { BsLaptop, BsPlayBtn } from "react-icons/bs";
 import { FaRupeeSign } from "react-icons/fa";
 import Stars from "../Stars";
+import { useState } from "react";
+import { IoMdRadioButtonOn } from "react-icons/io";
+import CourseContent from "../course/CourseContent";
+import stylesAcc from "@/styles/Topic.module.css";
 
-export default function PackageCourses() {
+export default function PackageCourses({ packageData }) {
   return (
     <div className={styles.container}>
-      <Text>Course Included (5)</Text>
+      <Text>Course Included ({packageData?.courses?.length || 0})</Text>
       <div className={styles.courses}>
+        {
+          packageData?.courses && packageData?.courses?.length>0 && packageData.courses.map((course, index) => {
+            return <CourseCard key={index} courseData={course} />
+          })
+        }
+        {/* <CourseCard />
         <CourseCard />
         <CourseCard />
         <CourseCard />
-        <CourseCard />
-        <CourseCard />
+        <CourseCard /> */}
       </div>
     </div>
   );
 }
 
-function CourseCard() {
+function CourseCard({ courseData }) {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push("/package/blockchain-development-bootcamp/1ty5a5f34");
+    // router.push("/package/blockchain-development-bootcamp/1ty5a5f34");
   };
 
   return (
     <div onClick={handleClick} className={styles.card}>
       <img
-        src="https://images.unsplash.com/photo-1674191362105-a5661aec326d?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=300&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY3NjU0NTc2Ng&ixlib=rb-4.0.3&q=80&w=600"
+        src={courseData?.course?.thumbnail}
         alt="Course Image"
       />
-      <div className={styles.details}>
-        <Text as="h2">Blockchain Cryptography</Text>
-        <Text noOfLines="2">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis
-          accusantium assumenda ipsum doloremque quidem totam illum, eum
-          voluptatibus nesciunt.
+      <div className={styles.details} >
+        <Text as="h2">{courseData?.course?.name}</Text>
+        <Text noOfLines="2" dangerouslySetInnerHTML={{
+                  __html: courseData?.course?.courseDetail?.description,
+                }} >
         </Text>
-        <span style={{ marginTop: 4 }} id="rating">
+        <span id="rating" style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                }} >
           <p>
-            3.5 <Stars />
+          {courseData?.course?.rating} <Stars value={courseData?.course?.rating} />
           </p>
-          <p>(1200)</p>
+          <p>Enrolled engineers ({courseData?.course?.learnerCount})</p>
         </span>
         <div className={styles.more}>
           <p>
@@ -60,7 +72,82 @@ function CourseCard() {
             499
           </p>
         </div>
+        <Accordian courseData={courseData} />
       </div>
     </div>
+  );
+}
+
+function Accordian({
+  savedPro,
+  learningPercentage,
+  videoProgeress,
+  module,
+  selectedTopic,
+  setSelectedTopic,
+  courseData
+}) {
+  const [showTopics, setShowTopics] = useState(true);
+  const router = useRouter();
+
+  const handleSwitch = () => {
+    setShowTopics(!showTopics);
+  };
+
+  const id = router.query.id;
+
+  return (
+    <>
+      <div onClick={handleSwitch} className={stylesAcc.heading} style={{ marginTop: "1.2rem" }}>
+        {showTopics ? (
+          <AiOutlineUp className={stylesAcc.arrowDown} />
+        ) : (
+          <AiOutlineDown className={stylesAcc.arrowDown} />
+        )}
+        <p style={{ fontSize: "18px" }} >Show course contents</p>
+      </div>
+      {showTopics && (
+        <div style={{ marginBottom: 20 }} className={stylesAcc.topics}>
+          {/* {module.courseSubContents.map((topic) => { */}
+            {/* return ( */}
+              <div
+                // key={topic._id}
+                className={`${stylesAcc.topic} ${stylesAcc.activeSubmodule
+                }`}
+                onClick={() => {
+                  // setSelectedTopic({ module: module, subModule: topic });
+                }}
+              >
+                {/* {topic?.type == 1 ? (
+                  <IoMdRadioButtonOn
+                    className={styles.accIcon}
+                    style={
+                      savedPro > videoProgeress
+                        ? savedPro >= learningPercentage
+                          ? { color: "green" }
+                          : savedPro < learningPercentage && savedPro > 0
+                          ? { color: "orange" }
+                          : {}
+                        : videoProgeress * 100 >= learningPercentage
+                        ? { color: "green" }
+                        : videoProgeress * 100 < learningPercentage &&
+                          videoProgeress * 100 > 0
+                        ? { color: "orange" }
+                        : {}
+                    }
+                  />
+                ) : (
+                  <IoMdRadioButtonOff className={styles.accIcon} />
+                )} */}
+                <CourseContent
+              contents={courseData?.course?.courseDetail?.courseContents}
+              style={{ width: "100%" }}
+            />
+              </div>
+            {/* ); */}
+          {/* })} */}
+        </div>
+      )}
+    </>
   );
 }

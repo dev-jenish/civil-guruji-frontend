@@ -83,14 +83,12 @@ function StepOne({ back, onClose, nextStep, setStep, isPopup, setUser, setGoogle
   });
 
   const handleSuccess = async (response) => {
-    console.log(response)
     try{
       let result = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${response.access_token}`, {
         headers: {
             Authorization: `Bearer ${response.access_token}`
         }
     })
-    console.log(result)
     setGoogleUser(result?.data)
 
     let details = await api('/user/verify/google', 'post', { email: result?.data?.email })
@@ -111,7 +109,6 @@ function StepOne({ back, onClose, nextStep, setStep, isPopup, setUser, setGoogle
 
   const handleError = async (response) => {
     toast.error("Something went wrong!")
-    console.log(response);
   }
 
   return (
@@ -206,7 +203,6 @@ function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
   const [isEmailAvailable, setIsEmailAvailable] = useState(false);
 
   useEffect(() => {
-    console.log(googleUser)
       setEmail(googleUser?.email)
       setName(googleUser?.name)
       googleUser?.email && setIsEmailAvailable(true)
@@ -231,7 +227,6 @@ function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
           phoneNumber: mobileNumber,
           from: 'google'
         })
-        console.log(response)
         setUser(response?.data)
         userId = response?.data?._id
       }
@@ -244,7 +239,6 @@ function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
         dob: dob,
         yearOfPassing: yearOfPassing
       })
-      console.log(response, "<==== this is ")
       setUser(response?.data)
       toast.success("Your data is secured.");
       nextStep();
@@ -370,10 +364,6 @@ function StepFour({ isPopup, onClose, user, setUser }) {
   }
 
   useEffect(() => {
-    console.log(selected)
-  }, [selected])
-
-  useEffect(() => {
     getQuestionsList()
   }, [])
 
@@ -409,9 +399,14 @@ function StepFour({ isPopup, onClose, user, setUser }) {
         userId: user._id,
         choice: selectedSkills
       })
-      console.log(response, 'this is submit recc response!')
       setUser(response?.data)
       toast.success("Done, All the best!")
+      // localStorage.setItem("userId", user._id)
+      if(user?.phoneNumber){
+        localStorage.setItem("phoneNumber", user?.phoneNumber)
+      }else if(user?.userDetail?.email){
+        localStorage.setItem("email", user?.userDetail?.email)
+      }
       localStorage.setItem("userId", user._id)
       router.push("/explore");
       if (isPopup) onClose();

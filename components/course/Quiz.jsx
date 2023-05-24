@@ -23,10 +23,6 @@ export default function Quiz({ subModule }) {
   const [solutionNum, setSolutionNum] = useState(0)
 
   useEffect(() => {
-    console.log(selected)
-  }, [selected])
-
-  useEffect(() => {
     if (subModule?.quiz?.questions) {
       setQuestions(subModule?.quiz?.questions)
     }
@@ -101,10 +97,8 @@ export default function Quiz({ subModule }) {
 
   useEffect(() => {
     if(showResults){
-      console.log(Object.keys(selected))
       if(Object.keys(selected).length>0){
           for(let select in selected){
-            console.log(selected[select], "<=== i am select")
             if(selected[select]?.isCorrect){
               setCorrectAnswer((prev) => prev + 1)
             }else{
@@ -219,9 +213,7 @@ export default function Quiz({ subModule }) {
                           <span
                             className={(solution['solution'] == (idx + 1) && selected[solutionNum]?.['selectedAnswer'] === opt) ? styles.selectedSolution : selected[solutionNum]?.['selectedAnswer'] === opt ? styles.selectedWrongAnswer : solution['solution'] == (idx + 1) ? styles.correctAnswer : ""}
                             key={idx}
-                          >{
-                              console.log(solution)
-                            }
+                          >
                             <p>{opt}</p>
                           </span>
                         ))}
