@@ -326,7 +326,7 @@ export default function Topic({ topic, course }) {
                         <span>{index + 1 + ". "}</span>
                         <span style={{ marginRight: "1rem", marginLeft: '6px' }} >{attachment?.label}</span>
                         {/* </div> */}
-                        <a target="_blank" style={{ backgroundColor: '#D6BCFA', padding: "5px 10px", color: "black", borderRadius: '5px' }} href={attachment?.data}>Download</a>
+                        <a target="_blank" rel="noopener noreferrer" style={{ backgroundColor: '#D6BCFA', padding: "5px 10px", color: "black", borderRadius: '5px' }} href={attachment?.data}>Download</a>
                       </div>
                     })
                   }
