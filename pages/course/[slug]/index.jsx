@@ -2,6 +2,7 @@ import CourseCarousel from "@/components/course/CourseCarousel";
 import CourseContent from "@/components/course/CourseContent";
 import CourseFloatCard from "@/components/course/CourseFloatCard";
 import CourseInfo from "@/components/course/CourseInfo";
+import FeedbackCard from "@/components/course/FeedbackCard";
 import Layout from "@/components/reusable/Layout";
 import Stars from "@/components/Stars";
 import useScrollObserver from "@/hooks/useScrollObserver";
@@ -18,34 +19,32 @@ import { api } from "utils/urls";
 export default function CourseDetail({}) {
   const { ref, visible } = useScrollObserver();
   const router = useRouter();
-  const [courseId, setCourseId] = useState('')
-  const [courseData, setCourseData] = useState({})
+  const [courseId, setCourseId] = useState("");
+  const [courseData, setCourseData] = useState({});
 
   useEffect(() => {
-    console.log(router?.query, "<== this is router query")
-    if(router?.query?.slug){
-      setCourseId(router.query?.slug)
+    if (router?.query?.slug) {
+      setCourseId(router.query?.slug);
     }
-  }, [router.query])
+  }, [router.query]);
 
   const getCourseData = async (id) => {
-    try{
-      let response = await api(`/course/course-details/${id}`, 'get')
-      if(response?.data){
-        console.log(response?.data, "<==== fetched course")
-        setCourseData(response?.data)
+    try {
+      let response = await api(`/course/course-details/${id}`, "get");
+      if (response?.data) {
+        setCourseData(response?.data);
       }
-    }catch(error){
-      console.log(error)
-      toast.error("Course details fetching failed")
+    } catch (error) {
+      console.log(error);
+      toast.error("Course details fetching failed");
     }
-  }
+  };
 
   useEffect(() => {
-    if(courseId){
-      getCourseData(courseId)
+    if (courseId) {
+      getCourseData(courseId);
     }
-  }, [courseId])
+  }, [courseId]);
 
   return (
     <Layout
@@ -56,12 +55,19 @@ export default function CourseDetail({}) {
         <div className={styles.nav}>
           <div>
             <h3>{courseData?.name}</h3>
-            <span style={{ display: "flex", flexDirection: 'column', alignItems: 'flex-start' }} id="rating">
-                <p style={{ display: 'flex', alignItems: 'center' }} >
-                  {courseData?.rating} <Stars value={courseData?.rating} />
-                </p>
-                <p>Enrolled engineers ({courseData?.learnerCount})</p>
-              </span>
+            <span
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+              }}
+              id="rating"
+            >
+              <p style={{ display: "flex", alignItems: "center" }}>
+                {courseData?.rating} <Stars value={courseData?.rating} />
+              </p>
+              <p>Enrolled engineers ({courseData?.learnerCount})</p>
+            </span>
           </div>
           <Button>Enroll in Course</Button>
         </div>
@@ -70,27 +76,39 @@ export default function CourseDetail({}) {
         <div className={styles.breadcrumbs}>
           <Link href="/explore">Explore</Link>
           <span>{">"}</span>
-          <Link href={`/course/${courseId}`}>
-            {courseData?.name}
-          </Link>
+          <Link href={`/course/${courseId}`}>{courseData?.name}</Link>
         </div>
         <div className={styles.content}>
           <div className={styles.left}>
             <div className={styles.courseInfo}>
               <h1 ref={ref}>{courseData?.name}</h1>
-              <p dangerouslySetInnerHTML={{ __html: courseData?.courseDetail?.description}} >
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: courseData?.courseDetail?.description,
+                }}
+              >
                 {/* {(courseData?.courseDetail?.description)} */}
               </p>
 
-              <span style={{ display: "flex", flexDirection: 'column', alignItems: 'flex-start' }} id="rating">
-                <p style={{ display: 'flex', alignItems: 'center' }} >
+              <span
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                }}
+                id="rating"
+              >
+                <p style={{ display: "flex", alignItems: "center" }}>
                   {courseData?.rating} <Stars value={courseData?.rating} />
                 </p>
                 <p>Enrolled engineers ({courseData?.learnerCount})</p>
               </span>
               <div className={styles.metaInfo}>
                 {/* <p>Created by Civil Guruji</p> */}
-                <p>Last updated on {moment(courseData?.updatedAt).format('MMMM DD, YYYY')}</p>
+                <p>
+                  Last updated on{" "}
+                  {moment(courseData?.updatedAt).format("MMMM DD, YYYY")}
+                </p>
               </div>
             </div>
             {/* new added for box of three content box */}
@@ -108,7 +126,9 @@ export default function CourseDetail({}) {
               </div>
               <div className={styles.contentBox}>
                 <h5 className={styles.boxHeading}>Skills</h5>
-                <span className={styles.durationValue}>Autocad,3D,Revit etc.</span>
+                <span className={styles.durationValue}>
+                  Autocad,3D,Revit etc.
+                </span>
               </div>
             </div>
             {/* new added for job container */}
@@ -147,12 +167,27 @@ export default function CourseDetail({}) {
                 </div>
               </div>
             </div>
-            <CourseInfo learnings={courseData?.courseDetail?.learningObjectives} />
-            <CourseContent contents={courseData?.courseDetail?.courseContents} />
+            <CourseInfo
+              learnings={courseData?.courseDetail?.learningObjectives}
+            />
+            <CourseContent
+              contents={courseData?.courseDetail?.courseContents}
+            />
+            <div className={styles.feedbacks}>
+              <h3 className={styles.jobHeading}>FeedBack</h3><h5></h5>
+              <FeedbackCard />
+              <FeedbackCard />
+              <FeedbackCard />
+              <FeedbackCard />
+              <FeedbackCard />
+            </div>
           </div>
           <CourseFloatCard courseData={courseData} />
         </div>
-        <CourseCarousel title="Similar Related course" courses={courseData?.skills} />
+        <CourseCarousel
+          title="Similar Related course"
+          courses={courseData?.skills}
+        />
       </div>
     </Layout>
   );

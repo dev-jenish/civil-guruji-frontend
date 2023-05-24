@@ -1,3 +1,4 @@
+import CourseCarousel from "@/components/course/CourseCarousel";
 import PackageCarousel from "@/components/package/PackageCarousel";
 import PackageCourses from "@/components/package/PackageCourses";
 import PackageFloatCard from "@/components/package/PackageFloatCard";
@@ -7,10 +8,42 @@ import Stars from "@/components/Stars";
 import useScrollObserver from "@/hooks/useScrollObserver";
 import styles from "@/styles/PackageDetail.module.css";
 import { Button } from "@chakra-ui/react";
+import moment from "moment";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
+import { api } from "utils/urls";
 
 export default function Package({}) {
   const { ref, visible } = useScrollObserver();
+  const router = useRouter();
+  const [packageId, setPackageId] = useState('');
+  const [packageData, setPackageData] = useState({})
+
+  useEffect(() => {
+    if (router?.query?.slug) {
+      setPackageId(router.query?.slug);
+    }
+  }, [router.query]);
+
+  const getPackageData = async (id) => {
+    try {
+      let response = await api(`/course/package-details/${id}`, "get");
+      if (response?.data) {
+        setPackageData(response?.data);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Course details fetching failed");
+    }
+  };
+
+  useEffect(() => {
+    if(packageId){
+      getPackageData(packageId)
+    }
+  }, [packageId])
 
   return (
     <Layout
@@ -20,12 +53,12 @@ export default function Package({}) {
       {!visible ? (
         <div className={styles.nav}>
           <div>
-            <h3>Blockchain Developer course</h3>
+            <h3>{packageData?.name}</h3>
             <span id="rating">
               <p>
-                3.5 <Stars />
+              {packageData?.rating} <Stars value={packageData?.rating} />
               </p>
-              <p>(1200)</p>
+              <p>Enrolled engineers ({packageData?.learnerCount})</p>
             </span>
           </div>
           <Button>Enroll in Package</Button>
@@ -36,39 +69,52 @@ export default function Package({}) {
           <div className={styles.breadcrumbs}>
             <Link href="/explore">Explore</Link>
             <span>{">"}</span>
-            <Link href={`/package/blockchain-development-bootcamp`}>
-              Blockchain Development Bootcamp
+            <Link href={`/package/${packageId}`}>
+            {packageData?.name}
             </Link>
           </div>
-          <h1 ref={ref}>Blockchain Development Bootcamp</h1>
-          <p>
-            Learn the cryptography fundamentals. What are hash functions? How
-            are they important to blockchains? What exactly is Mining and Proof
-            of work? What makes blockchains work?
+          <h1 ref={ref}>{packageData?.name}</h1>
+          <p
+            dangerouslySetInnerHTML={{
+              __html: packageData?.description,
+            }}
+          >
           </p>
 
-          <span id="rating">
+          <span id="rating" style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+              }} >
             <p>
-              3.5 <Stars />
+            {packageData?.rating} <Stars value={packageData?.rating} />
             </p>
-            <p>(1200)</p>
+            <p>Enrolled engineers ({packageData?.learnerCount})</p>
           </span>
           <div className={styles.metaInfo}>
             {/* <p>Created by Civil Guruji</p> */}
-            <p>Last updated December 10, 2022</p>
+            <p>Last updated on{" "}
+                  {moment(packageData?.updatedAt).format("MMMM DD, YYYY")}</p>
           </div>
         </div>
         <div className={styles.content}>
           <div className={styles.left}>
-            <PackageInfo />
-            <PackageCourses />
+            <PackageInfo packageData={packageData} />
+            <PackageCourses packageData={packageData} />
           </div>
-          <PackageFloatCard />
+          <PackageFloatCard packageData={packageData} />
         </div>
-        <PackageCarousel
+        {/* <PackageCarousel
           className={styles.carouselWrapper}
-          title="Similar Packages"
-        />
+          title="Similar Packages" 
+          packagesData={packageData?.skills}
+        /> */}
+        <CourseCarousel className={styles.carouselWrapper} courses={packageData?.skills?.map((packageData) =>{
+          return {
+            isPackage: true,
+            ...packageData
+          }
+        } )} />
       </div>
     </Layout>
   );

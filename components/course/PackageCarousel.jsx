@@ -9,7 +9,7 @@ import { Button } from "@chakra-ui/react";
 
 // const courses = [1, 2, 3, 4, 5, 6];
 
-export default function CourseCarousel({ title, className, hideBtn, courses }) {
+export default function PackageCarousel({ title, className, hideBtn, courses }) {
   const [preview, setPreview] = useState(null);
 
   let timer;
@@ -26,6 +26,7 @@ export default function CourseCarousel({ title, className, hideBtn, courses }) {
     if (timer) clearTimeout(timer);
     setPreview(null);
   };
+
 
   return (
     <div className={`${styles.container} ${className}`}>

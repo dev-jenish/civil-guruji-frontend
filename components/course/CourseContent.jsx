@@ -22,7 +22,7 @@ import { BsLaptop } from "react-icons/bs";
 import { IoMdRadioButtonOff } from "react-icons/io";
 import SessionCard from "./SessionCard";
 
-export default function CourseContent({ contents }) {
+export default function CourseContent({ contents, style }) {
   const [tabIndex, setTabIndex] = useState(0);
 
   const handleTabsChange = (index) => {
@@ -49,7 +49,7 @@ export default function CourseContent({ contents }) {
 
   if (!modules?.length) return;
   return (
-    <div className={styles.contentWrapper}>
+    <div style={style} className={styles.contentWrapper}>
       <Tabs
         size="xl"
         variant="button"
@@ -58,7 +58,7 @@ export default function CourseContent({ contents }) {
       >
         <TabList>
           <Tab>Course Content</Tab>
-          <Tab>Live Doubt Session</Tab>
+          {/* <Tab>Live Doubt Session</Tab> */}
           {!tabIndex ? (
             <Tab isDisabled marginLeft="auto">
               <span id={styles.longTab}>
@@ -129,13 +129,13 @@ function Accordian({ module }) {
             <AiOutlineFile />
           </span>
         </span>
-        {isOpen ? (
+        {/* {isOpen ? (
           <AiOutlineUp className={styles.accIcon} />
         ) : (
           <AiOutlineDown className={styles.accIcon} />
-        )}
+        )} */}
       </div>
-      {isOpen && (
+      {/* {isOpen && (
         <div className={styles.topics}>
           {module.courseSubContents && module.courseSubContents.map((topic, i) => (
             <Link
@@ -143,14 +143,13 @@ function Accordian({ module }) {
               key={i}
             >
               <div className={styles.topic}>
-                {/* <IoIosRadioButtonOn className={styles.accIcon} /> */}
                 <IoMdRadioButtonOff className={styles.accIcon} />
                 <p>{topic.name}</p>
               </div>
             </Link>
           ))}
         </div>
-      )}
+      )} */}
     </div>
   );
 }

@@ -177,7 +177,7 @@
 }
 
 /* new added for boxContainer */
-.boxContainer{
+.boxContainer {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -185,7 +185,7 @@
   border: 1.5px solid white;
 }
 
-.contentBox{
+.contentBox {
   display: flex;
   flex: 1 1 auto;
   gap: 8px;
@@ -195,23 +195,23 @@
   border-right: 1px solid gray;
   padding-left: 2.5rem;
 }
-.contentBox:last-child{
+.contentBox:last-child {
   border: none;
 }
-.boxHeading{
+.boxHeading {
   font-size: 16px;
   margin: 0;
 }
-.durationValue{
+.durationValue {
   font-size: 14px;
 }
-.chipsPart{
+.chipsPart {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   gap: 10px;
 }
-.chip{
+.chip {
   display: inline-flex;
   text-align: center;
   font-size: 12px;
@@ -219,30 +219,44 @@
   padding: 3px 8px;
   background-color: rgba(255, 255, 255, 0.3);
 }
-.jobContainer{
+.jobContainer {
   display: flex;
   padding: 2rem 1rem;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
 }
-.jobCardContainer{
+.jobCardContainer {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   gap: 15px;
   margin-top: 15px;
 }
-.jobCard{
+.jobCard {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 }
-.jobHeading{
+.jobHeading {
   font-size: 20px;
   font-weight: 500;
 }
+.feedbacks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.feedbackCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: var(--card-bg);
+}
+
 @media only screen and (max-width: 800px) {
   .container {
     padding: 1rem 0;
