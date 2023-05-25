@@ -31,16 +31,16 @@
 
 .right .content {
   width: 100%;
-  max-width: 400px;
-}
-
-.left .section,
-.right .section {
-  margin-top: 2rem;
-}
-
-.right .section:first-child {
+  max-width: 450px;
+  border: 1px solid #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
   margin-top: 4.8rem;
+}
+
+.left .section{
+  margin-top: 2rem;
 }
 
 .courseDetail {
@@ -57,4 +57,30 @@
 
 .highlight {
   color: var(--secondary);
+}
+.right .content .section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1 1 auto;
+}
+.right .content .section .headText {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.tabInnerContent {
+  display: flex;
+  flex-direction: column;
+}
+.liner {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  border-bottom: 2px solid #fff;
+}
+.summary {
+  font-size: 20px;
+  font-weight: 500;
+  margin: 20px 0;
 }

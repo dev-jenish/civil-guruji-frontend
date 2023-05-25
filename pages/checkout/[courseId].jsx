@@ -7,6 +7,11 @@ import {
   Image,
   Input,
   Select,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -62,63 +67,123 @@ export default function Checkout() {
         </div>
         <div className={styles.right}>
           <div className={styles.content}>
-            <div className={styles.section}>
-              <Text fontSize="xl" marginBottom="16px">
-                Order details
-              </Text>
-              <CourseDetail />
-            </div>
-            <div className={styles.section}>
-              <Text fontSize="xl" marginBottom="16px">
-                Summary
-              </Text>
-              <VStack alignItems="flex-start">
-                <HStack
-                  width="full"
-                  justifyContent="space-between"
-                  alignItems="flex-start"
-                >
-                  <Text>Original Price:</Text>
-                  <Text>₹1299</Text>
-                </HStack>
-                <HStack
-                  width="full"
-                  justifyContent="space-between"
-                  paddingBottom={4}
-                >
-                  <Text>Discounts:</Text>
-                  <Text>-₹800</Text>
-                </HStack>
-                <HStack
-                  width="full"
-                  justifyContent="space-between"
-                  marginTop="0 !important"
-                  borderTop="1px solid"
-                  borderColor="gray.700"
-                  paddingTop={4}
-                  marginBottom="24px !important"
-                >
-                  <Text as="b">Total:</Text>
-                  <Text as="b">₹499</Text>
-                </HStack>
-                <HStack
-                  width="full"
-                  justifyContent="space-between"
-                  marginTop="0 !important"
-                  marginBottom="24px !important"
-                >
-                  <Input placeholder="Promo Code" />
-                  <Button variant="outline">Apply</Button>
-                </HStack>
-                <Text fontSize="xs" color="gray.500">
-                  By completing your purchase you agree to these Terms of
-                  Service.
-                </Text>
-                <Button borderRadius={4} height={12} width="full">
-                  Checkout
-                </Button>
-              </VStack>
-            </div>
+            <Tabs size="sm" variant="button">
+              <div className={styles.section}>
+                <p className={styles.headText}>Order details</p>
+                <TabList>
+                  <Tab style={{ fontSize: "14px" }}>One Time Payment</Tab>
+                  <Tab style={{ fontSize: "14px" }}>EMI Options</Tab>
+                </TabList>
+              </div>
+              <TabPanels>
+                <TabPanel>
+                  <div className={styles.tabInnerContent}>
+                    <CourseDetail />
+                    <span className={styles.liner}></span>
+                    <h6 className={styles.summary}>Summary</h6>
+                    <VStack alignItems="flex-start">
+                      <HStack
+                        width="full"
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                      >
+                        <Text>Original Price:</Text>
+                        <Text>₹1299</Text>
+                      </HStack>
+                      <HStack
+                        width="full"
+                        justifyContent="space-between"
+                        paddingBottom={4}
+                      >
+                        <Text>Discounts:</Text>
+                        <Text>-₹800</Text>
+                      </HStack>
+                      <HStack
+                        width="full"
+                        justifyContent="space-between"
+                        marginTop="0 !important"
+                        borderTop="1px solid"
+                        borderColor="gray.700"
+                        paddingTop={4}
+                        marginBottom="24px !important"
+                      >
+                        <Text as="b">Total:</Text>
+                        <Text as="b">₹499</Text>
+                      </HStack>
+                      <HStack
+                        width="full"
+                        justifyContent="space-between"
+                        marginTop="0 !important"
+                        marginBottom="24px !important"
+                      >
+                        <Input placeholder="Promo Code" />
+                        <Button variant="outline">Apply</Button>
+                      </HStack>
+                      <Text fontSize="xs" color="gray.500">
+                        By completing your purchase you agree to these Terms of
+                        Service.
+                      </Text>
+                      <Button borderRadius={4} height={12} width="full">
+                        Checkout
+                      </Button>
+                    </VStack>
+                  </div>
+                </TabPanel>
+                <TabPanel>
+                  <div className={styles.tabInnerContent}>
+                    <CourseDetail />
+                    <span className={styles.liner}></span>
+                    <h6 className={styles.summary}>Summary</h6>
+                    <VStack alignItems="flex-start">
+                      <HStack
+                        width="full"
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                      >
+                        <Text>Original Price:</Text>
+                        <Text>₹1299</Text>
+                      </HStack>
+                      <HStack
+                        width="full"
+                        justifyContent="space-between"
+                        paddingBottom={4}
+                      >
+                        <Text>Discounts:</Text>
+                        <Text>-₹800</Text>
+                      </HStack>
+                      <HStack
+                        width="full"
+                        justifyContent="space-between"
+                        marginTop="0 !important"
+                        borderTop="1px solid"
+                        borderColor="gray.700"
+                        paddingTop={4}
+                        marginBottom="24px !important"
+                      >
+                        <Text as="b">Total:</Text>
+                        <Text as="b">₹499</Text>
+                      </HStack>
+                      <HStack
+                        width="full"
+                        justifyContent="space-between"
+                        marginTop="0 !important"
+                        marginBottom="24px !important"
+                      >
+                        <Input placeholder="Promo Code" />
+                        <Button variant="outline">Apply</Button>
+                      </HStack>
+                      <Text fontSize="xs" color="gray.500">
+                        By completing your purchase you agree to these Terms of
+                        Service.
+                      </Text>
+                      <Button borderRadius={4} height={12} width="full">
+                        Checkout
+                      </Button>
+                    </VStack>
+                  </div>
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
           </div>
         </div>
       </div>
