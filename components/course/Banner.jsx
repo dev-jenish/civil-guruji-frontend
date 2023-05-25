@@ -4,6 +4,7 @@ import { Navigation } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css/navigation";
+import { Box } from "@chakra-ui/react";
 
 export default function Banner({}) {
   return (
@@ -16,22 +17,31 @@ export default function Banner({}) {
         className="bannerSwiper"
       >
         <SwiperSlide>
-          <img
-            src="https://images.unsplash.com/photo-1675456110416-53a9df455bae?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=200&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY3NjU0NTI4MQ&ixlib=rb-4.0.3&q=80&w=800"
-            alt=""
-          />
+          <Box className={styles.contentBox}>
+            <div className={styles.contentBlock}>
+              <h2 className={styles.headingText}>Practical Training Offline</h2>
+              <button className={styles.enrollBtn}>ENROLL NOW</button>
+            </div>
+            <img src="/assets/image 19.png" alt="banner" />
+          </Box>
         </SwiperSlide>
         <SwiperSlide>
-          <img
-            src="https://images.unsplash.com/photo-1675456110416-53a9df455bae?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=200&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY3NjU0NTI4MQ&ixlib=rb-4.0.3&q=80&w=800"
-            alt=""
-          />
+          <Box className={styles.contentBox}>
+            <div className={styles.contentBlock}>
+              <h2 className={styles.headingText}>Practical Training Offline</h2>
+              <button className={styles.enrollBtn}>ENROLL NOW</button>
+            </div>
+            <img src="/assets/image 19.png" alt="banner" />
+          </Box>
         </SwiperSlide>
         <SwiperSlide>
-          <img
-            src="https://images.unsplash.com/photo-1675456110416-53a9df455bae?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=200&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY3NjU0NTI4MQ&ixlib=rb-4.0.3&q=80&w=800"
-            alt=""
-          />
+          <Box className={styles.contentBox}> 
+            <div className={styles.contentBlock}>
+              <h2 className={styles.headingText}>Practical Training Offline</h2>
+              <button className={styles.enrollBtn}>ENROLL NOW</button>
+            </div>
+            <img src="/assets/image 19.png" alt="banner" />
+          </Box>
         </SwiperSlide>
       </Swiper>
     </div>

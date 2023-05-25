@@ -21,7 +21,77 @@
   overflow: hidden;
 }
 
-.courseBanner img {
-  width: 100%;
-  aspect-ratio: 4 / 1;
+.contentBox {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  position: relative;
+  background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(16,15,35,1) 35%, rgba(0,0,0,1) 100%);
+}
+.contentBox img {
+ width: 75%;
+ margin-left: auto;
+ margin-right: 25px;
+}
+.contentBlock {
+  position: absolute;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: center;
+  width: 25%;
+  height: 100%;
+  z-index: 5;
+  left: 10%;
+  background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(16,15,35,1) 65%, rgba(0,0,0,0) 100%);
+}
+.headingText{
+  font-size: 35px;
+  font-weight: 700;
+}
+.enrollBtn{
+  display: flex;
+  cursor: pointer;
+  background-color: white;
+  font-size: 18px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  color: black;
+  border-radius: 10px;
+  font-weight: 500;
+  margin-top: 5px;
+}
+
+@media screen and (max-width: 840px) {
+  .headingText {
+    font-size: 25px;
+    font-weight: 600;
+  }
+  .enrollBtn {
+    font-size: 14px;
+    padding: 5px 10px;
+  }
+}
+@media screen and (max-width: 767px){
+  .contentBox {
+    flex-direction: column-reverse;
+  }
+  .contentBox img{
+    width: 100%;
+  }
+  .contentBlock {
+    position: unset;
+    width: 100%;
+    background: rgba(0,0,0,1);
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 25px;
+    flex-wrap: wrap;
+  }
+  .headingText {
+    font-size: 18px;
+    font-weight: 500;
+  }
 }
