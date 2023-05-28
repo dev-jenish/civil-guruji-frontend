@@ -14,7 +14,6 @@ import FeedbackCard from "./FeedbackCard";
 
 export default function CourseInfo({ learnings = [] }) {
 
-  console.log(learnings)
   if (!learnings?.length) return;
 
   return (
@@ -23,9 +22,6 @@ export default function CourseInfo({ learnings = [] }) {
         <TabList>
           <Tab>Learnings</Tab>
           <Tab>Career</Tab>
-          <Tab>Feedback</Tab>
-          <Tab>Crack Jobs</Tab>
-          <Tab>Skills</Tab>
         </TabList>
 
         <TabPanels>
@@ -42,41 +38,6 @@ export default function CourseInfo({ learnings = [] }) {
                 <AiFillDollarCircle className={styles.icon} /> 5 Lakhs to 7
                 Lakhs
               </div>
-            </div>
-          </TabPanel>
-          <TabPanel>
-            <div className={styles.feedbacks}>
-              <FeedbackCard />
-              <FeedbackCard />
-              <FeedbackCard />
-              <FeedbackCard />
-              <FeedbackCard />
-            </div>
-          </TabPanel>
-          <TabPanel>
-            <div className={styles.skills}>
-              {[
-                "Product Owner",
-                "Front-end Developer",
-                "Smart Contract Developer",
-                "Founder",
-                "Data Analyst",
-              ].map((skill, i) => (
-                <span key={i}>{skill}</span>
-              ))}
-            </div>
-          </TabPanel>
-          <TabPanel>
-            <div className={styles.skills}>
-              {[
-                "Nextjs",
-                "Tailwindcss",
-                "Firebase",
-                "Solidity",
-                "Cryptography",
-              ].map((skill, i) => (
-                <span key={i}>{skill}</span>
-              ))}
             </div>
           </TabPanel>
         </TabPanels>

@@ -6,15 +6,23 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import FeedbackCard from "../course/FeedbackCard";
 import SessionCard from "../course/SessionCard";
 
-const learnings = [
-  "Learn about all topics in the Blockchain world",
-  "Build 10 awesome Web3 projects",
-  "Become an amazing blockchain developer",
-  "Understand complete topics with ease",
-];
+// const learnings = [
+//   "Learn about all topics in the Blockchain world",
+//   "Build 10 awesome Web3 projects",
+//   "Become an amazing blockchain developer",
+//   "Understand complete topics with ease",
+// ];
 
-export default function PackageInfo({}) {
-  if (!learnings?.length) return;
+export default function PackageInfo({ packageData }) {
+  // if (!learnings?.length) return;
+
+  let filteredLearnings = []
+  if(packageData?.learningObjectives && packageData?.learningObjectives?.length>0){
+    packageData.learningObjectives.sort((a, b) => { return a?.index - b?.index })
+    filteredLearnings = packageData.learningObjectives.map((objective) => {
+      return objective?.value
+    })
+  }
 
   return (
     <div className={styles.contentWrapper}>
@@ -28,7 +36,7 @@ export default function PackageInfo({}) {
 
         <TabPanels>
           <TabPanel>
-            <Learnings />
+            <Learnings learnings={filteredLearnings} />
           </TabPanel>
           <TabPanel>
             <div className={styles.career}>
@@ -62,7 +70,7 @@ export default function PackageInfo({}) {
   );
 }
 
-function Learnings() {
+function Learnings({ learnings }) {
   const half = Math.ceil(learnings.length / 2);
 
   const firstHalf = learnings?.slice(0, half);

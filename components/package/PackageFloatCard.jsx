@@ -7,14 +7,14 @@ import { BsLaptop, BsPhone } from "react-icons/bs";
 import { IoIosInfinite } from "react-icons/io";
 import { TiSortAlphabeticallyOutline } from "react-icons/ti";
 
-export default function PackageFloatCard({}) {
+export default function PackageFloatCard({ packageData }) {
   const router = useRouter();
 
   return (
     <div className={styles.container}>
       <div className={styles.img}>
         <img
-          src="https://public.bnbstatic.com/static/academy/uploads-original/37ba7ddb25b14d3e9eb4d36c54837976.png"
+          src={packageData?.thumbnail}
           alt="thumbnail"
         />
       </div>
