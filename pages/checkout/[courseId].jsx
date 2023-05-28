@@ -3,17 +3,45 @@ import Layout from "@/components/reusable/Layout";
 import styles from "@/styles/Checkout.module.css";
 import {
   Button,
+  Checkbox,
+  FormLabel,
   HStack,
   Image,
   Input,
   Select,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   Text,
   VStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { AiOutlineDown, AiOutlineUp } from "react-icons/ai";
+import { FaCircle, FaTag } from "react-icons/fa";
+import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 
 export default function Checkout() {
+  const [discount, setDiscount] = useState("Civil20");
+  const [oneTImeActiveTab, setOneTimeActiveTab] = useState(false);
+  const [emiActiveTab, setEmiActiveTab] = useState(false);
+
+  const handleDiscountClick = (fieldName, value) => {
+    if (fieldName === "oneTimeActiveTab") {
+      if (value === "apply") {
+        setOneTimeActiveTab(true);
+      } else if (value === "remove") {
+        setOneTimeActiveTab(false);
+      }
+    } else if (fieldName === "emiActiveTab") {
+      if (value === "apply") {
+        setEmiActiveTab(true);
+      } else if (value === "remove") {
+        setEmiActiveTab(false);
+      }
+    }
+  };
   return (
     <Layout>
       <div className={styles.container}>
@@ -62,63 +90,384 @@ export default function Checkout() {
         </div>
         <div className={styles.right}>
           <div className={styles.content}>
-            <div className={styles.section}>
-              <Text fontSize="xl" marginBottom="16px">
-                Order details
-              </Text>
-              <CourseDetail />
-            </div>
-            <div className={styles.section}>
-              <Text fontSize="xl" marginBottom="16px">
-                Summary
-              </Text>
-              <VStack alignItems="flex-start">
-                <HStack
-                  width="full"
-                  justifyContent="space-between"
-                  alignItems="flex-start"
-                >
-                  <Text>Original Price:</Text>
-                  <Text>₹1299</Text>
-                </HStack>
-                <HStack
-                  width="full"
-                  justifyContent="space-between"
-                  paddingBottom={4}
-                >
-                  <Text>Discounts:</Text>
-                  <Text>-₹800</Text>
-                </HStack>
-                <HStack
-                  width="full"
-                  justifyContent="space-between"
-                  marginTop="0 !important"
-                  borderTop="1px solid"
-                  borderColor="gray.700"
-                  paddingTop={4}
-                  marginBottom="24px !important"
-                >
-                  <Text as="b">Total:</Text>
-                  <Text as="b">₹499</Text>
-                </HStack>
-                <HStack
-                  width="full"
-                  justifyContent="space-between"
-                  marginTop="0 !important"
-                  marginBottom="24px !important"
-                >
-                  <Input placeholder="Promo Code" />
-                  <Button variant="outline">Apply</Button>
-                </HStack>
-                <Text fontSize="xs" color="gray.500">
-                  By completing your purchase you agree to these Terms of
-                  Service.
-                </Text>
-                <Button borderRadius={4} height={12} width="full">
-                  Checkout
-                </Button>
-              </VStack>
-            </div>
+            <Tabs size="sm" variant="button">
+              <div className={styles.section}>
+                <p className={styles.headText}>Order details</p>
+                <TabList>
+                  <Tab style={{ fontSize: "14px" }}>One Time Payment</Tab>
+                  <Tab style={{ fontSize: "14px" }}>EMI Options</Tab>
+                </TabList>
+              </div>
+              <TabPanels>
+                <TabPanel>
+                  {!oneTImeActiveTab ? (
+                    <div className={styles.tabInnerContent}>
+                      <CourseDetail price={"₹499"} />
+                      <span className={styles.liner}></span>
+                      <h6 className={styles.summary}>Summary</h6>
+                      <VStack alignItems="flex-start">
+                        <HStack
+                          width="full"
+                          justifyContent="space-between"
+                          alignItems="flex-start"
+                          marginBottom="20px"
+                        >
+                          <Text>Original Price:</Text>
+                          <Text>₹499</Text>
+                        </HStack>
+                        <HStack
+                          width="full"
+                          justifyContent="space-between"
+                          marginTop="0 !important"
+                          borderTop="1px solid"
+                          borderColor="gray.700"
+                          paddingTop={4}
+                          marginBottom="24px !important"
+                        >
+                          <Text as="b">Total:</Text>
+                          <Text as="b">₹499</Text>
+                        </HStack>
+                        <HStack
+                          width="full"
+                          justifyContent="space-between"
+                          marginTop="0 !important"
+                          marginBottom="24px !important"
+                        >
+                          <Input placeholder="Promo Code" value={discount} />
+                          <Button
+                            variant="outline"
+                            onClick={() =>
+                              handleDiscountClick("oneTimeActiveTab", "apply")
+                            }
+                          >
+                            Apply
+                          </Button>
+                        </HStack>
+                        <HStack width="full" marginTop="0 !important">
+                          <Checkbox
+                            size="sm"
+                            colorScheme="gray"
+                            id="purchase-terms"
+                          />
+                          <FormLabel
+                            htmlFor="purchase-terms"
+                            fontSize="xs"
+                            color="gray.500"
+                            cursor="pointer"
+                          >
+                            <Text as="span" marginLeft={1}>
+                              By completing your purchase you agree to these
+                              Terms of Service.
+                            </Text>
+                          </FormLabel>
+                        </HStack>
+                        <Button borderRadius={4} height={12} width="full">
+                          Checkout
+                        </Button>
+                      </VStack>
+                    </div>
+                  ) : (
+                    <div className={styles.tabInnerContent}>
+                      <CourseDetail price={"₹499"} />
+                      <span className={styles.liner}></span>
+                      <h6 className={styles.summary}>Summary</h6>
+                      <VStack alignItems="flex-start">
+                        <HStack
+                          width="full"
+                          justifyContent="space-between"
+                          alignItems="flex-start"
+                        >
+                          <Text>Original Price:</Text>
+                          <Text>₹499</Text>
+                        </HStack>
+                        <HStack
+                          width="full"
+                          justifyContent="space-between"
+                          paddingBottom={4}
+                        >
+                          <HStack gap="5px">
+                            <FaTag size={12} color="#2BB970" />
+                            <Text>Civil20</Text>
+                          </HStack>
+                          <Text color="#2BB970">-₹100</Text>
+                        </HStack>
+                        <HStack
+                          width="full"
+                          justifyContent="space-between"
+                          marginTop="0 !important"
+                          borderTop="1px solid"
+                          borderColor="gray.700"
+                          paddingTop={4}
+                          marginBottom="24px !important"
+                        >
+                          <Text as="b">Total:</Text>
+                          <Text as="b" color="#2BB970">
+                            ₹399
+                          </Text>
+                        </HStack>
+                        <HStack
+                          width="full"
+                          justifyContent="space-between"
+                          marginTop="0 !important"
+                          marginBottom="24px !important"
+                        >
+                          <HStack>
+                            <IoIosCheckmarkCircleOutline
+                              size={18}
+                              color="#2BB970"
+                            />
+                            <Text fontSize={14} color="#2BB970">
+                              Civil20 Code Applied Successfully
+                            </Text>
+                          </HStack>
+                          <button
+                            className={styles.redText}
+                            onClick={() =>
+                              handleDiscountClick("oneTimeActiveTab", "remove")
+                            }
+                          >
+                            remove
+                          </button>
+                        </HStack>
+                        <HStack width="full" marginTop="0 !important">
+                          <Checkbox
+                            size="sm"
+                            colorScheme="gray"
+                            id="purchase-terms"
+                          />
+                          <FormLabel
+                            htmlFor="purchase-terms"
+                            fontSize="xs"
+                            color="gray.500"
+                            cursor="pointer"
+                          >
+                            <Text as="span" marginLeft={1}>
+                              By completing your purchase you agree to these
+                              Terms of Service.
+                            </Text>
+                          </FormLabel>
+                        </HStack>
+                        <Button borderRadius={4} height={12} width="full">
+                          Checkout
+                        </Button>
+                      </VStack>
+                    </div>
+                  )}
+                </TabPanel>
+                <TabPanel>
+                 {!emiActiveTab ? (<div className={styles.tabInnerContent}>
+                    <CourseDetail price={"₹699"} />
+                    <span className={styles.liner}></span>
+                    <h6 className={styles.summary}>Summary</h6>
+                    <VStack alignItems="flex-start">
+                      <HStack
+                        width="full"
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                        backgroundColor="#454546"
+                        padding="5px 10px"
+                      >
+                        <Text fontSize={14}>1st EMI</Text>
+                        <Text fontSize={14}>₹399</Text>
+                      </HStack>
+                      <HStack
+                        width="full"
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                        padding="5px 10px"
+                      >
+                        <Text fontSize={14}>2nd EMI</Text>
+                        <Text fontSize={14}>₹150</Text>
+                      </HStack>
+                      <HStack
+                        width="full"
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                        padding="5px 10px"
+                      >
+                        <Text fontSize={14}>3rd EMI</Text>
+                        <Text fontSize={14}>₹150</Text>
+                      </HStack>
+                      <HStack
+                        width="full"
+                        justifyContent="space-between"
+                        marginTop="0 !important"
+                        borderTop="1px solid"
+                        borderColor="gray.700"
+                        padding="5px 10px"
+                        marginBottom="24px !important"
+                      >
+                        <Text fontWeight="700" fontSize='16px'>Total:</Text>
+                        <Text fontWeight="700" fontSize='16px'>₹699</Text>
+                      </HStack>
+                      <HStack
+                        width="full"
+                        justifyContent="space-between"
+                        marginTop="0 !important"
+                        marginBottom="24px !important"
+                      >
+                        <Input placeholder="Promo Code" value={discount}/>
+                        <Button
+                            variant="outline"
+                            onClick={() =>
+                              handleDiscountClick("emiActiveTab", "apply")
+                            }
+                          >
+                            Apply
+                          </Button>
+                      </HStack>
+                      <HStack width="full" marginTop="0 !important">
+                        <Checkbox size="sm" colorScheme="gray" id="purchase-termsEMI"/>
+                        <FormLabel
+                          htmlFor="purchase-termsEMI"
+                          fontSize="xs"
+                          color="gray.500"
+                          cursor="pointer"
+                        >
+                          <Text as="span" marginLeft={1}>
+                            By completing your purchase you agree to these Terms
+                            of Service.
+                          </Text>
+                        </FormLabel>
+                      </HStack>
+                      <Button borderRadius={4} height={12} width="full">
+                        Enroll @ ₹399
+                      </Button>
+                    </VStack>
+                  </div>) : (
+                  <div className={styles.tabInnerContent}>
+                    <CourseDetail price={"₹699"} />
+                    <span className={styles.liner}></span>
+                    <h6 className={styles.summary}>Summary</h6>
+                    <VStack alignItems="flex-start">
+                      <HStack
+                        width="full"
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                        backgroundColor="#454546"
+                        padding="5px 10px"
+                      >
+                        <Text fontSize={14}>1st EMI</Text>
+                        <HStack justifyContent="space-between" width="30%">
+                          <Text fontSize={14} textDecoration="line-through">
+                            ₹399
+                          </Text>
+                          <Text fontSize={14} color="#2BB970">
+                            ₹359
+                          </Text>
+                        </HStack>
+                      </HStack>
+                      <HStack
+                        width="full"
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                        padding="5px 10px"
+                      >
+                        <Text fontSize={14}>2nd EMI</Text>
+                        <HStack justifyContent="space-between" width="30%">
+                          <Text fontSize={14} textDecoration="line-through">
+                            ₹150
+                          </Text>
+                          <Text fontSize={14} color="#2BB970">
+                            ₹100
+                          </Text>
+                        </HStack>
+                      </HStack>
+                      <HStack
+                        width="full"
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                        padding="5px 10px"
+                      >
+                        <Text fontSize={14}>3rd EMI</Text>
+                        <HStack justifyContent="space-between" width="30%">
+                          <Text fontSize={14} textDecoration="line-through">
+                            ₹150
+                          </Text>
+                          <Text fontSize={14} color="#2BB970">
+                            ₹100
+                          </Text>
+                        </HStack>
+                      </HStack>
+                      <HStack
+                        width="full"
+                        justifyContent="space-between"
+                        marginTop="0 !important"
+                        borderTop="1px solid"
+                        borderColor="gray.700"
+                        padding="5px 10px"
+                        marginBottom="24px !important"
+                      >
+                        <Text fontWeight="700" fontSize="16px">
+                          Total:
+                        </Text>
+                        <HStack justifyContent="space-between" width="30%">
+                          <Text
+                            fontWeight="700"
+                            fontSize="16px"
+                            textDecoration="line-through"
+                          >
+                            ₹699
+                          </Text>
+                          <Text
+                            fontWeight="700"
+                            fontSize="16px"
+                            color="#2BB970"
+                          >
+                            ₹559
+                          </Text>
+                        </HStack>
+                      </HStack>
+                      <HStack
+                        width="full"
+                        justifyContent="space-between"
+                        marginTop="0 !important"
+                        marginBottom="24px !important"
+                      >
+                        <HStack>
+                          <IoIosCheckmarkCircleOutline
+                            size={18}
+                            color="#2BB970"
+                          />
+                          <Text fontSize={14} color="#2BB970">
+                            Civil20 Code Applied Successfully
+                          </Text>
+                        </HStack>
+                        <button
+                          className={styles.redText}
+                          onClick={() =>
+                            handleDiscountClick("emiActiveTab", "remove")
+                          }
+                        >
+                          remove
+                        </button>
+                      </HStack>
+                      <HStack width="full" marginTop="10px !important">
+                        <Checkbox
+                          size="sm"
+                          colorScheme="gray"
+                          id="purchase-termsEMI"
+                        />
+                        <FormLabel
+                          htmlFor="purchase-termsEMI"
+                          fontSize="xs"
+                          color="gray.500"
+                          cursor="pointer"
+                        >
+                          <Text as="span" marginLeft={1}>
+                            By completing your purchase you agree to these Terms
+                            of Service.
+                          </Text>
+                        </FormLabel>
+                      </HStack>
+                      <Button borderRadius={4} height={12} width="full">
+                        Enroll @ ₹359
+                      </Button>
+                    </VStack>
+                  </div> ) }
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
           </div>
         </div>
       </div>
@@ -126,7 +475,7 @@ export default function Checkout() {
   );
 }
 
-function CourseDetail({ highlight }) {
+function CourseDetail({ highlight, price }) {
   return (
     <div
       className={`${styles.courseDetail} ${highlight ? styles.highlight : ""} `}
@@ -138,15 +487,9 @@ function CourseDetail({ highlight }) {
       />
       <VStack alignItems="flex-start">
         <Text>Learn Solidity: Smart Contract Development</Text>
-        {/* <Text color="gray.500" marginTop="0 !important">
-          by Harsh Pandey
-        </Text> */}
       </VStack>
-      <VStack marginLeft="auto">
-        <Text>₹499</Text>
-        <Text marginTop="0 !important" color="gray.500" as="s">
-          ₹1299
-        </Text>
+      <VStack marginLeft="auto" alignItems="flex-start">
+        <Text>{price}</Text>
       </VStack>
     </div>
   );

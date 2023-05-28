@@ -31,16 +31,17 @@
 
 .right .content {
   width: 100%;
-  max-width: 400px;
-}
-
-.left .section,
-.right .section {
+  max-width: 450px;
+  border: 1px solid #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  padding-bottom: 0.825rem;
   margin-top: 2rem;
 }
 
-.right .section:first-child {
-  margin-top: 4.8rem;
+.left .section {
+  margin-top: 2rem;
 }
 
 .courseDetail {
@@ -57,4 +58,46 @@
 
 .highlight {
   color: var(--secondary);
+}
+.right .content .section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1 1 auto;
+}
+.right .content .section .headText {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.tabInnerContent {
+  display: flex;
+  flex-direction: column;
+}
+.liner {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  border-bottom: 2px solid #fff;
+}
+.summary {
+  font-size: 20px;
+  font-weight: 500;
+  margin: 20px 0;
+  color: #eb008b;
+}
+.summary::after {
+  content: "";
+  display: flex;
+  width: 30%;
+  margin-top: 5px;
+  border-bottom: 1px solid #eb008b;
+}
+.redText {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 24px;
+  color: #FF0000;
 }
