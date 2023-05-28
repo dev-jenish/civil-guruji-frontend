@@ -13,6 +13,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { AiOutlineFileText, AiOutlineTrophy } from "react-icons/ai";
 import { BsLaptop, BsPhone } from "react-icons/bs";
 import { IoIosInfinite } from "react-icons/io";
@@ -20,6 +21,27 @@ import { TiSortAlphabeticallyOutline } from "react-icons/ti";
 
 export default function CourseFloatCard({ isPackage, courseData }) {
   const router = useRouter();
+
+  const [emiPlans, setEmiPlans] = useState([])
+  const [oneTimePlans,setOneTimePlans] = useState([])
+  const [freePlans, setFreePlans] = useState([])
+
+  useEffect(() => {
+    if(courseData && courseData?.prices && courseData?.prices?.length>0){
+      courseData.prices.map((plan) => {
+        if(plan.type == 'Emi subscription'){
+          setEmiPlans([...emiPlans, plan])
+        }
+        if(plan?.type == 'One time payment'){
+          setOneTimePlans([...oneTimePlans, plan])
+        }
+        if(plan?.type == 'Free'){
+          setFreePlans([ ...freePlans, plan ])
+        }
+      })
+    }
+  }, [courseData])
+
 
   return (
     <div className={styles.container}>
@@ -41,8 +63,9 @@ export default function CourseFloatCard({ isPackage, courseData }) {
               gap="5px"
               justifyContent="flex-start"
             >
+              {console.log(courseData)}
               <HStack alignItems="baseline" rowGap="5px">
-                <Text className={styles.afterDiscountPrice}>₹14,847</Text>
+                <Text className={styles.afterDiscountPrice}>₹{emiPlans[0] ? emiPlans[0]?.price : oneTimePlans[0] ? oneTimePlans[0]?.listPrice : 'Free'}</Text>
                 <Text className={styles.originalPrice}>₹57,200</Text>
                 <Text className={styles.discountPercentage}>74.07% OFF</Text>
               </HStack>
@@ -51,8 +74,10 @@ export default function CourseFloatCard({ isPackage, courseData }) {
                 rowGap="5px"
                 justifyContent="flex-start"
               >
-                <Text className={styles.validity}>Validity : 2 Year</Text>
-                <Text className={styles.emiAvalibility}>EMI Available</Text>
+                <Text className={styles.validity}>Validity : { emiPlans[0] ? (emiPlans[0]?.validity == "limited" ? `${emiPlans[0]?.validityYears} Years, ${emiPlans[0]?.validityMonths} Months` : 'Lifetime') : oneTimePlans[0] ? oneTimePlans[0]?.listPrice : 'Free' }</Text>
+                { emiPlans[0] &&
+                <Text className={styles.emiAvalibility}>EMI Available</Text>  
+              }
               </HStack>
             </HStack>
             <HStack justifyContent="flex-end" paddingTop="10px">
