@@ -260,7 +260,7 @@ export default function Topic({ topic, course }) {
             selectedTopic?.subModule?.type == 5 && (
               <div className={styles.iframe}>
                 {/* <Quiz subModule={selectedTopic?.subModule} /> */}
-                <QuizComponent subModule={selectedTopic.subModule} />
+                <QuizComponent subModule={selectedTopic?.subModule} />
               </div>
             )
           }
