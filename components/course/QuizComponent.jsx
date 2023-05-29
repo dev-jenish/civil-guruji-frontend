@@ -6,13 +6,24 @@ import { PieChart } from "react-minimal-pie-chart";
 import { FaTimes, FaCheck, FaRegCircle, FaMinusCircle } from "react-icons/fa";
 import { MdDoNotDisturbAlt } from "react-icons/md";
 
-
 const QuizComponent = ({ subModule }) => {
   const [activeScreen, setActiveScreen] = useState("MainScreen");
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const question = questions[currentIndex];
+  const [result, setResult] = useState({});
+  let solution = {
+    id: "",
+    solution: "",
+    answer: "",
+    isAttempted: false,
+  };
 
-  console.log(subModule.quiz);
+  let finalSolution = [];
+  console.log(question);
+
   useEffect(() => {
     if (subModule?.quiz?.questions) {
       setQuestions(subModule?.quiz?.questions);
@@ -24,7 +35,35 @@ const QuizComponent = ({ subModule }) => {
     setActiveScreen(screen);
   };
 
-  // screen module code 
+  const handleSaveAndNext = () => {
+    finalSolution.push({
+      ...solution,
+      id: question._id,
+      solution: question.solution,
+      answer: selectedOption,
+      isAttempted: selectedOption !== null ? true : false,
+    });
+    setCurrentIndex((prevIndex) => {
+      if (questions.length !== prevIndex + 1) {
+        return prevIndex + 1;
+      } else {
+        return prevIndex;
+      }
+    });
+  };
+
+  const handleClearResponse = () => {
+    setSelectedOption(null);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+    } catch (error) {}
+  };
+
+  // screen module code
   const MainScreen = () => {
     return (
       <Box className={styles.mainScreen}>
@@ -32,7 +71,8 @@ const QuizComponent = ({ subModule }) => {
         <span className={styles.dividerLine}></span>
         <Box mb={4}>
           <p className={styles.labelText}>
-            Total Questions: <span className={styles.valueText}>{questions?.length}</span>
+            Total Questions:{" "}
+            <span className={styles.valueText}>{questions?.length}</span>
           </p>
           <p className={styles.labelText}>
             Total Time: <span className={styles.valueText}>2 minutes</span>
@@ -63,8 +103,11 @@ const QuizComponent = ({ subModule }) => {
     return (
       <Box className={styles.instructionScreen}>
         <h3 className={styles.instructionHeading}>Instructions</h3>
-        <Box className={styles.instructionContent} style={{fontSize: '14px', color: '#000000'}}>
-          {subModule?.quiz?.instructions.replace('<p>','').replace('</p>', '')}
+        <Box
+          className={styles.instructionContent}
+          style={{ fontSize: "14px", color: "#000000" }}
+        >
+          {subModule?.quiz?.instructions.replace("<p>", "").replace("</p>", "")}
         </Box>
         <button
           className={styles.startBtn}
@@ -75,7 +118,7 @@ const QuizComponent = ({ subModule }) => {
       </Box>
     );
   };
-  
+
   const QuizQuestionsScreen = () => {
     return (
       <Box className={styles.quizMain}>
@@ -95,36 +138,10 @@ const QuizComponent = ({ subModule }) => {
         </Box>
         <Box className={styles.quizPart}>
           <div className={styles.leftPart}>
-            {questions?.map((question, index) => {
-              return (
-                <React.Fragment key={index}>
-                  <div className={styles.quesHeadPart}>
-                    <div className={styles.quesNo}>Question : {index + 1}</div>
-                    <div className={styles.points}>
-                      <span>Single Correct Option,</span>
-                      <span className={styles.plusPoint}>+2.00,</span>
-                      <span className={styles.minusPoint}>-1.00</span>
-                    </div>
-                  </div>
-                  <div className={styles.questionBlock}>
-                    <h5>{question.title}</h5>
-                    {question.options.map((option, optionIndex) => (
-                      <div className={styles.queOption} key={optionIndex}>
-                        <span
-                          className={styles.optionIndex}
-                          style={{ backgroundColor: "#ADADAD" }}
-                        >
-                          {String.fromCharCode(65 + optionIndex)}
-                        </span>
-                        <span className={styles.optionText}>Option: {option}</span>
-                      </div>
-                    ))}
-                  </div>
-                </React.Fragment>
-              );
-            })}
-            {/* <div className={styles.quesHeadPart}>
-              <div className={styles.quesNo}>`Question : ${index} + 1 `</div>
+            <div className={styles.quesHeadPart}>
+              <div className={styles.quesNo}>
+                Question : {currentIndex + 1}{" "}
+              </div>
               <div className={styles.points}>
                 <span>Single Correct Option,</span>
                 <span className={styles.plusPoint}>+2.00,</span>
@@ -132,38 +149,49 @@ const QuizComponent = ({ subModule }) => {
               </div>
             </div>
             <div className={styles.questionBlock}>
-              <h5>Where does it come from?</h5>
-              <div className={styles.queOption}>
-                <span
-                  className={styles.optionIndex}
-                  style={{ backgroundColor: "#ADADAD" }}
+              <h5>{question.question}</h5>
+              {question.options.map((option, index) => (
+                <div
+                  className={styles.queOption}
+                  key={index}
+                  onClick={() => {setSelectedOption(option); console.log(option, selectedOption, '<== after attempting ques')}}
                 >
-                  A
-                </span>
-                <span
-                  className={styles.optionText}
-                  style={{ backgroundColor: "#ADADAD" }}
-                >
-                  Option: 1
-                </span>
-              </div>
-              <div className={styles.queOption}>
-                <span className={styles.optionIndex}>B</span>
-                <span className={styles.optionText}>Option: 2</span>
-              </div>
-              <div className={styles.queOption}>
-                <span className={styles.optionIndex}>C</span>
-                <span className={styles.optionText}>Option: 3</span>
-              </div>
-              <div className={styles.queOption}>
-                <span className={styles.optionIndex}>D</span>
-                <span className={styles.optionText}>Option: 4</span>
-              </div>
-            </div> */}
+                  <span
+                    className={styles.optionIndex}
+                    style={{
+                      backgroundColor:
+                        option === selectedOption ? "#ADADAD" : "#000000",
+                    }}
+                  >
+                    {String.fromCharCode(65 + index)}
+                  </span>
+                  <span
+                    className={styles.optionText}
+                    style={{
+                      backgroundColor:
+                        option === selectedOption ? "#ADADAD" : "transparent",
+                    }}
+                  >
+                    {option}
+                  </span>
+                </div>
+              ))}
+            </div>
             <div className={styles.actionPart}>
               <div className={styles.quickActions}>
-                <button className={styles.saveBtn}>Save & Next</button>
-                <button className={styles.clearBtn}>Clear Response</button>
+                <button
+                  className={styles.saveBtn}
+                  onClick={handleSaveAndNext}
+                  disabled={currentIndex === questions.length - 1}
+                >
+                  Save & Next
+                </button>
+                <button
+                  className={styles.clearBtn}
+                  onClick={handleClearResponse}
+                >
+                  Clear Response
+                </button>
               </div>
               <div className={styles.submitTest}>
                 <button
@@ -181,43 +209,38 @@ const QuizComponent = ({ subModule }) => {
               <div className={styles.blocks}>
                 <div className={styles.block}>
                   <span className={styles.answered}></span>
-                  <p style={{fontSize: '8px'}}>Answered</p>
+                  <p style={{ fontSize: "8px" }}>Answered</p>
                 </div>
                 <div className={styles.block}>
                   <span className={styles.notAnswered}></span>
-                  <p style={{fontSize: '8px'}}>Not Answered</p>
+                  <p style={{ fontSize: "8px" }}>Not Answered</p>
                 </div>
                 <div className={styles.blocks}>
                   <div className={styles.block}>
                     <span className={styles.notVisited}></span>
-                    <p >Not Visited</p>
+                    <p>Not Visited</p>
                   </div>
                 </div>
               </div>
             </div>
             <div className={styles.indicatorPart}>
-              <span className={styles.answered}>00</span>
-              <span className={styles.notAnswered}>00</span>
-              <span className={styles.notAnswered}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
+              {questions.map((q, index) => (
+                <button
+                  key={index}
+                  className={
+                    index === 0 && selectedOption === null
+                      ? styles.notAnswered
+                      : index === currentIndex
+                      ? styles.notVisited
+                      : finalSolution[index]?.isAttempted
+                      ? styles.answered
+                      : styles.notVisited
+                  }
+                  onClick={() => setCurrentIndex(index)}
+                >
+                  00
+                </button>
+              ))}
             </div>
           </div>
         </Box>
@@ -369,7 +392,7 @@ const QuizComponent = ({ subModule }) => {
       </Box>
     );
   };
-  
+
   const ResultScreen = () => {
     return (
       <Box className={styles.resultScreenMain}>

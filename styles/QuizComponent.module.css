@@ -104,9 +104,9 @@
   justify-content: center;
   flex-direction: column;
   width: 100%;
-  min-height: 60vh;
-  height: 60vh;
-  max-height: 60vh;
+  min-height: 65vh;
+  height: 65vh;
+  max-height: 65vh;
   overflow-y: hidden;
   background-color: #d7d7d7;
   padding: 1rem;
@@ -372,6 +372,10 @@
   font-style: normal;
   font-weight: 500;
   font-size: 18px;
+}
+.queOption:hover .optionIndex,
+.queOption:hover .optionText {
+  background-color: #979797;
 }
 .leftPart .actionPart {
   display: flex;
