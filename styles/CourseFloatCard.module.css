@@ -81,18 +81,38 @@
 #highlight .icon {
   font-size: 16px;
 }
-
+.insider{
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  padding: 10px;
+}
+.singleBox{
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}
+.pricePart {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+.otherInfo{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
 .afterDiscountPrice {
   font-family: "Poppins";
   font-style: normal;
   font-weight: 500;
-  font-size: 30px;
+  font-size: 22px;
 }
 .originalPrice {
   font-family: "Poppins";
   font-style: normal;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 12px;
   color: #de076e;
   text-decoration: line-through;
 }
@@ -100,25 +120,31 @@
   font-family: "Poppins";
   font-style: normal;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 14px;
   color: #2bb970;
 }
 .validity {
   font-family: "Poppins";
   font-style: normal;
   font-weight: 500;
-  font-size: 18px;
+  font-size: 14px;
   color: #ffffff;
 }
 .emiAvalibility {
   font-family: "Poppins";
   font-style: normal;
   font-weight: 400;
-  font-size: 14px;
-  line-height: 22px;
+  font-size: 12px;
+  line-height: 16px;
   color: #979797;
   border-left: 1px solid #979797;
   padding-left: 5px;
+}
+.accordianInsider {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 10px;
 }
 @media only screen and (max-width: 800px) {
   .container {

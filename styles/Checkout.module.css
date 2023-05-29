@@ -101,3 +101,15 @@
   line-height: 24px;
   color: #FF0000;
 }
+.billingParts {
+  margin-top: 1rem;
+  padding: 1rem 2rem;
+  background: #292A2E;
+  width: 100%;
+}
+.inputGroup {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}

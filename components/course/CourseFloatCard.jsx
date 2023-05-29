@@ -56,143 +56,145 @@ export default function CourseFloatCard({ isPackage, courseData }) {
         />
       </div>
       <Box className={styles.content}>
-        <VStack gap="10px" backgroundColor="#0D0D0D" width="95%">
-          <HStack flexDirection="row" alignItems="flex-start" padding="10px">
+        <VStack gap="10px" backgroundColor="#0D0D0D" width="full">
+          <div className={styles.insider}>
             <HStack
-              flexDirection="column"
-              gap="5px"
-              justifyContent="flex-start"
+              flexDirection="row"
+              alignItems="flex-start"
+              padding="10px"
+              justifyContent="space-between"
             >
-              {console.log(courseData)}
-              <HStack alignItems="baseline" rowGap="5px">
-                <Text className={styles.afterDiscountPrice}>₹{emiPlans[0] ? emiPlans[0]?.price : oneTimePlans[0] ? oneTimePlans[0]?.listPrice : 'Free'}</Text>
-                <Text className={styles.originalPrice}>₹57,200</Text>
-                <Text className={styles.discountPercentage}>74.07% OFF</Text>
-              </HStack>
-              <HStack
-                alignItems="center"
-                rowGap="5px"
-                justifyContent="flex-start"
-              >
-                <Text className={styles.validity}>Validity : { emiPlans[0] ? (emiPlans[0]?.validity == "limited" ? `${emiPlans[0]?.validityYears} Years, ${emiPlans[0]?.validityMonths} Months` : 'Lifetime') : oneTimePlans[0] ? oneTimePlans[0]?.listPrice : 'Free' }</Text>
-                { emiPlans[0] &&
-                <Text className={styles.emiAvalibility}>EMI Available</Text>  
-              }
-              </HStack>
-            </HStack>
-            <HStack justifyContent="flex-end" paddingTop="10px">
-              <Button
-                onClick={() => router.push("/checkout/6Y73D9DGZ")}
-                borderRadius={2}
-                size="sm"
-                variant={isPackage ? "outline" : "solid"}
-              >
-                Get Offer
-              </Button>
-            </HStack>
-          </HStack>
-          <HStack>
-            <Accordion width="full" defaultIndex={[0]} allowMultiple>
-              <AccordionItem width="full">
-                <AccordionButton
-                  width="full"
-                  display="flex"
-                  justifyContent="space-between"
+              <div className={styles.singleBox}>
+                <div className={styles.pricePart}>
+                  <Text className={styles.afterDiscountPrice}>₹14,847</Text>
+                  <Text className={styles.originalPrice}>₹57,200</Text>
+                  <Text className={styles.discountPercentage}>74.07% OFF</Text>
+                </div>
+                <div
+                  className={styles.otherInfo}
+                  alignItems="center"
+                  rowGap="5px"
+                  justifyContent="flex-start"
                 >
-                  <Text>More Offers</Text>
-                  <AccordionIcon />
-                </AccordionButton>
-                <AccordionPanel>
-                  <HStack
-                    flexDirection="row"
-                    alignItems="flex-start"
-                    padding="10px"
+                  <Text className={styles.validity}>Validity : 2 Year</Text>
+                  <Text className={styles.emiAvalibility}>EMI Available</Text>
+                </div>
+              </div>
+              <HStack justifyContent="flex-end" paddingTop="10px">
+                <Button
+                  onClick={() => router.push("/checkout/6Y73D9DGZ")}
+                  borderRadius={2}
+                  size="sm"
+                  variant={isPackage ? "outline" : "solid"}
+                >
+                  Get Offer
+                </Button>
+              </HStack>
+            </HStack>
+
+            <HStack>
+              <Accordion width="full" defaultIndex={[0]} allowMultiple>
+                <AccordionItem width="full">
+                  <AccordionButton
+                    width="full"
+                    display="flex"
+                    justifyContent="space-between"
                   >
-                    <HStack
-                      flexDirection="column"
-                      gap="5px"
-                      justifyContent="flex-start"
-                    >
-                      <HStack alignItems="baseline" rowGap="5px">
-                        <Text className={styles.afterDiscountPrice}>
-                          ₹14,847
-                        </Text>
-                        <Text className={styles.originalPrice}>₹57,200</Text>
-                        <Text className={styles.discountPercentage}>
-                          74.07% OFF
-                        </Text>
+                    <Text>More Offers</Text>
+                    <AccordionIcon />
+                  </AccordionButton>
+                  <AccordionPanel>
+                    <div className={styles.accordianInsider}>
+                      <HStack
+                        flexDirection="row"
+                        alignItems="flex-start"
+                        justifyContent="space-between"
+                      >
+                        <div className={styles.singleBox}>
+                          <div className={styles.pricePart}>
+                            <Text className={styles.afterDiscountPrice}>
+                              ₹14,847
+                            </Text>
+                            <Text className={styles.originalPrice}>
+                              ₹57,200
+                            </Text>
+                            <Text className={styles.discountPercentage}>
+                              74.07% OFF
+                            </Text>
+                          </div>
+                          <div
+                            className={styles.otherInfo}
+                            alignItems="center"
+                            rowGap="5px"
+                            justifyContent="flex-start"
+                          >
+                            <Text className={styles.validity}>
+                              Validity : 2 Year
+                            </Text>
+                            <Text className={styles.emiAvalibility}>
+                              EMI Available
+                            </Text>
+                          </div>
+                        </div>
+                        <HStack justifyContent="flex-end" paddingTop="10px">
+                          <Button
+                            onClick={() => router.push("/checkout/6Y73D9DGZ")}
+                            borderRadius={2}
+                            size="sm"
+                            variant={isPackage ? "outline" : "solid"}
+                          >
+                            Get Offer
+                          </Button>
+                        </HStack>
                       </HStack>
                       <HStack
-                        alignItems="center"
-                        rowGap="5px"
-                        justifyContent="flex-start"
+                        flexDirection="row"
+                        alignItems="flex-start"
+                        justifyContent="space-between"
                       >
-                        <Text className={styles.validity}>
-                          Validity : 2 Year
-                        </Text>
-                        <Text className={styles.emiAvalibility}>
-                          EMI Available
-                        </Text>
+                        <div className={styles.singleBox}>
+                          <div className={styles.pricePart}>
+                            <Text className={styles.afterDiscountPrice}>
+                              ₹14,847
+                            </Text>
+                            <Text className={styles.originalPrice}>
+                              ₹57,200
+                            </Text>
+                            <Text className={styles.discountPercentage}>
+                              74.07% OFF
+                            </Text>
+                          </div>
+                          <div
+                            className={styles.otherInfo}
+                            alignItems="center"
+                            rowGap="5px"
+                            justifyContent="flex-start"
+                          >
+                            <Text className={styles.validity}>
+                              Validity : 2 Year
+                            </Text>
+                            <Text className={styles.emiAvalibility}>
+                              EMI Available
+                            </Text>
+                          </div>
+                        </div>
+                        <HStack justifyContent="flex-end" paddingTop="10px">
+                          <Button
+                            onClick={() => router.push("/checkout/6Y73D9DGZ")}
+                            borderRadius={2}
+                            size="sm"
+                            variant={isPackage ? "outline" : "solid"}
+                          >
+                            Get Offer
+                          </Button>
+                        </HStack>
                       </HStack>
-                    </HStack>
-                    <HStack justifyContent="flex-end" paddingTop="10px">
-                      <Button
-                        onClick={() => router.push("/checkout/6Y73D9DGZ")}
-                        borderRadius={2}
-                        size="sm"
-                        variant={isPackage ? "outline" : "solid"}
-                      >
-                        Get Offer
-                      </Button>
-                    </HStack>
-                  </HStack>
-                  <HStack
-                    flexDirection="row"
-                    alignItems="flex-start"
-                    padding="10px"
-                  >
-                    <HStack
-                      flexDirection="column"
-                      gap="5px"
-                      justifyContent="flex-start"
-                    >
-                      <HStack alignItems="baseline" rowGap="5px">
-                        <Text className={styles.afterDiscountPrice}>
-                          ₹14,847
-                        </Text>
-                        <Text className={styles.originalPrice}>₹57,200</Text>
-                        <Text className={styles.discountPercentage}>
-                          74.07% OFF
-                        </Text>
-                      </HStack>
-                      <HStack
-                        alignItems="center"
-                        rowGap="5px"
-                        justifyContent="flex-start"
-                      >
-                        <Text className={styles.validity}>
-                          Validity : 2 Year
-                        </Text>
-                        <Text className={styles.emiAvalibility}>
-                          EMI Available
-                        </Text>
-                      </HStack>
-                    </HStack>
-                    <HStack justifyContent="flex-end" paddingTop="10px">
-                      <Button
-                        onClick={() => router.push("/checkout/6Y73D9DGZ")}
-                        borderRadius={2}
-                        size="sm"
-                        variant={isPackage ? "outline" : "solid"}
-                      >
-                        Get Offer
-                      </Button>
-                    </HStack>
-                  </HStack>
-                </AccordionPanel>
-              </AccordionItem>
-            </Accordion>
-          </HStack>
+                    </div>
+                  </AccordionPanel>
+                </AccordionItem>
+              </Accordion>
+            </HStack>
+          </div>
         </VStack>
         <div className={styles.include}>
           {/* <p>This course includes:</p> */}
