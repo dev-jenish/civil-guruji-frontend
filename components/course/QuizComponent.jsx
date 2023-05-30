@@ -23,7 +23,6 @@ const QuizComponent = ({ subModule }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const question = questions[currentIndex];
-  const [result, setResult] = useState({});
   const [showModel, setShowModel] = useState(false);
 
   console.log(question);
@@ -56,7 +55,11 @@ const QuizComponent = ({ subModule }) => {
       setShowModel(true);
     }
     setCurrentIndex((prevIndex) => {
-      return prevIndex + 1;
+      if (temp.length !== prevIndex + 1) {
+        return prevIndex + 1;
+      } else {
+        return prevIndex;
+      }
     });
     setSelectedOption(null);
   };
@@ -64,9 +67,12 @@ const QuizComponent = ({ subModule }) => {
   const handleClearResponse = () => {
     setSelectedOption(null);
   };
-
-  const attemptedQuestions = questions.filter((q) => q.isAttempted).length;
-  const skippedQuestions = questions.filter((q) => !q.isAttempted).length;
+  let attemptedQuestions = questions.filter((q) => q.isAttempted).length;
+  let skippedQuestions = questions.filter((q) => !q.isAttempted).length;
+  useEffect(() => {
+    attemptedQuestions = questions.filter((q) => q.isAttempted).length;
+    skippedQuestions = questions.filter((q) => !q.isAttempted).length;
+  }, [selectedOption]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -215,7 +221,7 @@ const QuizComponent = ({ subModule }) => {
               <div className={styles.submitTest}>
                 <button
                   className={styles.submitBtn}
-                  onClick={(e) => handleClick(e, "QuizSubmitScreen")}
+                  onClick={(e) => setShowModel(true)}
                 >
                   Submit Test
                 </button>
@@ -255,8 +261,10 @@ const QuizComponent = ({ subModule }) => {
                   className = styles.answered;
                 } else if (isNotAnswered) {
                   className = styles.notAnswered;
-                } else {
+                } else if(isFirstNotAnswered){
                   className = styles.notVisited;
+                } else {
+                  className = styles.notVisited
                 }
                 return (
                   <button
@@ -264,7 +272,7 @@ const QuizComponent = ({ subModule }) => {
                     className={className}
                     onClick={() => setCurrentIndex(index)}
                   >
-                    00
+                    {index + 1}
                   </button>
                 );
               })}
@@ -272,8 +280,7 @@ const QuizComponent = ({ subModule }) => {
           </div>
         </Box>
         <Modal isOpen={showModel} onClose={() => setShowModel(false)}>
-          <ModalOverlay />
-          <ModalContent>
+          <ModalContent className={styles.resultPart}>
             <ModalHeader>Final Submit</ModalHeader>
             <ModalBody>
               <Box className={styles.values}>
@@ -294,13 +301,20 @@ const QuizComponent = ({ subModule }) => {
               </Box>
             </ModalBody>
             <ModalFooter>
-              <button className={styles.continueBtn}>Continue</button>
-              <button
-                className={styles.responseBtn}
-                onClick={(e) => handleClick(e, "ResultScreen")}
-              >
-                See Responses
-              </button>
+              <div className={styles.modelAction}>
+                <button
+                  className={styles.continueBtn}
+                  onClick={() => setShowModel(false)}
+                >
+                  Continue
+                </button>
+                <button
+                  className={styles.responseBtn}
+                  onClick={(e) => handleClick(e, "ResultScreen")}
+                >
+                  See Responses
+                </button>
+              </div>
             </ModalFooter>
           </ModalContent>
         </Modal>
