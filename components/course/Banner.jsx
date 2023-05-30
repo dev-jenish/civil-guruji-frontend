@@ -24,20 +24,7 @@ export default function Banner({}) {
             </div>
             <img src="/assets/image 19.png" alt="banner" />
           </Box>
-          <Box className={styles.tabs}>
-            <button className={styles.enrollBtn}>
-              Practicle Training - Offline
-            </button>
-            <button className={styles.primaryBtn}>
-              Practicle Training - Online
-            </button>
-            <button className={styles.primaryBtn}>
-              Individual Training - Online
-            </button>
-            <button className={styles.primaryBtn}>
-              Free Training - Online
-            </button>
-          </Box>
+          
         </SwiperSlide>
         <SwiperSlide>
           <Box className={styles.contentBox}>
@@ -46,20 +33,6 @@ export default function Banner({}) {
               <button className={styles.enrollBtn}>ENROLL NOW</button>
             </div>
             <img src="/assets/image 19.png" alt="banner" />
-          </Box>
-          <Box className={styles.tabs}>
-            <button className={styles.primaryBtn}>
-              Practicle Training - Offline
-            </button>
-            <button className={styles.enrollBtn}>
-              Practicle Training - Online
-            </button>
-            <button className={styles.primaryBtn}>
-              Individual Training - Online
-            </button>
-            <button className={styles.primaryBtn}>
-              Free Training - Online
-            </button>
           </Box>
         </SwiperSlide>
         <SwiperSlide>
@@ -70,20 +43,6 @@ export default function Banner({}) {
             </div>
             <img src="/assets/image 19.png" alt="banner" />
           </Box>
-          <Box className={styles.tabs}>
-            <button className={styles.primaryBtn}>
-              Practicle Training - Offline
-            </button>
-            <button className={styles.primaryBtn}>
-              Practicle Training - Online
-            </button>
-            <button className={styles.enrollBtn}>
-              Individual Training - Online
-            </button>
-            <button className={styles.primaryBtn}>
-              Free Training - Online
-            </button>
-          </Box>
         </SwiperSlide>
         <SwiperSlide>
           <Box className={styles.contentBox}>
@@ -93,8 +52,10 @@ export default function Banner({}) {
             </div>
             <img src="/assets/image 19.png" alt="banner" />
           </Box>
-          <Box className={styles.tabs}>
-            <button className={styles.primaryBtn}>
+        </SwiperSlide>
+      </Swiper>
+      <Box className={styles.tabs}>
+            <button className={styles.enrollBtn}>
               Practicle Training - Offline
             </button>
             <button className={styles.primaryBtn}>
@@ -103,12 +64,10 @@ export default function Banner({}) {
             <button className={styles.primaryBtn}>
               Individual Training - Online
             </button>
-            <button className={styles.enrollBtn}>
+            <button className={styles.primaryBtn}>
               Free Training - Online
             </button>
           </Box>
-        </SwiperSlide>
-      </Swiper>
     </div>
   );
 }
