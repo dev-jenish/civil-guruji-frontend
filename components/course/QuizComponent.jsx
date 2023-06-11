@@ -1,30 +1,87 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Progress } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Progress,
+} from "@chakra-ui/react";
 import styles from "@/styles/QuizComponent.module.css";
 import { BsArrowsFullscreen } from "react-icons/bs";
 import { PieChart } from "react-minimal-pie-chart";
 import { FaTimes, FaCheck, FaRegCircle, FaMinusCircle } from "react-icons/fa";
 import { MdDoNotDisturbAlt } from "react-icons/md";
 
-
 const QuizComponent = ({ subModule }) => {
   const [activeScreen, setActiveScreen] = useState("MainScreen");
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const question = questions[currentIndex];
+  const [showModel, setShowModel] = useState(false);
 
-  console.log(subModule.quiz);
+  console.log(question);
+
   useEffect(() => {
     if (subModule?.quiz?.questions) {
       setQuestions(subModule?.quiz?.questions);
     }
   }, [subModule]);
 
-  const handleClick = (e, screen) => {
+  const handleClick = async (e, screen) => {
     e.preventDefault();
     setActiveScreen(screen);
+    if (screen === "ResultScreen") {
+      await handleSubmit(e);
+    }
   };
 
-  // screen module code 
+  const handleSaveAndNext = () => {
+    const temp = [...questions];
+    const oldData = temp[currentIndex];
+    temp[currentIndex] = {
+      ...oldData,
+      answer: selectedOption,
+      isAttempted: selectedOption !== null,
+    };
+    setQuestions(temp);
+    const isLastQuestion = currentIndex === questions.length - 1;
+    if (isLastQuestion) {
+      setShowModel(true);
+    }
+    setCurrentIndex((prevIndex) => {
+      if (temp.length !== prevIndex + 1) {
+        return prevIndex + 1;
+      } else {
+        return prevIndex;
+      }
+    });
+    setSelectedOption(null);
+  };
+
+  const handleClearResponse = () => {
+    setSelectedOption(null);
+  };
+  let attemptedQuestions = questions.filter((q) => q.isAttempted).length;
+  let skippedQuestions = questions.filter((q) => !q.isAttempted).length;
+  useEffect(() => {
+    attemptedQuestions = questions.filter((q) => q.isAttempted).length;
+    skippedQuestions = questions.filter((q) => !q.isAttempted).length;
+  }, [selectedOption]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // need to add api call and data was in questions state
+    try {
+    } catch (error) {}
+  };
+
+  // screen module code
   const MainScreen = () => {
     return (
       <Box className={styles.mainScreen}>
@@ -32,7 +89,8 @@ const QuizComponent = ({ subModule }) => {
         <span className={styles.dividerLine}></span>
         <Box mb={4}>
           <p className={styles.labelText}>
-            Total Questions: <span className={styles.valueText}>{questions?.length}</span>
+            Total Questions:{" "}
+            <span className={styles.valueText}>{questions?.length}</span>
           </p>
           <p className={styles.labelText}>
             Total Time: <span className={styles.valueText}>2 minutes</span>
@@ -63,8 +121,11 @@ const QuizComponent = ({ subModule }) => {
     return (
       <Box className={styles.instructionScreen}>
         <h3 className={styles.instructionHeading}>Instructions</h3>
-        <Box className={styles.instructionContent} style={{fontSize: '14px', color: '#000000'}}>
-          {subModule?.quiz?.instructions.replace('<p>','').replace('</p>', '')}
+        <Box
+          className={styles.instructionContent}
+          style={{ fontSize: "14px", color: "#000000" }}
+        >
+          {subModule?.quiz?.instructions.replace("<p>", "").replace("</p>", "")}
         </Box>
         <button
           className={styles.startBtn}
@@ -75,7 +136,7 @@ const QuizComponent = ({ subModule }) => {
       </Box>
     );
   };
-  
+
   const QuizQuestionsScreen = () => {
     return (
       <Box className={styles.quizMain}>
@@ -95,36 +156,10 @@ const QuizComponent = ({ subModule }) => {
         </Box>
         <Box className={styles.quizPart}>
           <div className={styles.leftPart}>
-            {questions?.map((question, index) => {
-              return (
-                <React.Fragment key={index}>
-                  <div className={styles.quesHeadPart}>
-                    <div className={styles.quesNo}>Question : {index + 1}</div>
-                    <div className={styles.points}>
-                      <span>Single Correct Option,</span>
-                      <span className={styles.plusPoint}>+2.00,</span>
-                      <span className={styles.minusPoint}>-1.00</span>
-                    </div>
-                  </div>
-                  <div className={styles.questionBlock}>
-                    <h5>{question.title}</h5>
-                    {question.options.map((option, optionIndex) => (
-                      <div className={styles.queOption} key={optionIndex}>
-                        <span
-                          className={styles.optionIndex}
-                          style={{ backgroundColor: "#ADADAD" }}
-                        >
-                          {String.fromCharCode(65 + optionIndex)}
-                        </span>
-                        <span className={styles.optionText}>Option: {option}</span>
-                      </div>
-                    ))}
-                  </div>
-                </React.Fragment>
-              );
-            })}
-            {/* <div className={styles.quesHeadPart}>
-              <div className={styles.quesNo}>`Question : ${index} + 1 `</div>
+            <div className={styles.quesHeadPart}>
+              <div className={styles.quesNo}>
+                Question : {currentIndex + 1}{" "}
+              </div>
               <div className={styles.points}>
                 <span>Single Correct Option,</span>
                 <span className={styles.plusPoint}>+2.00,</span>
@@ -132,43 +167,61 @@ const QuizComponent = ({ subModule }) => {
               </div>
             </div>
             <div className={styles.questionBlock}>
-              <h5>Where does it come from?</h5>
-              <div className={styles.queOption}>
-                <span
-                  className={styles.optionIndex}
-                  style={{ backgroundColor: "#ADADAD" }}
+              <h5>{question.question}</h5>
+              {question.options.map((option, index) => (
+                <div
+                  className={styles.queOption}
+                  key={index}
+                  onClick={() => {
+                    setSelectedOption(option);
+                    console.log(
+                      option,
+                      selectedOption,
+                      "<== after attempting ques"
+                    );
+                  }}
                 >
-                  A
-                </span>
-                <span
-                  className={styles.optionText}
-                  style={{ backgroundColor: "#ADADAD" }}
-                >
-                  Option: 1
-                </span>
-              </div>
-              <div className={styles.queOption}>
-                <span className={styles.optionIndex}>B</span>
-                <span className={styles.optionText}>Option: 2</span>
-              </div>
-              <div className={styles.queOption}>
-                <span className={styles.optionIndex}>C</span>
-                <span className={styles.optionText}>Option: 3</span>
-              </div>
-              <div className={styles.queOption}>
-                <span className={styles.optionIndex}>D</span>
-                <span className={styles.optionText}>Option: 4</span>
-              </div>
-            </div> */}
+                  <span
+                    className={styles.optionIndex}
+                    style={{
+                      backgroundColor:
+                        option === selectedOption ? "#ADADAD" : "#000000",
+                    }}
+                  >
+                    {String.fromCharCode(65 + index)}
+                  </span>
+                  <span
+                    className={styles.optionText}
+                    style={{
+                      backgroundColor:
+                        option === selectedOption ? "#ADADAD" : "transparent",
+                    }}
+                  >
+                    {option}
+                  </span>
+                </div>
+              ))}
+            </div>
             <div className={styles.actionPart}>
               <div className={styles.quickActions}>
-                <button className={styles.saveBtn}>Save & Next</button>
-                <button className={styles.clearBtn}>Clear Response</button>
+                <button
+                  className={styles.saveBtn}
+                  onClick={handleSaveAndNext}
+                  disabled={currentIndex === questions.length - 1}
+                >
+                  Save & Next
+                </button>
+                <button
+                  className={styles.clearBtn}
+                  onClick={handleClearResponse}
+                >
+                  Clear Response
+                </button>
               </div>
               <div className={styles.submitTest}>
                 <button
                   className={styles.submitBtn}
-                  onClick={(e) => handleClick(e, "QuizSubmitScreen")}
+                  onClick={(e) => setShowModel(true)}
                 >
                   Submit Test
                 </button>
@@ -181,126 +234,11 @@ const QuizComponent = ({ subModule }) => {
               <div className={styles.blocks}>
                 <div className={styles.block}>
                   <span className={styles.answered}></span>
-                  <p style={{fontSize: '8px'}}>Answered</p>
+                  <p style={{ fontSize: "8px" }}>Answered</p>
                 </div>
                 <div className={styles.block}>
                   <span className={styles.notAnswered}></span>
-                  <p style={{fontSize: '8px'}}>Not Answered</p>
-                </div>
-                <div className={styles.blocks}>
-                  <div className={styles.block}>
-                    <span className={styles.notVisited}></span>
-                    <p >Not Visited</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className={styles.indicatorPart}>
-              <span className={styles.answered}>00</span>
-              <span className={styles.notAnswered}>00</span>
-              <span className={styles.notAnswered}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-            </div>
-          </div>
-        </Box>
-      </Box>
-    );
-  };
-  const QuizSubmitScreen = () => {
-    return (
-      <Box className={styles.quizMain}>
-        <Box className={styles.topPart}>
-          <button className={styles.fullScreenBtn}>
-            <BsArrowsFullscreen />
-            <span className={styles.btnText}>Full Screen</span>
-          </button>
-          <div className={styles.reaminTime}>
-            <p className={styles.timeLabel}>Remaing Time:</p>
-            <span className={styles.timeBlock}>00</span>
-            <span className={styles.colonBlock}>:</span>
-            <span className={styles.timeBlock}>00</span>
-            <span className={styles.colonBlock}>:</span>
-            <span className={styles.timeBlock}>00</span>
-          </div>
-        </Box>
-        <Box className={styles.quizPart}>
-          <div className={styles.leftPart}>
-            <div className={styles.quesHeadPart}>
-              <div className={styles.quesNo}>Question : 1</div>
-              <div className={styles.points}>
-                <span>Single Correct Option,</span>
-                <span className={styles.plusPoint}>+2.00,</span>
-                <span className={styles.minusPoint}> -1.00</span>
-              </div>
-            </div>
-            <div className={styles.questionBlock}>
-              <h5>Where does it come from?</h5>
-              <div className={styles.queOption}>
-                <span
-                  className={styles.optionIndex}
-                  style={{ backgroundColor: "#ADADAD" }}
-                >
-                  A
-                </span>
-                <span
-                  className={styles.optionText}
-                  style={{ backgroundColor: "#ADADAD" }}
-                >
-                  Option: 1
-                </span>
-              </div>
-              <div className={styles.queOption}>
-                <span className={styles.optionIndex}>B</span>
-                <span className={styles.optionText}>Option: 2</span>
-              </div>
-              <div className={styles.queOption}>
-                <span className={styles.optionIndex}>C</span>
-                <span className={styles.optionText}>Option: 3</span>
-              </div>
-              <div className={styles.queOption}>
-                <span className={styles.optionIndex}>D</span>
-                <span className={styles.optionText}>Option: 4</span>
-              </div>
-            </div>
-            <div className={styles.actionPart}>
-              <div className={styles.quickActions}>
-                <button className={styles.saveBtn}>Save & Next</button>
-                <button className={styles.clearBtn}>Clear Response</button>
-              </div>
-              <div className={styles.submitTest}>
-                <button className={styles.submitBtn}>Submit Test</button>
-              </div>
-            </div>
-          </div>
-          <div className={styles.rightPart}>
-            <div className={styles.readPart}>
-              <p>Read Carefully:</p>
-              <div className={styles.blocks}>
-                <div className={styles.block}>
-                  <span className={styles.answered}></span>
-                  <p>Answered</p>
-                </div>
-                <div className={styles.block}>
-                  <span className={styles.notAnswered}></span>
-                  <p>Not Answered</p>
+                  <p style={{ fontSize: "8px" }}>Not Answered</p>
                 </div>
                 <div className={styles.blocks}>
                   <div className={styles.block}>
@@ -311,65 +249,79 @@ const QuizComponent = ({ subModule }) => {
               </div>
             </div>
             <div className={styles.indicatorPart}>
-              <span className={styles.answered}>00</span>
-              <span className={styles.notAnswered}>00</span>
-              <span className={styles.notAnswered}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
-              <span className={styles.notVisited}>00</span>
+              {questions.map((q, index) => {
+                const isAnswered = questions[index]?.isAttempted;
+                const isFirstNotAnswered = index === 0 && !isAnswered;
+                const isNotAnswered =
+                  !isAnswered && index !== currentIndex && !isFirstNotAnswered;
+                const isNotVisited = !isAnswered && !isNotAnswered;
+
+                let className = "";
+                if (isAnswered) {
+                  className = styles.answered;
+                } else if (isNotAnswered) {
+                  className = styles.notAnswered;
+                } else if(isFirstNotAnswered){
+                  className = styles.notVisited;
+                } else {
+                  className = styles.notVisited
+                }
+                return (
+                  <button
+                    key={index}
+                    className={className}
+                    onClick={() => setCurrentIndex(index)}
+                  >
+                    {index + 1}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </Box>
-        <div className={styles.overlayModel}>
-          <div className={styles.resultPart}>
-            <div className={styles.headingResult}>Final Submit</div>
-            <div className={styles.content}>
-              <div className={styles.values}>
+        <Modal isOpen={showModel} onClose={() => setShowModel(false)}>
+          <ModalContent className={styles.resultPart}>
+            <ModalHeader>Final Submit</ModalHeader>
+            <ModalBody>
+              <Box className={styles.values}>
                 <span>Total Time:</span>
                 <span>08 Sec</span>
-              </div>
-              <div className={styles.values}>
+              </Box>
+              <Box className={styles.values}>
                 <span>Total Questions:</span>
-                <span>10</span>
-              </div>
-              <div className={styles.values}>
+                <span>{questions.length}</span>
+              </Box>
+              <Box className={styles.values}>
                 <span>Attempted Questions:</span>
-                <span>02</span>
-              </div>
-              <div className={styles.values}>
+                <span>{attemptedQuestions}</span>
+              </Box>
+              <Box className={styles.values}>
                 <span>Skipped Questions:</span>
-                <span>08</span>
+                <span>{skippedQuestions}</span>
+              </Box>
+            </ModalBody>
+            <ModalFooter>
+              <div className={styles.modelAction}>
+                <button
+                  className={styles.continueBtn}
+                  onClick={() => setShowModel(false)}
+                >
+                  Continue
+                </button>
+                <button
+                  className={styles.responseBtn}
+                  onClick={(e) => handleClick(e, "ResultScreen")}
+                >
+                  See Responses
+                </button>
               </div>
-              <button className={styles.continueBtn}>Continue</button>
-              <button
-                className={styles.responseBtn}
-                onClick={(e) => handleClick(e, "ResultScreen")}
-              >
-                See Responses
-              </button>
-            </div>
-          </div>
-        </div>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </Box>
     );
   };
-  
+
   const ResultScreen = () => {
     return (
       <Box className={styles.resultScreenMain}>
@@ -547,7 +499,6 @@ const QuizComponent = ({ subModule }) => {
       {activeScreen === "MainScreen" && <MainScreen />}
       {activeScreen === "QuizInstructionScreen" && <QuizInstructionScreen />}
       {activeScreen === "QuizQuestionsScreen" && <QuizQuestionsScreen />}
-      {activeScreen === "QuizSubmitScreen" && <QuizSubmitScreen />}
       {activeScreen === "ResultScreen" && <ResultScreen />}
     </Box>
   );

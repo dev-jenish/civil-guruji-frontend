@@ -18,7 +18,7 @@ import { toast } from "react-hot-toast";
 import { AiOutlineClose } from "react-icons/ai";
 import { api } from "utils/urls";
 
-export default function Auth({ isPopup, onClose }) {
+export default function RegisterAuth({ isPopup, onClose }) {
   const [step, setStep] = useState(1);
   const [user, setUser] = useState({});
   const [googleUser, setGoogleUser] = useState({})
@@ -52,6 +52,7 @@ export default function Auth({ isPopup, onClose }) {
       ) : null}
       {step == 3 ? <StepThree googleUser={googleUser} nextStep={nextStep} isPopup={isPopup} user={user} setUser={setUser} /> : null}
       {step == 4 ? <StepFour isPopup={isPopup} onClose={onClose} user={user} setUser={setUser} /> : null}
+      {step == 5 ? <LoginWithPassword onClose={onClose} googleUser={googleUser} user={user} setUser={setUser} setStep={setStep} nextStep={nextStep} isPopup={isPopup} /> : null}
     </div>
   );
 }
@@ -59,6 +60,8 @@ export default function Auth({ isPopup, onClose }) {
 function StepOne({ back, onClose, nextStep, setStep, isPopup, setUser, setGoogleUser }) {
 
   const [mobileNumber, setMobileNumber] = useState('')
+  const [showPasswordInput, setShowPasswordInput] = useState(false)
+  const [password, setPassword] = useState('')
   const router = useRouter()
 
   let mobileNumberRegex = /^[6-9]\d{9}$/
@@ -67,10 +70,13 @@ function StepOne({ back, onClose, nextStep, setStep, isPopup, setUser, setGoogle
     try{
       if(!mobileNumber.match(mobileNumberRegex)){ return toast.error("Invalid mobile number!") }
       let response = await api('/user/signin', "post", { phoneNumber: mobileNumber })
-      if(response.status == 200){
+      if(response.status == 200 && response?.data?.access_token == 'OTP Sent' ){
         setUser(response?.data)
         toast.success("OTP Sent.");
         nextStep();
+      }else if(response.status == 200 && response?.data?.access_token == 'password' ){
+        setUser(response?.data)
+        setStep(5)
       }
     }catch(error){
       console.log(error)
@@ -118,10 +124,10 @@ function StepOne({ back, onClose, nextStep, setStep, isPopup, setUser, setGoogle
 
   return (
     <div className={styles.step}>
-      <p>Login with OTP</p>
+      <p>Login</p>
       <Input value={mobileNumber} onChange={(event) => setMobileNumber(event.target.value)} type="tel" placeholder="+91" size="lg" />
       <div className={styles.cta}>
-        <Button onClick={handleNext}>Send OTP</Button>
+        <Button onClick={handleNext}>Continue</Button>
       </div>
       <p className={styles.xs_text} >Or Continue With</p>
       <Button onClick={() => login()}>Google</Button>
@@ -213,6 +219,8 @@ function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [dob, setDob] = useState('');
   const [yearOfPassing, setYearOfPassing] = useState(0);
   const [mobileNumber, setMobileNumber] = useState('');
@@ -234,6 +242,9 @@ function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
     if(!username){return toast.error("Username is required!")}
     if(!dob){return toast.error("Date of birth is required!")}
     if(!yearOfPassing){return toast.error("Year of passing is required!")}
+    if(!password){return toast.error("password is required!")}
+    if(!confirmPassword){return toast.error("Confirm password is required!")}
+    if(!(confirmPassword == password)){return toast.error("Password doesn't match!")}
 
     try{
       let userId = ''
@@ -254,7 +265,8 @@ function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
         username: username,
         location: '',
         dob: dob,
-        yearOfPassing: yearOfPassing
+        yearOfPassing: yearOfPassing,
+        password
       })
       setUser(response?.data)
       toast.success("Your data is secured.");
@@ -264,6 +276,8 @@ function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
         toast.error(`Username ${error?.response?.data?.keyValue?.username} is not available!`)
       }else if(error?.response?.data && (error?.response?.data?.keyPattern?.email == 1)){
         toast.error(`Email ${error?.response?.data?.keyValue?.email} is already registered with another account!`)
+      }else if(error?.response?.status == 406){
+        toast.error('phone number is already registered with different email!')
       }
       else{
         toast.error('Internal server error!')
@@ -301,6 +315,10 @@ function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
       }
       <p>Username</p>
       <Input value={username} onChange={(event) => {setUsername(event?.target?.value)}} placeholder="jenish123" size="lg" />
+      <p>Password</p>
+      <Input value={password} onChange={(event) => {setPassword(event?.target?.value)}} placeholder="password" size="lg" />
+      <p>Confirm Password</p>
+      <Input value={confirmPassword} type="password" onChange={(event) => {setConfirmPassword(event?.target?.value)}} placeholder="confirm password" size="lg" />
       <p>Date of Birth</p>
       <Input value={dob} onChange={(event) => {setDob(event?.target?.value)}} type="date" placeholder="Harsh Pandey" size="lg" />
       <p>Year of Passing</p>
@@ -502,3 +520,66 @@ function StepFour({ isPopup, onClose, user, setUser }) {
     </>
   );
 }
+
+function LoginWithPassword({ setStep, nextStep, isPopup, user, setUser, onClose }) {
+
+    const [password, setPassword] = useState('')
+    const router = useRouter();
+  
+    const { setUserData } = useContext(userContext)
+  
+    const handleNext = async () => {
+  
+      try{
+        if(!password){
+          return toast.error("Please enter password")
+        }
+        console.log(user?._id)
+        let response = await api('/user/signin-with-password', 'post', {
+          userId: user?._id,
+          password
+        })
+        setUser({
+          ...user,
+          ...response?.data
+        })
+        console.log({
+          ...user,
+          ...response?.data
+        })
+  
+        
+  
+  
+  
+        if(response?.data?.userDetail && Object.keys(response?.data?.userDetail)?.length > 0){
+          setUserData(response?.data)
+          router.push("/explore");
+          if (isPopup) onClose();
+        }else{
+        //   nextStep();
+            return toast.error("Something went wrong!");
+        }
+        toast.success("Authenticated.");
+      }catch(error){
+        console.log(error)
+        toast.error("Error while verifying password!")
+      }
+  
+      
+  
+    };
+  
+    return (
+      <div className={styles.step}>
+        <p>Enter Password</p>
+        <Input value={password} onChange={(event) => setPassword(event.target.value)} type="text" placeholder="password" size="lg" />
+        <div className={styles.cta}>
+          <Button variant="outline" onClick={() => setStep(1)}>
+            Back
+          </Button>
+          <Button onClick={handleNext}>Submit</Button>
+        </div>
+      </div>
+    );
+  }

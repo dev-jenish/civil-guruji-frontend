@@ -1,4 +1,5 @@
 import CourseCarousel from "@/components/course/CourseCarousel";
+import CourseFloatCard from "@/components/course/CourseFloatCard";
 import PackageCarousel from "@/components/package/PackageCarousel";
 import PackageCourses from "@/components/package/PackageCourses";
 import PackageFloatCard from "@/components/package/PackageFloatCard";
@@ -102,7 +103,8 @@ export default function Package({}) {
             <PackageInfo packageData={packageData} />
             <PackageCourses packageData={packageData} />
           </div>
-          <PackageFloatCard packageData={packageData} />
+          {/* <PackageFloatCard packageData={packageData} /> */}
+          <CourseFloatCard isPackage={true} courseData={packageData} />
         </div>
         {/* <PackageCarousel
           className={styles.carouselWrapper}

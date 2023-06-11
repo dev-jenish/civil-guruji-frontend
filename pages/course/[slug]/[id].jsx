@@ -258,7 +258,7 @@ export default function Topic({ topic, course }) {
 
           {selectedTopic?.subModule?.type == 5 && (
             <div className={styles.iframe}>
-              <Quiz subModule={selectedTopic?.subModule} />
+              <QuizComponent subModule={selectedTopic?.subModule} />
             </div>
           )}
           {selectedTopic?.subModule?.type == 2 && (
@@ -289,12 +289,6 @@ export default function Topic({ topic, course }) {
                     <p>Description</p>
                   </span>
                 </Tab>
-                {/* <Tab>
-                  <span className={styles.tab}>
-                    <BiCommentDetail />
-                    <p>Comment</p>
-                  </span>
-                </Tab> */}
                 {selectedTopic?.subModule?.type == 1 && selectedTopic?.subModule?.modelUrl && <Tab>
                   <span className={styles.tab}>
                     <BiCube />

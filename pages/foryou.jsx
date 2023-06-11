@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Layout from "@/components/reusable/Layout";
 import styles from "@/styles/Explore.module.css";
 import CourseCarousel from "@/components/course/CourseCarousel";
@@ -7,6 +7,7 @@ import Banner from "@/components/course/Banner";
 import PackageCarousel from "@/components/package/PackageCarousel";
 import { toast } from "react-hot-toast";
 import { api } from "utils/urls";
+import { userContext } from "@/context/userContext";
 
 export default function ForYou() {
 
@@ -14,6 +15,9 @@ export default function ForYou() {
   const [userId, setUserId] = useState('')
   const [loading, setLoading] = useState(false)
   const [recommendedCourses, setReccomendedCourses] = useState([])
+  const [purchasedCourses, setPurchasedCourses] = useState([])
+
+  const { userData } = useContext(userContext)
 
   const getAllCourses = async () => {
     try{
@@ -29,6 +33,19 @@ export default function ForYou() {
     }catch(error){
       console.log(error)
       toast.error('Error while fetching courses')
+    }
+  }
+
+  const getAllPurchasedCourse = async (userId) => {
+    try{
+      let response = await api('/course/list-purchased-courses', 'post', {
+        userId
+      })
+      if(response?.data && response?.data?.length>0){
+        setPurchasedCourses(response?.data)
+      }
+    }catch(error){
+      console.log(error)
     }
   }
     
@@ -59,6 +76,9 @@ export default function ForYou() {
   useEffect(() => {
     getRecoomendedCourses()
     getAllCourses()
+    if (userData?._id) {
+      getAllPurchasedCourse(userData?._id)
+  }
   }, [])
 
 
@@ -85,6 +105,10 @@ export default function ForYou() {
                 return <CourseCarousel key={index} title={course?.name} courses={course?.data || []} />
               }
             })
+          }
+          {
+            purchasedCourses && purchasedCourses?.length>0 &&
+            <CourseCarousel title={"Start learning"} courses={purchasedCourses} />
           }
           {/* <CourseCarousel title="Online Courses" courses={courses?.onlineCourses || []} />
           <PackageCarousel title="Top Packages" />
