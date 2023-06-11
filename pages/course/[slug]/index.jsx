@@ -14,9 +14,11 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import { FreeMode } from "swiper";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { api } from "utils/urls";
 
-export default function CourseDetail({}) {
+export default function CourseDetail({ }) {
   const { ref, visible } = useScrollObserver();
   const router = useRouter();
   const [courseId, setCourseId] = useState("");
@@ -117,54 +119,52 @@ export default function CourseDetail({}) {
                 <h5 className={styles.boxHeading}>Learning Duration</h5>
                 <span className={styles.durationValue}>10 Days</span>
               </div>
-              <div className={styles.contentBox}>
-                <h5 className={styles.boxHeading}>Crack Jobs</h5>
-                <div className={styles.chipsPart}>
-                  <div className={styles.chip}>Product Owner</div>
-                  <div className={styles.chip}>Site Engineer</div>
+              {
+                courseData?.courseDetail?.crackJobs && courseData?.courseDetail?.crackJobs?.length > 0 &&
+                <div className={styles.contentBox}>
+                  <h5 className={styles.boxHeading}>Crack Jobs</h5>
+                  <div className={styles.chipsPart}>
+                    {
+                      courseData?.courseDetail?.crackJobs.map((job) => {
+                        return <div className={styles.chip}>{job.value}</div>
+                      })
+                    }
+                  </div>
                 </div>
-              </div>
-              <div className={styles.contentBox}>
-                <h5 className={styles.boxHeading}>Skills</h5>
-                <span className={styles.durationValue}>
-                  Autocad,3D,Revit etc.
-                </span>
-              </div>
+              }
+              {
+                courseData?.skillsText &&
+                <div className={styles.contentBox}>
+                  <h5 className={styles.boxHeading}>Skills</h5>
+                  <span className={styles.durationValue}>
+                    {courseData?.skillsText}
+                  </span>
+                </div>
+              }
             </div>
             {/* new added for job container */}
             <div className={styles.jobContainer}>
               <h3 className={styles.jobHeading}>Student Got Job</h3>
               <div className={styles.jobCardContainer}>
-                <div className={styles.jobCard}>
-                  <div className={styles.Imagepart}>
-                    <Image width={180} height={250} src="/assets/Group 1.svg" alt="studentImage" />
-                  </div>
-                  <div className={styles.DetailsPart}></div>
-                </div>
-                <div className={styles.jobCard}>
-                  <div className={styles.Imagepart}>
-                    <Image width={180} height={250} src="/assets/Group 1.svg" alt="studentImage" />
-                  </div>
-                  <div className={styles.DetailsPart}></div>
-                </div>
-                <div className={styles.jobCard}>
-                  <div className={styles.Imagepart}>
-                    <Image width={180} height={250} src="/assets/Group 1.svg" alt="studentImage" />
-                  </div>
-                  <div className={styles.DetailsPart}></div>
-                </div>
-                <div className={styles.jobCard}>
-                  <div className={styles.Imagepart}>
-                    <Image width={180} height={250} src="/assets/Group 1.svg" alt="studentImage" />
-                  </div>
-                  <div className={styles.DetailsPart}></div>
-                </div>
-                <div className={styles.jobCard}>
-                  <div className={styles.Imagepart}>
-                    <Image width={180} height={250} src="/assets/Group 1.svg" alt="studentImage" />
-                  </div>
-                  <div className={styles.DetailsPart}></div>
-                </div>
+
+                <Swiper
+                  slidesPerView={"auto"}
+                  spaceBetween={20}
+                  freeMode={true}
+                  modules={[FreeMode]}
+                  className="courseCards"
+                >
+                  {courseData?.studentsGotJob && courseData?.studentsGotJob?.length > 0 && courseData?.studentsGotJob.map((student, idx) => (
+                    <SwiperSlide key={idx} style={{ cursor: 'pointer' }}>
+                      <div className={styles.jobCard}>
+                        <div className={styles.Imagepart}>
+                          <Image width={180} height={250} src={student?.image} alt="studentImage" />
+                        </div>
+                        <div className={styles.DetailsPart}>{student?.name}</div>
+                      </div>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
               </div>
             </div>
             <CourseInfo

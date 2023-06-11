@@ -16,7 +16,9 @@ export default function Header() {
         <Link href="/community">
           <li>Community</li>
         </Link>
-        <li>ForYou</li>
+        <Link href="/foryou" >
+          <li>ForYou</li>
+        </Link>
         <Link href="/login">
           <Button>Login</Button>
         </Link>

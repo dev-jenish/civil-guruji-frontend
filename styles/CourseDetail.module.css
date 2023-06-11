@@ -256,6 +256,9 @@
   border-radius: 8px;
   background-color: var(--card-bg);
 }
+.DetailsPart{
+  margin-top: 0.5rem;
+}
 
 @media only screen and (max-width: 800px) {
   .container {

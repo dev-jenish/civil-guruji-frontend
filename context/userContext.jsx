@@ -7,10 +7,11 @@ export const useUserContext = () => useContext(userContext);
 
 function UserProvider({ children }) {
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [userData, setUserData] = useState({})
 
-  useEffect(() => {
-    handleAuth();
-  }, []);
+  // useEffect(() => {
+  //   handleAuth();
+  // }, []);
 
   const handleAuth = async () => {
     if (localStorage.getItem("auth-modal")) {
@@ -34,6 +35,8 @@ function UserProvider({ children }) {
     showAuthModal,
     setShowAuthModal,
     closeModal,
+    userData,
+    setUserData
   };
 
   return (

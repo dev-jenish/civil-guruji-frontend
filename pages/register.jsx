@@ -14,6 +14,7 @@ import facebookIcon from '../public/assets/Facebook.png'
 import instagramIcon from '../public/assets/Instagram.png'
 import linkdinIcon from '../public/assets/Linkdin.png'
 import twitterIcon from '../public/assets/twitter.png'
+import RegisterAuth from "@/components/reusable/RegisterAuth";
 
 export default function Login() {
     const router = useRouter();
@@ -49,7 +50,8 @@ export default function Login() {
                     </div>
                     <div className={styles.card}>
                         <h2 className={styles.title} >Login</h2>
-                        <Auth />
+                        {/* <Auth /> */}
+                        <RegisterAuth />
                         {/* <div className={styles.step}>
                             <p>Name</p>
                             <Input placeholder="Harsh Pandey" size="lg" />
