@@ -125,8 +125,8 @@ export default function CourseDetail({ }) {
                   <h5 className={styles.boxHeading}>Crack Jobs</h5>
                   <div className={styles.chipsPart}>
                     {
-                      courseData?.courseDetail?.crackJobs.map((job) => {
-                        return <div className={styles.chip}>{job.value}</div>
+                      courseData?.courseDetail?.crackJobs.map((job, index) => {
+                        return <div key={index} className={styles.chip}>{job.value}</div>
                       })
                     }
                   </div>
