@@ -27,6 +27,7 @@ import Skeleton from "react-loading-skeleton";
 import { api } from "utils/urls";
 import country_state from 'utils/country_state.json'
 import Select from "react-select";
+import { updateUserDetails } from "utils/user";
 
 export default function Checkout() {
     const [discount, setDiscount] = useState("Civil20");
@@ -44,18 +45,28 @@ export default function Checkout() {
     const [userMobileNumber, setUserMobileNumber] = useState('')
     const [stateValue, setStateValue] = useState('')
     const [countryValue, setCountryValue] = useState('')
+    const [purchasedData, setPurchasedData] = useState({})
 
-    const { userData } = useContext(userContext)
+    const { userData, setUserData } = useContext(userContext)
 
     useEffect(() => {
-        if (!userData?._id) {
-            router.push('/register')
+        if (!userData?._id && courseID && planID) {
+            router.push(`/login?previous=/checkout/${courseID}/${planID}`)
         } else {
             setUserName(userData?.userDetail?.name)
             setUserEmail(userData?.userDetail?.email)
             setUserMobileNumber(userData?.phoneNumber)
+            if(userData?.purchases && userData?.purchases?.length>0){
+                let purchasedPlan = userData.purchases.find((purchase) => {
+                    return purchase?.planDetail == planID
+                })
+                if(purchasedPlan){
+                    setPurchasedData(purchasedPlan)
+                }
+            }
+
         }
-    }, [userData])
+    }, [userData, courseID, planID])
 
     const [loading, setLoading] = useState(true)
 
@@ -165,14 +176,24 @@ export default function Checkout() {
             })
             console.log(data)
             toast.success('Payment successful!')
+            await updateUserDetails(userData, setUserData)
             router.push('/foryou')
         } catch (error) {
             console.log(error)
         }
     }
 
+    const handlePayEmi = async () => {
+        // try{
+        //     let response = await api()
+        // }catch(error){
+        //     console.log(error)
+        //     toast.error('Emi payment failed!')
+        // }
+    }
 
-    const handlePayment = async () => {
+
+    const handlePayment = async (type) => {
         try {
             setLoading(true)
 
@@ -187,7 +208,7 @@ export default function Checkout() {
 
 
             console.log('Payment intialized')
-            await makePayment()
+            await makePayment(type)
 
         } catch (error) {
             console.log(error)
@@ -196,7 +217,7 @@ export default function Checkout() {
         }
     }
 
-    const makePayment = async () => {
+    const makePayment = async (type) => {
         console.log("here...");
         const res = await initializeRazorpay();
 
@@ -209,6 +230,7 @@ export default function Checkout() {
         let data = await api('/payment/razorpay', 'post', {
             courseId: courseID,
             planId: planID,
+            type
         })
         data = data?.data
 
@@ -231,14 +253,22 @@ export default function Checkout() {
                         paymentData: response,
                         planId: planID,
                         userId: userData?._id,
-                        mode: 'Razorpay'
+                        mode: 'Razorpay',
+                        type: type,
+                        purchaseId: purchasedData?._id
                     })
                     console.log(data)
                     toast.success('Payment successful!')
+
+
+                    await updateUserDetails(userData, setUserData)
+
+
                     router.push('/foryou')
 
                 } catch (error) {
                     console.log(error)
+                    toast.error('Payment faild!')
                 }
 
             },
@@ -461,7 +491,7 @@ export default function Checkout() {
                                                                 </Text>
                                                             </FormLabel>
                                                         </HStack>
-                                                        <Button onClick={handlePayment} borderRadius={4} height={12} width="full">
+                                                        <Button onClick={() => handlePayment('One time payment')} borderRadius={4} height={12} width="full">
                                                             Checkout
                                                         </Button>
                                                     </VStack>
@@ -565,7 +595,7 @@ export default function Checkout() {
                                                             width="full"
                                                             justifyContent="space-between"
                                                             alignItems="flex-start"
-                                                            backgroundColor="#454546"
+                                                            backgroundColor={ (purchasedData?.expiresOn && (purchasedData?.emisPaid >= 0)) ? "inherit" : "#454546"}
                                                             padding="5px 10px"
                                                         >
                                                             <Text fontSize={14}>Base Amount</Text>
@@ -576,6 +606,7 @@ export default function Checkout() {
                                                             justifyContent="space-between"
                                                             alignItems="flex-start"
                                                             padding="5px 10px"
+                                                            backgroundColor={ (purchasedData?.expiresOn && (purchasedData?.emisPaid == 0)) ? "#454546" : "inherit"}
                                                         >
                                                             <Text fontSize={14}>1st EMI</Text>
                                                             <Text fontSize={14}>₹{planData?.emiAmount}</Text>
@@ -585,6 +616,7 @@ export default function Checkout() {
                                                             justifyContent="space-between"
                                                             alignItems="flex-start"
                                                             padding="5px 10px"
+                                                            backgroundColor={(purchasedData?.expiresOn && (purchasedData?.emisPaid == 1)) ? "#454546" : "inherit"}
                                                         >
                                                             <Text fontSize={14}>2nd EMI</Text>
                                                             <Text fontSize={14}>₹{planData?.emiAmount}</Text>
@@ -594,6 +626,7 @@ export default function Checkout() {
                                                             justifyContent="space-between"
                                                             alignItems="flex-start"
                                                             padding="5px 10px"
+                                                            backgroundColor={(purchasedData?.expiresOn && (purchasedData?.emisPaid == 2)) ? "#454546" : "inherit"}
                                                         >
                                                             <Text fontSize={14}>3rd EMI</Text>
                                                             <Text fontSize={14}>₹{planData?.emiAmount}</Text>
@@ -648,8 +681,19 @@ export default function Checkout() {
                                                                 </Text>
                                                             </FormLabel>
                                                         </HStack>
-                                                        <Button borderRadius={4} height={12} width="full">
-                                                            Enroll @ {planData?.baseAmount}
+                                                        <Button onClick={() => {(purchasedData?.expiresOn && (purchasedData?.emisPaid >= 0 && purchasedData?.emisPaid < 3)) ? handlePayment('emi') : handlePayment('base_amount')}} borderRadius={4} height={12} width="full">
+                                                            {
+                                                                (purchasedData?.expiresOn && (purchasedData?.emisPaid >= 0))
+                                                                ?
+                                                                (purchasedData?.expiresOn && (purchasedData?.emisPaid == 3))
+                                                                ?
+                                                                `Paid`
+                                                                :
+                                                                `Pay EMI @ ${planData?.emiAmount}`
+                                                                :
+                                                                `Enroll @ ${planData?.baseAmount}`
+                                                            }
+                                                            
                                                         </Button>
                                                     </VStack>
                                                 </div>

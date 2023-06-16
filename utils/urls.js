@@ -1,6 +1,8 @@
 import axios from "axios"
+import { toast } from "react-hot-toast"
 
-// const baseURL = "http://localhost:3001" // local
+// export const baseURL = "http://localhost:3001" // local
+// const baseURL = "http://142.93.208.13:3001/" // server
 const baseURL = "https://civil-guruji-api.onrender.com/" // server
 
 const Axios = axios.create({
@@ -9,17 +11,58 @@ const Axios = axios.create({
 
 export const api = async (url, type, data, headers) => {
 
-    let requestTypes = [ 'get', 'post', 'put', 'delete' ]
+    let requestTypes = ['get', 'post', 'put', 'delete']
     let requestType = requestTypes.find((reqType) => { return reqType === type })
 
-    if(requestType){
-        try{
-            const response = await Axios({ method: requestType, url: url, data: data, headers: headers })
+    if (requestType) {
+        try {
+            const response = await Axios({
+                method: requestType, url: url, data: data, headers: {
+                    ...headers,
+                    'x-access-token': localStorage.getItem('accessToken')
+                }
+            })
             return response
-        }catch(e){
-            return Promise.reject(e)
+        } catch (e) {
+
+            if (e?.response?.status == 403) {
+                try {
+
+                    let refreshResponse = await Axios.get('/token/refresh', {
+                        headers: {
+                            'x-refresh-token': localStorage.getItem('refreshToken')
+                        }
+                    })
+
+                    if (refreshResponse?.data?.access_token) {
+                        localStorage.setItem('accessToken', refreshResponse?.data?.access_token)
+                        return await api(url, type, data, headers)
+                    } else {
+                        // expired refresh token
+                        toast.error("Unauthorized")
+                        localStorage.removeItem('accessToken')
+                        localStorage.removeItem('refreshToken')
+                        if (!(document.location.pathname == '/login')) {
+                            document.location.href = '/login'
+                        }
+                        return Promise.reject(e)
+                    }
+
+                } catch (error) {
+                    toast.error("Unauthorized")
+                    localStorage.removeItem('accessToken')
+                    localStorage.removeItem('refreshToken')
+                    if (!(document.location.pathname == '/login')) {
+                        document.location.href = '/login'
+                    }
+                    return Promise.reject(e)
+                }
+            } else {
+                return Promise.reject(e)
+            }
+
         }
-    }else{
+    } else {
         return Promise.reject("invalid request type")
     }
 }

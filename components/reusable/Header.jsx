@@ -1,9 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
+import { userContext } from "@/context/userContext";
 import styles from "@/styles/Header.module.css";
 import { Button } from "@chakra-ui/react";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useContext } from "react";
 
 export default function Header() {
+
+  const { userData } = useContext(userContext)
+
+  const router = useRouter()
+
   return (
     <div className={styles.header}>
       <Link href="/">
@@ -19,9 +27,12 @@ export default function Header() {
         <Link href="/foryou" >
           <li>ForYou</li>
         </Link>
-        <Link href="/login">
+        {
+          !(userData?._id) &&
+        <Link href={`/login?previous=${router.asPath}`}>
           <Button>Login</Button>
         </Link>
+        }
         {/* <li id={styles.profile}>Harsh Pandey</li> */}
       </ul>
     </div>
