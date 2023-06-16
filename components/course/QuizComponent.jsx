@@ -33,6 +33,14 @@ const QuizComponent = ({ subModule }) => {
     }
   }, [subModule]);
 
+  useEffect(() => {
+    if (question?.isAttempted && (question?.answer >= 0)) {
+      setSelectedOption(question?.answer - 1)
+    } else {
+      setSelectedOption(null)
+    }
+  }, [question])
+
   const handleClick = async (e, screen) => {
     e.preventDefault();
     setActiveScreen(screen);
@@ -46,10 +54,11 @@ const QuizComponent = ({ subModule }) => {
     const oldData = temp[currentIndex];
     temp[currentIndex] = {
       ...oldData,
-      answer: selectedOption,
+      answer: selectedOption !== null ? selectedOption + 1 : null,
       isAttempted: selectedOption !== null,
     };
     setQuestions(temp);
+    console.log(currentIndex, questions?.length - 1)
     const isLastQuestion = currentIndex === questions.length - 1;
     if (isLastQuestion) {
       setShowModel(true);
@@ -78,7 +87,7 @@ const QuizComponent = ({ subModule }) => {
     e.preventDefault();
     // need to add api call and data was in questions state
     try {
-    } catch (error) {}
+    } catch (error) { }
   };
 
   // screen module code
@@ -167,14 +176,17 @@ const QuizComponent = ({ subModule }) => {
               </div>
             </div>
             <div className={styles.questionBlock}>
+              {console.log(question)}
+              {console.log(selectedOption)}
               <h5>{question.question}</h5>
               {question.options.map((option, index) => (
                 <div
                   className={styles.queOption}
                   key={index}
                   onClick={() => {
-                    setSelectedOption(option);
+                    setSelectedOption(index);
                     console.log(
+                      index,
                       option,
                       selectedOption,
                       "<== after attempting ques"
@@ -185,7 +197,7 @@ const QuizComponent = ({ subModule }) => {
                     className={styles.optionIndex}
                     style={{
                       backgroundColor:
-                        option === selectedOption ? "#ADADAD" : "#000000",
+                        index === selectedOption ? "#ADADAD" : "#000000",
                     }}
                   >
                     {String.fromCharCode(65 + index)}
@@ -194,7 +206,7 @@ const QuizComponent = ({ subModule }) => {
                     className={styles.optionText}
                     style={{
                       backgroundColor:
-                        option === selectedOption ? "#ADADAD" : "transparent",
+                        index === selectedOption ? "#ADADAD" : "transparent",
                     }}
                   >
                     {option}
@@ -207,7 +219,6 @@ const QuizComponent = ({ subModule }) => {
                 <button
                   className={styles.saveBtn}
                   onClick={handleSaveAndNext}
-                  disabled={currentIndex === questions.length - 1}
                 >
                   Save & Next
                 </button>
@@ -261,7 +272,7 @@ const QuizComponent = ({ subModule }) => {
                   className = styles.answered;
                 } else if (isNotAnswered) {
                   className = styles.notAnswered;
-                } else if(isFirstNotAnswered){
+                } else if (isFirstNotAnswered) {
                   className = styles.notVisited;
                 } else {
                   className = styles.notVisited
@@ -327,16 +338,16 @@ const QuizComponent = ({ subModule }) => {
       <Box className={styles.resultScreenMain}>
         <Box className={styles.progressBar}>
           <p className={styles.textLabel}>Result:</p>
-          <span className={styles.progressValue}>30%</span>
+          <span className={styles.progressValue}> {(questions?.filter(questionData => ( questionData?.isAttempted && (questionData?.answer == questionData?.solution)))?.length / questions?.length) * 100} %</span>
           <Progress value={30} size="lg" />
         </Box>
         <Box className={styles.chartPart}>
           <div className={styles.chart}>
             <PieChart
               data={[
-                { title: "One", value: 10, color: "#2BB970" },
-                { title: "Two", value: 15, color: "#FF0000" },
-                { title: "Three", value: 20, color: "#292A2E" },
+                { title: "One", value: questions?.filter(questionData => ( questionData?.isAttempted && (questionData?.answer == questionData?.solution)))?.length, color: "#2BB970" },
+                { title: "Two", value: questions?.filter(questionData => ( questionData?.isAttempted && (questionData?.answer != questionData?.solution)))?.length, color: "#FF0000" },
+                { title: "Three", value: questions?.filter(questionData => ( !questionData?.isAttempted ))?.length, color: "#292A2E" },
               ]}
             />
           </div>
@@ -344,151 +355,77 @@ const QuizComponent = ({ subModule }) => {
             <div className={styles.indicatorBlock}>
               <span className={styles.correct}></span>
               <span className={styles.answerMethod}>Correct Answers:</span>
-              <span className={styles.answersNo}>04/10</span>
+              {console.log(questions?.filter(questionData => ( questionData?.isAttempted && (questionData?.answer == questionData?.solution))))}
+              <span className={styles.answersNo}>{questions?.filter(questionData => ( questionData?.isAttempted && (questionData?.answer == questionData?.solution)))?.length}/{questions?.length}</span>
             </div>
             <div className={styles.indicatorBlock}>
               <span className={styles.wrongAnswered}></span>
               <span className={styles.answerMethod}>Wrong Answers:</span>
-              <span className={styles.answersNo}>02/10</span>
+              <span className={styles.answersNo}>{questions?.filter(questionData => ( questionData?.isAttempted && (questionData?.answer != questionData?.solution)))?.length}/{questions?.length}</span>
             </div>
             <div className={styles.indicatorBlock}>
               <span className={styles.notAnswered}></span>
               <span className={styles.answerMethod}>Not Answered:</span>
-              <span className={styles.answersNo}>04/10</span>
+              <span className={styles.answersNo}>{questions?.filter(questionData => ( !questionData?.isAttempted ))?.length}/{questions?.length}</span>
             </div>
           </div>
         </Box>
         <Box className={styles.quesPart}>
-          <div className={styles.quesionContainer}>
-            <div className={styles.questionBlock}>
-              <h5>1. Where does it come from?</h5>
-              <div className={styles.queOption}>
-                <span
-                  className={styles.optionIndex}
-                  style={{ backgroundColor: "#2BB970" }}
-                >
-                  A
-                </span>
-                <span
-                  className={styles.optionText}
-                  style={{ backgroundColor: "#2BB970" }}
-                >
-                  Option: 1
-                </span>
+          {
+            questions && questions?.length > 0 && questions.map((questionData, index) => {
+              console.log(questionData)
+              return <div key={index} className={styles.quesionContainer}>
+                <div className={styles.questionBlock}>
+                  <h5>{`${index + 1}. ${questionData?.question}`}</h5>
+                  {
+                    questionData?.options && questionData?.options?.length > 0 && questionData?.options.map((optionData, index) => {
+                      return <div key={index} className={styles.queOption}>
+                        <span
+                          className={styles.optionIndex}
+                          style={{ backgroundColor: `${(questionData?.isAttempted && (questionData?.answer == (index + 1))) ? (questionData?.answer == questionData?.solution) ? "#2BB970" : "#FF0000" : "#000"}` }}
+                        >
+                          {String.fromCharCode(65 + index)}
+                        </span>
+                        <span
+                          className={styles.optionText}
+                          style={{ backgroundColor: `${(questionData?.isAttempted && (questionData?.answer == (index + 1))) ? (questionData?.answer == questionData?.solution) ? "#2BB970" : "#FF0000" : "#fff"}` }}
+                        >
+                          {optionData}
+                        </span>
+                      </div>
+                    })
+                  }
+                </div>
+                <div className={styles.answerPart}>
+                  {
+                    questionData?.isAttempted ? questionData?.answer == questionData?.solution ?
+                      <div className={styles.rightAnswer}>
+                        <FaCheck />
+                        Your answer is correct
+                      </div>
+                      :
+                      <div className={styles.wrongAnswer}>
+                        <FaTimes />
+                        Your answer is wrong
+                      </div>
+                      :
+                      <div className={styles.skippedAnswer}>
+                        <MdDoNotDisturbAlt />
+                        You Have Skipped.
+                      </div>
+                  }
+                  <p className={styles.correctAns}>Correct Answer: {String.fromCharCode(65 + questionData?.solution - 1)}</p>
+                  {
+                    questionData?.isAttempted ?
+                      <p className={styles.yourAns}>Your Answer: {String.fromCharCode(65 + questionData?.answer - 1)}</p>
+                      :
+                      <p className={styles.yourAns}>Your Answer: -</p>
+                  }
+                  <p className={styles.gotMark}>Got Marks: { questionData?.isAttempted ? (questionData?.answer == questionData?.solution) ? '+2.00' : '-1.00' : '0.00'}</p>
+                </div>
               </div>
-              <div className={styles.queOption}>
-                <span className={styles.optionIndex}>B</span>
-                <span className={styles.optionText}>Option: 2</span>
-              </div>
-              <div className={styles.queOption}>
-                <span
-                  className={styles.optionIndex}
-                  style={{ backgroundColor: "#FF0000" }}
-                >
-                  C
-                </span>
-                <span
-                  className={styles.optionText}
-                  style={{ backgroundColor: "#FF0000" }}
-                >
-                  Option: 3
-                </span>
-              </div>
-              <div className={styles.queOption}>
-                <span className={styles.optionIndex}>D</span>
-                <span className={styles.optionText}>Option: 4</span>
-              </div>
-            </div>
-            <div className={styles.answerPart}>
-              <div className={styles.wrongAnswer}>
-                <FaTimes />
-                Your answer is wrong
-              </div>
-              <p className={styles.correctAns}>Correct Answer: A</p>
-              <p className={styles.yourAns}>Your Answer: C</p>
-              <p className={styles.gotMark}>Got Marks: -1.00</p>
-            </div>
-          </div>
-          <div className={styles.quesionContainer}>
-            <div className={styles.questionBlock}>
-              <h5>2. Where does it come from?</h5>
-              <div className={styles.queOption}>
-                <span
-                  className={styles.optionIndex}
-                  style={{ backgroundColor: "#2BB970" }}
-                >
-                  A
-                </span>
-                <span
-                  className={styles.optionText}
-                  style={{ backgroundColor: "#2BB970" }}
-                >
-                  Option: 1
-                </span>
-              </div>
-              <div className={styles.queOption}>
-                <span className={styles.optionIndex}>B</span>
-                <span className={styles.optionText}>Option: 2</span>
-              </div>
-              <div className={styles.queOption}>
-                <span className={styles.optionIndex}>C</span>
-                <span className={styles.optionText}>Option: 3</span>
-              </div>
-              <div className={styles.queOption}>
-                <span className={styles.optionIndex}>D</span>
-                <span className={styles.optionText}>Option: 4</span>
-              </div>
-            </div>
-            <div className={styles.answerPart}>
-              <div className={styles.rightAnswer}>
-                <FaCheck />
-                Your answer is correct
-              </div>
-              <p className={styles.correctAns}>Correct Answer: A</p>
-              <p className={styles.yourAns}>Your Answer: A</p>
-              <p className={styles.gotMark}>Got Marks: +2.00</p>
-            </div>
-          </div>
-          <div className={styles.quesionContainer}>
-            <div className={styles.questionBlock}>
-              <h5>3. Where does it come from?</h5>
-              <div className={styles.queOption}>
-                <span
-                  className={styles.optionIndex}
-                  style={{ backgroundColor: "#2BB970" }}
-                >
-                  A
-                </span>
-                <span
-                  className={styles.optionText}
-                  style={{ backgroundColor: "#2BB970" }}
-                >
-                  Option: 1
-                </span>
-              </div>
-              <div className={styles.queOption}>
-                <span className={styles.optionIndex}>B</span>
-                <span className={styles.optionText}>Option: 2</span>
-              </div>
-              <div className={styles.queOption}>
-                <span className={styles.optionIndex}>C</span>
-                <span className={styles.optionText}>Option: 3</span>
-              </div>
-              <div className={styles.queOption}>
-                <span className={styles.optionIndex}>D</span>
-                <span className={styles.optionText}>Option: 4</span>
-              </div>
-            </div>
-            <div className={styles.answerPart}>
-              <div className={styles.skippedAnswer}>
-                <MdDoNotDisturbAlt />
-                You Have Skipped.
-              </div>
-              <p className={styles.correctAns}>Correct Answer: A</p>
-              <p className={styles.yourAns}>Your Answer: -</p>
-              <p className={styles.gotMark}>Got Marks: 0.00</p>
-            </div>
-          </div>
+            })
+          }
         </Box>
       </Box>
     );
@@ -499,7 +436,7 @@ const QuizComponent = ({ subModule }) => {
       {activeScreen === "MainScreen" && <MainScreen />}
       {activeScreen === "QuizInstructionScreen" && <QuizInstructionScreen />}
       {activeScreen === "QuizQuestionsScreen" && <QuizQuestionsScreen />}
-      {activeScreen === "ResultScreen" && <ResultScreen />}
+      {activeScreen === "ResultScreen" && <ResultScreen questions={questions} />}
     </Box>
   );
 };

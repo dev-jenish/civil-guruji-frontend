@@ -8,8 +8,10 @@ import PackageCarousel from "@/components/package/PackageCarousel";
 import { toast } from "react-hot-toast";
 import { api } from "utils/urls";
 import { userContext } from "@/context/userContext";
+import { useRouter } from "next/router";
 
 export default function ForYou() {
+  const router = useRouter()
 
   const [courses, setCourses] = useState([])
   const [userId, setUserId] = useState('')
@@ -18,6 +20,9 @@ export default function ForYou() {
   const [purchasedCourses, setPurchasedCourses] = useState([])
 
   const { userData } = useContext(userContext)
+
+
+  
 
   const getAllCourses = async () => {
     try{
@@ -74,6 +79,9 @@ export default function ForYou() {
   }
 
   useEffect(() => {
+    if(!userData?._id){
+    router.push(`/login?previous=${router.asPath}`)
+  }
     getRecoomendedCourses()
     getAllCourses()
     if (userData?._id) {
@@ -93,6 +101,10 @@ export default function ForYou() {
             })
           } */}
           {
+            purchasedCourses && purchasedCourses?.length>0 &&
+            <CourseCarousel title={"Start learning"} courses={purchasedCourses} />
+          }
+          {
               // if(course){
               //   return <CourseCarousel key={index} title={"Reccomendations"} courses={recommendedCourses || []} />
               // }
@@ -106,10 +118,7 @@ export default function ForYou() {
               }
             })
           }
-          {
-            purchasedCourses && purchasedCourses?.length>0 &&
-            <CourseCarousel title={"Start learning"} courses={purchasedCourses} />
-          }
+          
           {/* <CourseCarousel title="Online Courses" courses={courses?.onlineCourses || []} />
           <PackageCarousel title="Top Packages" />
           <CourseCarousel title="Free Courses" courses={courses?.['freeCourses'] || []} /> */}
