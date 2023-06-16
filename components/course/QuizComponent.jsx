@@ -374,12 +374,12 @@ const QuizComponent = ({ subModule }) => {
           {
             questions && questions?.length > 0 && questions.map((questionData, index) => {
               console.log(questionData)
-              return <div className={styles.quesionContainer}>
+              return <div key={index} className={styles.quesionContainer}>
                 <div className={styles.questionBlock}>
                   <h5>{`${index + 1}. ${questionData?.question}`}</h5>
                   {
                     questionData?.options && questionData?.options?.length > 0 && questionData?.options.map((optionData, index) => {
-                      return <div className={styles.queOption}>
+                      return <div key={index} className={styles.queOption}>
                         <span
                           className={styles.optionIndex}
                           style={{ backgroundColor: `${(questionData?.isAttempted && (questionData?.answer == (index + 1))) ? (questionData?.answer == questionData?.solution) ? "#2BB970" : "#FF0000" : "#000"}` }}

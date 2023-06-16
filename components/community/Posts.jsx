@@ -7,14 +7,14 @@ export default function Posts({ posts, isComment }) {
     <div className={styles.postWrapper}>
       {
         posts && !isComment && posts?.length>0 &&
-        posts.map((post) => {
-          return <Post postData={post} />
+        posts.map((post, index) => {
+          return <Post key={index} postData={post} />
         })
       }
       {
         posts && isComment && posts?.comments?.length>0 &&
-        posts.comments.map((post) => {
-          return <Post postData={post} />
+        posts.comments.map((post, index) => {
+          return <Post key={index} postData={post} />
         })
       }
       {/* <Post />
