@@ -491,7 +491,7 @@ export default function Checkout() {
                                                                 </Text>
                                                             </FormLabel>
                                                         </HStack>
-                                                        <Button onClick={() => handlePayment('One time payment')} borderRadius={4} height={12} width="full">
+                                                        <Button onClick={() => handlePayment('pay_all')} borderRadius={4} height={12} width="full">
                                                             Checkout
                                                         </Button>
                                                     </VStack>
