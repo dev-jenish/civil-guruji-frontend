@@ -158,7 +158,7 @@ export default function CourseDetail({ }) {
                     <SwiperSlide key={idx} style={{ cursor: 'pointer' }}>
                       <div className={styles.jobCard}>
                         <div className={styles.Imagepart}>
-                          <Image width={180} height={250} src={baseURL + `/${student?.image}`} alt="studentImage" />
+                          <Image width={180} height={250} src={baseURL + `/${student?.image}`} />
                         </div>
                         <div className={styles.DetailsPart}>{student?.name}</div>
                       </div>
