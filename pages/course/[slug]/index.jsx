@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { FreeMode } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { api } from "utils/urls";
+import { api, baseURL } from "utils/urls";
 
 export default function CourseDetail({ }) {
   const { ref, visible } = useScrollObserver();
@@ -158,7 +158,7 @@ export default function CourseDetail({ }) {
                     <SwiperSlide key={idx} style={{ cursor: 'pointer' }}>
                       <div className={styles.jobCard}>
                         <div className={styles.Imagepart}>
-                          <Image width={180} height={250} src={student?.image} alt="studentImage" />
+                          <Image width={180} height={250} src={baseURL + `/${student?.image}`} alt="studentImage" />
                         </div>
                         <div className={styles.DetailsPart}>{student?.name}</div>
                       </div>
@@ -181,13 +181,13 @@ export default function CourseDetail({ }) {
               <FeedbackCard />
               <FeedbackCard />
             </div>
+            <CourseCarousel
+              title="Similar Related course"
+              courses={courseData?.skills}
+            />
           </div>
           <CourseFloatCard courseData={courseData} />
         </div>
-        <CourseCarousel
-          title="Similar Related course"
-          courses={courseData?.skills}
-        />
       </div>
     </Layout>
   );
