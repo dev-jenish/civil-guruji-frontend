@@ -7,9 +7,9 @@ import Layout from "@/components/reusable/Layout";
 import Stars from "@/components/Stars";
 import useScrollObserver from "@/hooks/useScrollObserver";
 import styles from "@/styles/CourseDetail.module.css";
-import { Button } from "@chakra-ui/react";
+import { Button, Image } from "@chakra-ui/react";
 import moment from "moment/moment";
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -158,7 +158,7 @@ export default function CourseDetail({ }) {
                     <SwiperSlide key={idx} style={{ cursor: 'pointer' }}>
                       <div className={styles.jobCard}>
                         <div className={styles.Imagepart}>
-                          <Image width={180} height={250} src={baseURL + `/${student?.image}`} alt="studentImage" />
+                          <Image width={180} height={250} src={baseURL + `/${student?.image}`} />
                         </div>
                         <div className={styles.DetailsPart}>{student?.name}</div>
                       </div>
