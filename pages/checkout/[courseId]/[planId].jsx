@@ -46,8 +46,26 @@ export default function Checkout() {
     const [stateValue, setStateValue] = useState('')
     const [countryValue, setCountryValue] = useState('')
     const [purchasedData, setPurchasedData] = useState({})
+    const [promocodeInput, setPromocodeInput] = useState('')
+    const [promocodeData, setPromocodeData] = useState({})
+    const [promocodeDiscountAmount, setPromocodeDiscountAmount] = useState(0)
+    const [priceAfterPromocode, setPriceAfterPromocode] = useState(0)
 
     const { userData, setUserData } = useContext(userContext)
+
+    useEffect(() => {
+
+        let amountFromPercentage = ((planData?.discountedPrice * promocodeData?.discountPercentage) / 100).toFixed(2)
+
+        if (amountFromPercentage < promocodeData?.maxDiscountAmount) {
+            setPromocodeDiscountAmount(amountFromPercentage)
+            setPriceAfterPromocode((planData?.discountedPrice - amountFromPercentage).toFixed(2))
+        } else {
+            setPromocodeDiscountAmount(promocodeData?.maxDiscountAmount)
+            setPriceAfterPromocode((planData?.discountedPrice - promocodeData?.maxDiscountAmount).toFixed(2))
+        }
+
+    }, [promocodeData])
 
     useEffect(() => {
         if (!userData?._id && courseID && planID) {
@@ -56,11 +74,11 @@ export default function Checkout() {
             setUserName(userData?.userDetail?.name)
             setUserEmail(userData?.userDetail?.email)
             setUserMobileNumber(userData?.phoneNumber)
-            if(userData?.purchases && userData?.purchases?.length>0){
+            if (userData?.purchases && userData?.purchases?.length > 0) {
                 let purchasedPlan = userData.purchases.find((purchase) => {
                     return purchase?.planDetail == planID
                 })
-                if(purchasedPlan){
+                if (purchasedPlan) {
                     setPurchasedData(purchasedPlan)
                 }
             }
@@ -70,10 +88,55 @@ export default function Checkout() {
 
     const [loading, setLoading] = useState(true)
 
-    const handleDiscountClick = (fieldName, value) => {
+
+    const handleApplyPromocode = async () => {
+        try {
+            if (!promocodeInput) { return toast.error('Please enter valid promocode!') }
+
+            let promocodeData = await api(`/promocodes/${promocodeInput}`, 'get')
+
+            console.log(promocodeData?.data)
+
+            if (promocodeData?.data?.minimumCartValue > planData?.discountedPrice) {
+                toast.error(`Minimum cart value should be ${promocodeData?.data?.minimumCartValue}`)
+                return false
+            }
+
+            if( promocodeData?.data?.coursesType == 'selected'){
+                if(promocodeData?.data?.courses && promocodeData?.data?.courses?.length>0 && !promocodeData?.data?.courses?.includes(courseID)){
+                    toast.error(`Promocode not valid for this course!`)
+                    return false
+                }
+            } 
+
+            if(promocodeData?.data?.usersType == 'selected'){
+                if(promocodeData?.data?.users && promocodeData?.data?.users?.length>0 && !promocodeData?.data?.users?.includes(userData?._id)){
+                    toast.error(`Promocode not valid for you!`)
+                    return false
+                }
+            }
+
+            setPromocodeData(promocodeData?.data)
+
+            return true
+
+        } catch (error) {
+            console.log(error)
+            toast.error('Invalid promocode!')
+            return false
+        }
+    }
+
+    const handleDiscountClick = async (fieldName, value) => {
         if (fieldName === "oneTimeActiveTab") {
             if (value === "apply") {
-                setOneTimeActiveTab(true);
+                let result = await handleApplyPromocode()
+                if (result) {
+                    setOneTimeActiveTab(true);
+                } else {
+
+                }
+
             } else if (value === "remove") {
                 setOneTimeActiveTab(false);
             }
@@ -230,7 +293,8 @@ export default function Checkout() {
         let data = await api('/payment/razorpay', 'post', {
             courseId: courseID,
             planId: planID,
-            type
+            type,
+            promocode: oneTImeActiveTab ? promocodeData?._id : null
         })
         data = data?.data
 
@@ -457,22 +521,27 @@ export default function Checkout() {
                                                             <Text as="b">Total:</Text>
                                                             <Text as="b">₹{planData?.discountedPrice || 'Free'}</Text>
                                                         </HStack>
-                                                        <HStack
-                                                            width="full"
-                                                            justifyContent="space-between"
-                                                            marginTop="0 !important"
-                                                            marginBottom="24px !important"
-                                                        >
-                                                            <Input placeholder="Promo Code" _placeholder={discount} />
-                                                            <Button
-                                                                variant="outline"
-                                                                onClick={() =>
-                                                                    handleDiscountClick("oneTimeActiveTab", "apply")
-                                                                }
-                                                            >
-                                                                Apply
-                                                            </Button>
-                                                        </HStack>
+                                                        {
+                                                            planData?.discountedPrice ?
+                                                                <HStack
+                                                                    width="full"
+                                                                    justifyContent="space-between"
+                                                                    marginTop="0 !important"
+                                                                    marginBottom="24px !important"
+                                                                >
+                                                                    <Input placeholder="Promo Code" value={promocodeInput} onChange={(event) => setPromocodeInput(event?.target?.value)} _placeholder={discount} />
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        onClick={() =>
+                                                                            handleDiscountClick("oneTimeActiveTab", "apply")
+                                                                        }
+                                                                    >
+                                                                        Apply
+                                                                    </Button>
+                                                                </HStack>
+                                                                :
+                                                                null
+                                                        }
                                                         <HStack width="full" marginTop="0 !important">
                                                             <Checkbox
                                                                 size="sm"
@@ -508,7 +577,7 @@ export default function Checkout() {
                                                             alignItems="flex-start"
                                                         >
                                                             <Text>Original Price:</Text>
-                                                            <Text>₹499</Text>
+                                                            <Text>₹{planData?.discountedPrice || 'Free'}</Text>
                                                         </HStack>
                                                         <HStack
                                                             width="full"
@@ -517,9 +586,9 @@ export default function Checkout() {
                                                         >
                                                             <HStack gap="5px">
                                                                 <FaTag size={12} color="#2BB970" />
-                                                                <Text>Civil20</Text>
+                                                                <Text>{promocodeData?.name}</Text>
                                                             </HStack>
-                                                            <Text color="#2BB970">-₹100</Text>
+                                                            <Text color="#2BB970">-₹{promocodeDiscountAmount}</Text>
                                                         </HStack>
                                                         <HStack
                                                             width="full"
@@ -532,7 +601,7 @@ export default function Checkout() {
                                                         >
                                                             <Text as="b">Total:</Text>
                                                             <Text as="b" color="#2BB970">
-                                                                ₹399
+                                                                ₹{priceAfterPromocode}
                                                             </Text>
                                                         </HStack>
                                                         <HStack
@@ -547,7 +616,7 @@ export default function Checkout() {
                                                                     color="#2BB970"
                                                                 />
                                                                 <Text fontSize={14} color="#2BB970">
-                                                                    Civil20 Code Applied Successfully
+                                                                    {promocodeData?.name} Code Applied Successfully
                                                                 </Text>
                                                             </HStack>
                                                             <button
@@ -577,7 +646,7 @@ export default function Checkout() {
                                                                 </Text>
                                                             </FormLabel>
                                                         </HStack>
-                                                        <Button borderRadius={4} height={12} width="full">
+                                                        <Button onClick={() => handlePayment('pay_all')} borderRadius={4} height={12} width="full">
                                                             Checkout
                                                         </Button>
                                                     </VStack>
@@ -595,7 +664,7 @@ export default function Checkout() {
                                                             width="full"
                                                             justifyContent="space-between"
                                                             alignItems="flex-start"
-                                                            backgroundColor={ (purchasedData?.expiresOn && (purchasedData?.emisPaid >= 0)) ? "inherit" : "#454546"}
+                                                            backgroundColor={(purchasedData?.expiresOn && (purchasedData?.emisPaid >= 0)) ? "inherit" : "#454546"}
                                                             padding="5px 10px"
                                                         >
                                                             <Text fontSize={14}>Base Amount</Text>
@@ -606,7 +675,7 @@ export default function Checkout() {
                                                             justifyContent="space-between"
                                                             alignItems="flex-start"
                                                             padding="5px 10px"
-                                                            backgroundColor={ (purchasedData?.expiresOn && (purchasedData?.emisPaid == 0)) ? "#454546" : "inherit"}
+                                                            backgroundColor={(purchasedData?.expiresOn && (purchasedData?.emisPaid == 0)) ? "#454546" : "inherit"}
                                                         >
                                                             <Text fontSize={14}>1st EMI</Text>
                                                             <Text fontSize={14}>₹{planData?.emiAmount}</Text>
@@ -653,7 +722,7 @@ export default function Checkout() {
                                                             marginTop="0 !important"
                                                             marginBottom="24px !important"
                                                         >
-                                                            <Input placeholder="Promo Code" _placeholder={discount} />
+                                                            <Input placeholder="Promo Code" value={promocodeInput} onChange={(event) => setPromocodeInput(event?.target?.value)} _placeholder={discount} />
                                                             <Button
                                                                 variant="outline"
                                                                 onClick={() =>
@@ -681,19 +750,19 @@ export default function Checkout() {
                                                                 </Text>
                                                             </FormLabel>
                                                         </HStack>
-                                                        <Button onClick={() => {(purchasedData?.expiresOn && (purchasedData?.emisPaid >= 0 && purchasedData?.emisPaid < 3)) ? handlePayment('emi') : handlePayment('base_amount')}} borderRadius={4} height={12} width="full">
+                                                        <Button onClick={() => { (purchasedData?.expiresOn && (purchasedData?.emisPaid >= 0 && purchasedData?.emisPaid < 3)) ? handlePayment('emi') : handlePayment('base_amount') }} borderRadius={4} height={12} width="full">
                                                             {
                                                                 (purchasedData?.expiresOn && (purchasedData?.emisPaid >= 0))
-                                                                ?
-                                                                (purchasedData?.expiresOn && (purchasedData?.emisPaid == 3))
-                                                                ?
-                                                                `Paid`
-                                                                :
-                                                                `Pay EMI @ ${planData?.emiAmount}`
-                                                                :
-                                                                `Enroll @ ${planData?.baseAmount}`
+                                                                    ?
+                                                                    (purchasedData?.expiresOn && (purchasedData?.emisPaid == 3))
+                                                                        ?
+                                                                        `Paid`
+                                                                        :
+                                                                        `Pay EMI @ ${planData?.emiAmount}`
+                                                                    :
+                                                                    `Enroll @ ${planData?.baseAmount}`
                                                             }
-                                                            
+
                                                         </Button>
                                                     </VStack>
                                                 </div>
