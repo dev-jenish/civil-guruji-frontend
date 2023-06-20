@@ -93,7 +93,8 @@ const QuizComponent = ({ subModule, courseId, courseProgressionData, getCoursePr
       let response = await api('/course/save-quiz-attempt', 'post', {
         subModuleId: subModule?._id,
         courseId,
-        questions
+        questions,
+        courseProgressionId: courseProgressionData?._id
       })
 
       console.log(response?.data)
@@ -153,6 +154,7 @@ const QuizComponent = ({ subModule, courseId, courseProgressionData, getCoursePr
           >
             Start Quiz
           </Button>
+          {console.log(courseProgressionData?.quizAttemps?.length)}
           <Button onClick={handleSetSolution} colorScheme="blue" variant="outline" isDisabled={!(courseProgressionData?.quizAttemps?.length>0)} >
             View Solutions
           </Button>
