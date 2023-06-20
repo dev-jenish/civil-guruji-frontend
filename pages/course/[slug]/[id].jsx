@@ -607,7 +607,7 @@ export default function Topic({ topic, course }) {
 
           {selectedTopic?.subModule?.type == 5 && (
             <div className={styles.iframe}>
-              <QuizComponent courseProgressionData={courseProgressionData} subModule={selectedTopic?.subModule} courseId={courseId} />
+              <QuizComponent courseProgressionData={courseProgressionData} subModule={selectedTopic?.subModule} courseId={courseId} getCourseProgressionData={getCourseProgressionData} />
             </div>
           )}
           {selectedTopic?.subModule?.type == 2 && (

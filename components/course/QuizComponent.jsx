@@ -17,7 +17,7 @@ import { FaTimes, FaCheck, FaRegCircle, FaMinusCircle } from "react-icons/fa";
 import { MdDoNotDisturbAlt } from "react-icons/md";
 import { api } from "utils/urls";
 
-const QuizComponent = ({ subModule, courseId, courseProgressionData }) => {
+const QuizComponent = ({ subModule, courseId, courseProgressionData, getCourseProgressionData }) => {
   const [activeScreen, setActiveScreen] = useState("MainScreen");
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -97,6 +97,7 @@ const QuizComponent = ({ subModule, courseId, courseProgressionData }) => {
       })
 
       console.log(response?.data)
+      getCourseProgressionData()
 
     } catch (error) {
       console.log(error)
