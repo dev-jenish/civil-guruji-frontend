@@ -54,7 +54,7 @@ export default function Home() {
           colorScheme="gray"
           onClick={() =>
             router.push(
-              "/course/blockchain-developer-course/SbW4TyVYeZrW73avAYbY"
+              "/course/blockchain-developer-course/64532c7adb65b45ce71ec505"
             )
           }
         >

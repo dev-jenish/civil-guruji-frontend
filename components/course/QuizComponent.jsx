@@ -15,8 +15,9 @@ import { BsArrowsFullscreen } from "react-icons/bs";
 import { PieChart } from "react-minimal-pie-chart";
 import { FaTimes, FaCheck, FaRegCircle, FaMinusCircle } from "react-icons/fa";
 import { MdDoNotDisturbAlt } from "react-icons/md";
+import { api } from "utils/urls";
 
-const QuizComponent = ({ subModule }) => {
+const QuizComponent = ({ subModule, courseId, courseProgressionData }) => {
   const [activeScreen, setActiveScreen] = useState("MainScreen");
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -87,8 +88,40 @@ const QuizComponent = ({ subModule }) => {
     e.preventDefault();
     // need to add api call and data was in questions state
     try {
-    } catch (error) { }
+      console.log(questions)
+
+      let response = await api('/course/save-quiz-attempt', 'post', {
+        subModuleId: subModule?._id,
+        courseId,
+        questions
+      })
+
+      console.log(response?.data)
+
+    } catch (error) {
+      console.log(error)
+    }
   };
+
+  const handleSetSolution = () => {
+    if(courseProgressionData?.quizAttemps?.length>0){
+      console.log("here..")
+      const questionsData = courseProgressionData?.quizAttemps[0].questions?.map((question) => {
+        return {
+          answer: question?.answer,
+          isAttempted: question?.isAttempted,
+          ...question?.question
+        }
+
+      })
+
+      console.log(questionsData)
+
+      setQuestions(questionsData)
+      setActiveScreen('ResultScreen');
+
+    }
+  }
 
   // screen module code
   const MainScreen = () => {
@@ -119,7 +152,7 @@ const QuizComponent = ({ subModule }) => {
           >
             Start Quiz
           </Button>
-          <Button colorScheme="white" variant="outline" isDisabled>
+          <Button onClick={handleSetSolution} colorScheme="blue" variant="outline" isDisabled={!(courseProgressionData?.quizAttemps?.length>0)} >
             View Solutions
           </Button>
         </Box>
