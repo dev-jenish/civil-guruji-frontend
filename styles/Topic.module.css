@@ -234,6 +234,14 @@
   gap: 6px;
 }
 
+.profile_container {
+  display: inline-block;
+  height: 3rem !important;
+  width: 3rem !important;
+  border-radius: 50%;
+  background-color: white;
+}
+
 /* new added for custom header */
 .customHeader {
   position: sticky;

@@ -45,7 +45,7 @@ export default function CourseFloatCard({ isPackage, courseData }) {
 
         let currentTime = moment()
 
-        if (plan.expiresOn && plan.emisPaid && plan.emisPaid < 3 && currentTime.isBefore(moment(plan.validityDate))) {
+        if (plan.expiresOn && plan.emisPaid >= 0 && plan.emisPaid < 3 && currentTime.isBefore(moment(plan.validityDate))) {
           return emiLeftPlans.push(plan?.planDetail)
         } else if (currentTime.isBefore(moment(plan.validityDate))) {
           return purchasedPlans.push(plan?.planDetail)
