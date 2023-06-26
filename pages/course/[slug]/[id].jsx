@@ -826,6 +826,10 @@ function SideNav({
       if(!canGiveFinalQuiz){
         setCanGiveFinalQuiz(true)
       }
+    }else{
+      if(canGiveFinalQuiz){
+        setCanGiveFinalQuiz(false)
+      }
     }
 
   }, [courseData, courseProgressionData])
