@@ -9,7 +9,7 @@ const Axios = axios.create({
     baseURL: baseURL,
 })
 
-export const api = async (url, type, data, headers) => {
+export const api = async (url, type, data, headers, options = {}) => {
 
     let requestTypes = ['get', 'post', 'put', 'delete']
     let requestType = requestTypes.find((reqType) => { return reqType === type })
@@ -17,10 +17,14 @@ export const api = async (url, type, data, headers) => {
     if (requestType) {
         try {
             const response = await Axios({
-                method: requestType, url: url, data: data, headers: {
+                method: requestType,
+                url: url,
+                data: data,
+                headers: {
                     ...headers,
                     'x-access-token': localStorage.getItem('accessToken')
-                }
+                },
+                ...options
             })
             return response
         } catch (e) {
@@ -36,7 +40,7 @@ export const api = async (url, type, data, headers) => {
 
                     if (refreshResponse?.data?.access_token) {
                         localStorage.setItem('accessToken', refreshResponse?.data?.access_token)
-                        return await api(url, type, data, headers)
+                        return await api(url, type, data, headers, options)
                     } else {
                         // expired refresh token
                         toast.error("Unauthorized")

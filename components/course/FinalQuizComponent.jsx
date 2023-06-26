@@ -18,7 +18,7 @@ import { FaTimes, FaCheck, FaRegCircle, FaMinusCircle } from "react-icons/fa";
 import { MdDoNotDisturbAlt } from "react-icons/md";
 import { api } from "utils/urls";
 
-const QuizComponent = ({ subModule, courseId, courseProgressionData, getCourseProgressionData, saveSubModuleProgress }) => {
+const FinalQuizComponent = ({ courseId, courseProgressionData, getCourseProgressionData, finalQuizData }) => {
   const [activeScreen, setActiveScreen] = useState("MainScreen");
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -27,13 +27,12 @@ const QuizComponent = ({ subModule, courseId, courseProgressionData, getCoursePr
   const question = questions[currentIndex];
   const [showModel, setShowModel] = useState(false);
 
-  console.log(question);
 
   useEffect(() => {
-    if (subModule?.quiz?.questions) {
-      setQuestions(subModule?.quiz?.questions);
+    if (finalQuizData?.questions) {
+      setQuestions(finalQuizData?.questions);
     }
-  }, [subModule]);
+  }, [finalQuizData]);
 
   useEffect(() => {
     if (question?.isAttempted && (question?.answer >= 0)) {
@@ -60,7 +59,6 @@ const QuizComponent = ({ subModule, courseId, courseProgressionData, getCoursePr
       isAttempted: selectedOption !== null,
     };
     setQuestions(temp);
-    console.log(currentIndex, questions?.length - 1)
     const isLastQuestion = currentIndex === questions.length - 1;
     if (isLastQuestion) {
       setShowModel(true);
@@ -92,24 +90,13 @@ const QuizComponent = ({ subModule, courseId, courseProgressionData, getCoursePr
 
       let resultPercentage = ((questions?.filter(questionData => ( questionData?.isAttempted && (questionData?.answer == questionData?.solution)))?.length / questions?.length) * 100).toFixed(2)
 
-      let response = await api('/course/save-quiz-attempt', 'post', {
-        subModuleId: subModule?._id,
+      let response = await api('/course/save-final-quiz-attempt', 'post', {
         courseId,
         questions,
-        quiz: subModule?.quiz?._id,
-        courseProgressionId: courseProgressionData?._id
+        quiz: finalQuizData?._id,
+        courseProgressionId: courseProgressionData?._id,
+        isPassed:  resultPercentage >= finalQuizData?.passingPercentage ? true : false
       })
-
-      if(resultPercentage >= subModule?.quiz?.passingPercentage){
-        if(!(courseProgressionData?.subModules?.find((subModuleData) => {
-  
-          return subModuleData?.subModule == subModule?._id
-        }))){
-          saveSubModuleProgress(subModule?._id)
-        }
-      }
-
-
       getCourseProgressionData()
 
     } catch (error) {
@@ -118,13 +105,13 @@ const QuizComponent = ({ subModule, courseId, courseProgressionData, getCoursePr
   };
 
   const handleSetSolution = () => {
-    if(courseProgressionData?.quizAttemps?.length>0){
+    if(courseProgressionData?.finalQuizAttempts?.length>0){
 
-      const quizAttempIndex = courseProgressionData?.quizAttemps?.findIndex((quizAttempData) => {
-        return quizAttempData?.quiz == subModule?.quiz?._id
+      const quizAttempIndex = courseProgressionData?.finalQuizAttempts?.findIndex((quizAttempData) => {
+        return quizAttempData?.quiz == finalQuizData?._id
       })
 
-      const questionsData = courseProgressionData?.quizAttemps[quizAttempIndex].questions?.map((question) => {
+      const questionsData = courseProgressionData?.finalQuizAttempts[quizAttempIndex].questions?.map((question) => {
         return {
           answer: question?.answer,
           isAttempted: question?.isAttempted,
@@ -132,6 +119,7 @@ const QuizComponent = ({ subModule, courseId, courseProgressionData, getCoursePr
         }
 
       })
+
 
       setQuestions(questionsData)
       setActiveScreen('ResultScreen');
@@ -142,8 +130,8 @@ const QuizComponent = ({ subModule, courseId, courseProgressionData, getCoursePr
   // screen module code
   const MainScreen = () => {
     return (
-      <Box className={styles.mainScreen}>
-        <h3 className={styles.headingText}>{subModule?.name}</h3>
+      <Box className={styles.mainScreen} style={{ maxHeight: '80vh', minWidth: '60vw', margin: '4rem' }}>
+        <h3 className={styles.headingText}>{'Final Quiz'}</h3>
         <span className={styles.dividerLine}></span>
         <Box mb={4}>
           <p className={styles.labelText}>
@@ -151,7 +139,7 @@ const QuizComponent = ({ subModule, courseId, courseProgressionData, getCoursePr
             <span className={styles.valueText}>{questions?.length}</span>
           </p>
           <p className={styles.labelText}>
-            Total Time: <span className={styles.valueText}>{ subModule?.quiz?.timeLimit > 0 ?  `${subModule?.quiz?.timeLimit} minutes` : 'No time limit'}</span>
+            Total Time: <span className={styles.valueText}>{ finalQuizData?.timeLimit > 0 ?  `${finalQuizData?.timeLimit} minutes` : 'No time limit'}</span>
           </p>
         </Box>
         <Box
@@ -165,31 +153,32 @@ const QuizComponent = ({ subModule, courseId, courseProgressionData, getCoursePr
             colorScheme="blue"
             mr={2}
             onClick={(e) => handleClick(e, "QuizInstructionScreen")}
-            isDisabled={subModule?.quiz?.retakeAttemps == courseProgressionData?.quizAttemps?.length}
+            isDisabled={finalQuizData?.retakeAttemps == courseProgressionData?.finalQuizAttempts?.length}
           >
             Start Quiz
           </Button>
-          <Button onClick={handleSetSolution} colorScheme="blue" variant="outline" isDisabled={!(courseProgressionData?.quizAttemps?.length>0) || !(courseProgressionData?.quizAttemps?.find((quizAttempData) => {
-            return quizAttempData?.quiz == subModule?.quiz?._id
+          {/* {console.log(subModule, "Quiz attempts data!")} */}
+          <Button onClick={handleSetSolution} colorScheme="blue" variant="outline" isDisabled={!(courseProgressionData?.finalQuizAttempts?.length>0) || !(courseProgressionData?.finalQuizAttempts?.find((quizAttempData) => {
+            return quizAttempData?.quiz == finalQuizData?._id
           }))} >
             View Solutions
           </Button>
         </Box>
         <Box mt={'2rem'} >
-          <Text color={'#e01c46'} >{ `Attempts left ${subModule?.quiz?.retakeAttemps - courseProgressionData?.quizAttemps?.length}` }</Text>
+          <Text color={'#e01c46'} >{ finalQuizData?.retakeAttemps ? `Attempts left ${finalQuizData?.retakeAttemps - courseProgressionData?.finalQuizAttempts?.length}` : '' }</Text>
         </Box>
       </Box>
     );
   };
   const QuizInstructionScreen = () => {
     return (
-      <Box className={styles.instructionScreen}>
+      <Box className={styles.instructionScreen} style={{ maxHeight: '80vh', minWidth: '60vw', margin: '4rem' }} >
         <h3 className={styles.instructionHeading}>Instructions</h3>
         <Box
           className={styles.instructionContent}
           style={{ fontSize: "14px", color: "#000000" }}
         >
-          {subModule?.quiz?.instructions.replace("<p>", "").replace("</p>", "")}
+          {finalQuizData?.instructions.replace("<p>", "").replace("</p>", "")}
         </Box>
         <button
           className={styles.startBtn}
@@ -203,7 +192,7 @@ const QuizComponent = ({ subModule, courseId, courseProgressionData, getCoursePr
 
   const QuizQuestionsScreen = () => {
     return (
-      <Box className={styles.quizMain}>
+      <Box className={styles.quizMain} style={{ maxHeight: '80vh', minWidth: '60vw', margin: '4rem' }} >
         <Box className={styles.topPart}>
           <button className={styles.fullScreenBtn}>
             <BsArrowsFullscreen />
@@ -402,7 +391,6 @@ const QuizComponent = ({ subModule, courseId, courseProgressionData, getCoursePr
             <div className={styles.indicatorBlock}>
               <span className={styles.correct}></span>
               <span className={styles.answerMethod}>Correct Answers:</span>
-              {console.log(questions?.filter(questionData => ( questionData?.isAttempted && (questionData?.answer == questionData?.solution))))}
               <span className={styles.answersNo}>{questions?.filter(questionData => ( questionData?.isAttempted && (questionData?.answer == questionData?.solution)))?.length}/{questions?.length}</span>
             </div>
             <div className={styles.indicatorBlock}>
@@ -478,7 +466,7 @@ const QuizComponent = ({ subModule, courseId, courseProgressionData, getCoursePr
   };
 
   return (
-    <Box display="flex" flexDirection="column">
+    <Box display="flex" style={activeScreen === "ResultScreen" ? { margin: '4rem' } : {}} flexDirection="column">
       {activeScreen === "MainScreen" && <MainScreen />}
       {activeScreen === "QuizInstructionScreen" && <QuizInstructionScreen />}
       {activeScreen === "QuizQuestionsScreen" && <QuizQuestionsScreen />}
@@ -487,4 +475,4 @@ const QuizComponent = ({ subModule, courseId, courseProgressionData, getCoursePr
   );
 };
 
-export default QuizComponent;
+export default FinalQuizComponent;

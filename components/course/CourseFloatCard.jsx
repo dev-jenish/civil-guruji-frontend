@@ -21,7 +21,7 @@ import { BsLaptop, BsPhone } from "react-icons/bs";
 import { IoIosInfinite } from "react-icons/io";
 import { TiSortAlphabeticallyOutline } from "react-icons/ti";
 
-export default function CourseFloatCard({ isPackage, courseData }) {
+export default function CourseFloatCard({ isPackage, courseData, totalLearningHours }) {
   const router = useRouter();
 
   const [emiPlans, setEmiPlans] = useState([])
@@ -33,6 +33,25 @@ export default function CourseFloatCard({ isPackage, courseData }) {
   const [emiPurchased, setEmiPurchased] = useState([])
 
   const { userData } = useContext(userContext)
+
+
+  let totalDocuments = 0
+
+  if (courseData?.courseDetail?.courseContents && courseData?.courseDetail?.courseContents?.length > 0) {
+    courseData?.courseDetail?.courseContents?.map((module) => {
+      // if (module?.totalVideos) {
+      //   totalVideos += module?.totalVideos
+      // }
+      if (module?.totalDocuments) {
+        totalDocuments += module?.totalDocuments
+      }
+      // if (module?.totalModels) {
+      //   totalModels += module?.totalModels
+      // }
+    })
+  }
+
+
 
   useEffect(() => {
 
@@ -46,9 +65,9 @@ export default function CourseFloatCard({ isPackage, courseData }) {
         let currentTime = moment()
 
         if (plan.expiresOn && plan.emisPaid >= 0 && plan.emisPaid < 3 && currentTime.isBefore(moment(plan.validityDate))) {
-          return emiLeftPlans.push(plan?.planDetail)
+          return emiLeftPlans.push(plan?.planDetail?._id)
         } else if (currentTime.isBefore(moment(plan.validityDate))) {
-          return purchasedPlans.push(plan?.planDetail)
+          return purchasedPlans.push(plan?.planDetail?._id)
         }
       })
 
@@ -263,12 +282,15 @@ export default function CourseFloatCard({ isPackage, courseData }) {
           <ul>
             <li>
               <BsLaptop className={styles.icon} />
-              <p>5 hours of content</p>
+              <p>{totalLearningHours} hours of content</p>
             </li>
-            <li>
-              <AiOutlineFileText className={styles.icon} />
-              <p>64 articles</p>
-            </li>
+            {
+              !isPackage &&
+              <li>
+                <AiOutlineFileText className={styles.icon} />
+                <p>{totalDocuments} articles</p>
+              </li>
+            }
             {/* <li>
               <IoIosInfinite className={styles.icon} />
               <p>3 Month access</p>

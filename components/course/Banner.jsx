@@ -5,8 +5,13 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css/navigation";
 import { Box } from "@chakra-ui/react";
+import { useRouter } from "next/router";
+import { baseURL } from "utils/urls";
 
-export default function Banner({}) {
+export default function Banner({ bannersData }) {
+
+  const router = useRouter()
+
   return (
     <div className={styles.courseBanner}>
       <Swiper
@@ -16,58 +21,38 @@ export default function Banner({}) {
         modules={[Navigation]}
         className="bannerSwiper"
       >
-        <SwiperSlide>
-          <Box className={styles.contentBox}>
-            <div className={styles.contentBlock}>
-              <h2 className={styles.headingText}>Practical Training Offline</h2>
-              <button className={styles.enrollBtn}>ENROLL NOW</button>
-            </div>
-            <img src="/assets/image 19.png" alt="banner" />
-          </Box>
-          
-        </SwiperSlide>
-        <SwiperSlide>
-          <Box className={styles.contentBox}>
-            <div className={styles.contentBlock}>
-              <h2 className={styles.headingText}>Practicle Training Online</h2>
-              <button className={styles.enrollBtn}>ENROLL NOW</button>
-            </div>
-            <img src="/assets/image 19.png" alt="banner" />
-          </Box>
-        </SwiperSlide>
-        <SwiperSlide>
-          <Box className={styles.contentBox}>
-            <div className={styles.contentBlock}>
-              <h2 className={styles.headingText}>Individual Training Online</h2>
-              <button className={styles.enrollBtn}>ENROLL NOW</button>
-            </div>
-            <img src="/assets/image 19.png" alt="banner" />
-          </Box>
-        </SwiperSlide>
-        <SwiperSlide>
-          <Box className={styles.contentBox}>
-            <div className={styles.contentBlock}>
-              <h2 className={styles.headingText}>Free Training Online</h2>
-              <button className={styles.enrollBtn}>ENROLL NOW</button>
-            </div>
-            <img src="/assets/image 19.png" alt="banner" />
-          </Box>
-        </SwiperSlide>
+        {
+          bannersData?.length > 0 && bannersData.map((banner, index) => {
+            return <SwiperSlide key={index} >
+              <Box className={styles.contentBox}>
+                <div className={styles.contentBlock}>
+                  <h2 className={styles.headingText}>{banner?.text}</h2>
+                  <button onClick={() => {
+                    if(banner?.link){
+                      router.push(banner?.link)
+                    }
+                  }} className={styles.enrollBtn}>ENROLL NOW</button>
+                </div>
+                <img src={baseURL + `/${banner?.image}`} alt="banner" />
+              </Box>
+
+            </SwiperSlide>
+          })
+        }
       </Swiper>
       <Box className={styles.tabs}>
-            <button className={styles.enrollBtn}>
-              Practicle Training - Offline
-            </button>
-            <button className={styles.primaryBtn}>
-              Practicle Training - Online
-            </button>
-            <button className={styles.primaryBtn}>
-              Individual Training - Online
-            </button>
-            <button className={styles.primaryBtn}>
-              Free Training - Online
-            </button>
-          </Box>
+        {
+          bannersData?.length > 0 && bannersData.map((banner, index) => {
+            return <button key={index} onClick={() => {
+              if(banner?.link){
+                router.push(banner?.link)
+              }
+            }} className={styles.enrollBtn}>
+            {banner?.text}
+          </button>
+          })
+        }
+      </Box>
     </div>
   );
 }

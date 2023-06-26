@@ -6,10 +6,11 @@ import { AiOutlineDown, AiOutlineTrophy, AiOutlineUp } from "react-icons/ai";
 import { BsLaptop, BsPlayBtn } from "react-icons/bs";
 import { FaRupeeSign } from "react-icons/fa";
 import Stars from "../Stars";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoMdRadioButtonOn } from "react-icons/io";
 import CourseContent from "../course/CourseContent";
 import stylesAcc from "@/styles/Topic.module.css";
+import { api } from "utils/urls";
 
 export default function PackageCourses({ packageData }) {
   return (
@@ -34,9 +35,34 @@ export default function PackageCourses({ packageData }) {
 function CourseCard({ courseData }) {
   const router = useRouter();
 
+  const [time, setTime] = useState(0)
+
   const handleClick = () => {
     // router.push("/package/blockchain-development-bootcamp/1ty5a5f34");
   };
+
+  useEffect(() => {
+
+    if (courseData?.course?.courseDetail?.courseContents?.length > 0) {
+      let totalHours = 0
+      courseData?.course?.courseDetail?.courseContents?.map((courseContent) => {
+        if (courseContent?.totalDuration?.DD > 0) {
+          totalHours += (courseContent?.totalDuration?.DD * 8)
+        }
+        if (courseContent?.totalDuration?.HH > 0) {
+          totalHours += (courseContent?.totalDuration?.HH)
+        }
+        if (courseContent?.totalDuration?.MM > 0) {
+          totalHours += parseInt(courseContent?.totalDuration?.MM / 60)
+        }
+      })
+
+      if (totalHours > 0) {
+        setTime(totalHours)
+      }
+    }
+
+  }, [courseData])
 
   return (
     <div onClick={handleClick} className={styles.card}>
@@ -65,11 +91,13 @@ function CourseCard({ courseData }) {
             <AiOutlineTrophy className={styles.icon} /> Certificate
           </p>
           <p>
-            <BsLaptop className={styles.icon} /> 3 Hours
+            <BsLaptop className={styles.icon} /> {time} Hours
           </p>
           <p id={styles.price}>
             <FaRupeeSign className={styles.icon} />
-            499
+            {courseData?.course?.prices?.find((price) => {
+              return price?.isDisplay == true
+            })?.discountedPrice || 'Free'}
           </p>
         </div>
         <Accordian courseData={courseData} />
@@ -87,8 +115,25 @@ function Accordian({
   setSelectedTopic,
   courseData
 }) {
-  const [showTopics, setShowTopics] = useState(true);
   const router = useRouter();
+  const [showTopics, setShowTopics] = useState(true);
+  const [meetingsData, setMeetingsData] = useState([])
+
+
+  const getMeetingsData = async () => {
+    try{
+      let response = await api(`/zoom/listMeetings/${courseData?.course?._id}`, 'get')
+      if(response?.data?.length>0){
+        setMeetingsData(response?.data)
+      }
+    }catch(error){
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    getMeetingsData()
+  }, [])
 
   const handleSwitch = () => {
     setShowTopics(!showTopics);
@@ -142,6 +187,7 @@ function Accordian({
                 <CourseContent
               contents={courseData?.course?.courseDetail?.courseContents}
               style={{ width: "100%" }}
+              meetingsData={meetingsData}
             />
               </div>
             {/* ); */}

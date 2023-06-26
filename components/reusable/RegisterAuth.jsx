@@ -15,7 +15,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { AiOutlineClose } from "react-icons/ai";
+import { AiFillEye, AiFillEyeInvisible, AiOutlineClose } from "react-icons/ai";
 import { api } from "utils/urls";
 
 export default function RegisterAuth({ isPopup, onClose }) {
@@ -235,7 +235,7 @@ function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
     }, [googleUser])
 
     const { setUserData } = useContext(userContext)
- 
+
 
     const handleNext = async () => {
 
@@ -321,9 +321,25 @@ function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
             <p>Username</p>
             <Input value={username} onChange={(event) => { setUsername(event?.target?.value) }} placeholder="jenish123" size="lg" />
             <p>Password</p>
-            <Input value={password} onChange={(event) => { setPassword(event?.target?.value) }} placeholder="password" size="lg" />
+            <HStack>
+                <PinInput value={password} onChange={(value) => { setPassword(value) }} >
+                    <PinInputField />
+                    <PinInputField />
+                    <PinInputField />
+                    <PinInputField />
+                </PinInput>
+            </HStack>
+            {/* <Input value={password} onChange={(event) => { setPassword(event?.target?.value) }} placeholder="password" size="lg" /> */}
             <p>Confirm Password</p>
-            <Input value={confirmPassword} type="password" onChange={(event) => { setConfirmPassword(event?.target?.value) }} placeholder="confirm password" size="lg" />
+            <HStack>
+                <PinInput value={confirmPassword} onChange={(value) => { setConfirmPassword(value) }} mask  >
+                    <PinInputField />
+                    <PinInputField />
+                    <PinInputField />
+                    <PinInputField />
+                </PinInput>
+            </HStack>
+            {/* <Input value={confirmPassword} type="password" onChange={(event) => { setConfirmPassword(event?.target?.value) }} placeholder="confirm password" size="lg" /> */}
             <p>Date of Birth</p>
             <Input value={dob} onChange={(event) => { setDob(event?.target?.value) }} type="date" placeholder="Harsh Pandey" size="lg" />
             <p>Year of Passing</p>
@@ -531,15 +547,17 @@ function StepFour({ isPopup, onClose, user, setUser }) {
 function LoginWithPassword({ setStep, nextStep, isPopup, user, setUser, onClose }) {
 
     const [password, setPassword] = useState('')
+    const [showPassword, setShowPassword] = useState(false)
+    const [isPasswordInvalid, setIsPasswordInvalid] = useState(false)
     const router = useRouter();
 
     const pushBack = () => {
-        if(router.query.previous){
-          router.push(router.query.previous)
-        }else{
-          router.push("/foryou")
+        if (router.query.previous) {
+            router.push(router.query.previous)
+        } else {
+            router.push("/foryou")
         }
-      }
+    }
 
     const { setUserData } = useContext(userContext)
 
@@ -580,6 +598,7 @@ function LoginWithPassword({ setStep, nextStep, isPopup, user, setUser, onClose 
             toast.success("Authenticated.");
         } catch (error) {
             console.log(error)
+            setIsPasswordInvalid(true)
             toast.error("Error while verifying password!")
         }
 
@@ -587,10 +606,31 @@ function LoginWithPassword({ setStep, nextStep, isPopup, user, setUser, onClose 
 
     };
 
+    useEffect(() => {
+        if(password?.length == 4){
+            handleNext()
+        }
+    }, [password])
+
     return (
         <div className={styles.step}>
             <p>Enter Password</p>
-            <Input value={password} onChange={(event) => setPassword(event.target.value)} type="text" placeholder="password" size="lg" />
+            {/* <Input value={password} onChange={(event) => setPassword(event.target.value)} type="text" placeholder="password" size="lg" /> */}
+            <HStack>
+                <PinInput isInvalid={isPasswordInvalid} value={password} onComplete={(value) => {console.log(password, value); }} onChange={(value) => setPassword(value)} mask={!showPassword} size={'lg'}>
+                    <PinInputField />
+                    <PinInputField />
+                    <PinInputField />
+                    <PinInputField />
+                </PinInput>
+                <Button onClick={() => {setShowPassword(!showPassword)}} variant={'ghost'} >
+                    { showPassword ? 
+                        <AiFillEyeInvisible size={'1.5rem'} />
+                    : 
+                        <AiFillEye size={'1.5rem'} />
+                    }
+                </Button>
+            </HStack>
             <div className={styles.cta}>
                 <Button variant="outline" onClick={() => setStep(1)}>
                     Back
