@@ -820,10 +820,15 @@ function SideNav({
     if(courseProgressionData?.subModules?.length>0){
       savedProgressSubModulesLength += courseProgressionData?.subModules?.length
     }
+    console.log(courseSubModulesLength, savedProgressSubModulesLength)
 
     if(courseSubModulesLength == savedProgressSubModulesLength){
       if(!canGiveFinalQuiz){
         setCanGiveFinalQuiz(true)
+      }
+    }else{
+      if(canGiveFinalQuiz){
+        setCanGiveFinalQuiz(false)
       }
     }
 
