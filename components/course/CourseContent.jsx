@@ -1,6 +1,7 @@
 import { modules } from "@/helpers/constants";
 import styles from "@/styles/CourseDetail.module.css";
 import {
+  Box,
   Button,
   Tab,
   TabList,
@@ -21,8 +22,9 @@ import {
 import { BsLaptop } from "react-icons/bs";
 import { IoMdRadioButtonOff } from "react-icons/io";
 import SessionCard from "./SessionCard";
+import { BiLock } from "react-icons/bi";
 
-export default function CourseContent({ contents, style }) {
+export default function CourseContent({ contents, style, meetingsData }) {
   const [tabIndex, setTabIndex] = useState(0);
 
   const handleTabsChange = (index) => {
@@ -33,15 +35,15 @@ export default function CourseContent({ contents, style }) {
   let totalDocuments = 0
   let totalModels = 0
 
-  if(contents && contents?.length > 0){
+  if (contents && contents?.length > 0) {
     contents?.map((module) => {
-      if(module?.totalVideos){
+      if (module?.totalVideos) {
         totalVideos += module?.totalVideos
       }
-      if(module?.totalDocuments){
+      if (module?.totalDocuments) {
         totalDocuments += module?.totalDocuments
       }
-      if(module?.totalModels){
+      if (module?.totalModels) {
         totalModels += module?.totalModels
       }
     })
@@ -58,7 +60,7 @@ export default function CourseContent({ contents, style }) {
       >
         <TabList>
           <Tab>Course Content</Tab>
-          {/* <Tab>Live Doubt Session</Tab> */}
+          <Tab>Live Doubt Session</Tab>
           {!tabIndex ? (
             <Tab isDisabled marginLeft="auto">
               <span id={styles.longTab}>
@@ -84,9 +86,14 @@ export default function CourseContent({ contents, style }) {
             <Modules modules={contents} />
           </TabPanel>
           <TabPanel>
-            <SessionCard isLive />
-            <SessionCard />
-            <SessionCard />
+            {
+              meetingsData?.length>0 ?
+              meetingsData.map((meetingData, index) => {
+                return <SessionCard key={index} meetingData={meetingData} fromDetails />
+              })
+              :
+              <Text>No live sessions till now.</Text>
+            }
           </TabPanel>
         </TabPanels>
       </Tabs>
@@ -106,6 +113,8 @@ function Modules({ modules }) {
 
 function Accordian({ module }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isVideoOpen, setIsVideoOpen] = useState(null)
+
 
   const handleClick = () => {
     setIsOpen(!isOpen);
@@ -129,27 +138,47 @@ function Accordian({ module }) {
             <AiOutlineFile />
           </span>
         </span>
-        {/* {isOpen ? (
+        {isOpen ? (
           <AiOutlineUp className={styles.accIcon} />
         ) : (
           <AiOutlineDown className={styles.accIcon} />
-        )} */}
+        )}
       </div>
-      {/* {isOpen && (
+      {isOpen && (
         <div className={styles.topics}>
-          {module.courseSubContents && module.courseSubContents.map((topic, i) => (
-            <Link
-              href={"/course/blockchain-developer-course/SbW4TyVYeZrW73avAYbY"}
+          {module.courseSubContents && module.courseSubContents.map((topic, i) => {
+
+
+            return <Box
+              // href={"/course/blockchain-developer-course/SbW4TyVYeZrW73avAYbY"}
               key={i}
+              borderBottom={'1px solid #1a1a1a'}
             >
               <div className={styles.topic}>
-                <IoMdRadioButtonOff className={styles.accIcon} />
+                <BiLock className={styles.accIcon} />
                 <p>{topic.name}</p>
+                {
+                  topic?.type == 1 &&
+                  <Button variant={'outline'} onClick={() => setIsVideoOpen(isVideoOpen == i ? null : i)} marginLeft={'auto'} size={'sm'} >Preview</Button>
+                }
               </div>
-            </Link>
-          ))}
+              {
+                topic?.type == 1 && (isVideoOpen == i) &&
+                <div style={{ margin: '0.7rem' }} >
+                  <iframe
+                    src={'https://iframe.mediadelivery.net/embed/42375/03a64964-f428-4638-b044-6d172f48f4ea?autoplay=true'}
+                    title="How does a blockchain work?"
+                    // allow="autoplay"
+                    allowFullScreen
+                    controls="false"
+                    borderRadius="8px"
+                  ></iframe>
+                </div>
+              }
+            </Box>
+          })}
         </div>
-      )} */}
+      )}
     </div>
   );
 }

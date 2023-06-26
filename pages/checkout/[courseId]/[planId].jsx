@@ -28,11 +28,13 @@ import { api } from "utils/urls";
 import country_state from 'utils/country_state.json'
 import Select from "react-select";
 import { updateUserDetails } from "utils/user";
+import moment from "moment";
 
 export default function Checkout() {
     const [discount, setDiscount] = useState("Civil20");
     const [oneTImeActiveTab, setOneTimeActiveTab] = useState(false);
     const [emiActiveTab, setEmiActiveTab] = useState(false);
+    const [isTermsAccepted, setIsTermsAccepted] = useState(false);
     const [planData, setPlanData] = useState({});
     const [countryOptions, setCountryOptions] = useState([])
     const [stateOptions, setStateOptions] = useState([])
@@ -43,29 +45,69 @@ export default function Checkout() {
     const [userName, setUserName] = useState('')
     const [userEmail, setUserEmail] = useState('')
     const [userMobileNumber, setUserMobileNumber] = useState('')
-    const [stateValue, setStateValue] = useState('')
-    const [countryValue, setCountryValue] = useState('')
+    const [stateValue, setStateValue] = useState({})
+    const [countryValue, setCountryValue] = useState({})
     const [purchasedData, setPurchasedData] = useState({})
     const [promocodeInput, setPromocodeInput] = useState('')
     const [promocodeData, setPromocodeData] = useState({})
     const [promocodeDiscountAmount, setPromocodeDiscountAmount] = useState(0)
     const [priceAfterPromocode, setPriceAfterPromocode] = useState(0)
+    const [allPackagesData, setAllPackagesData] = useState([])
+    const [planTypeTabIndex, setPlanTypeTabIndex] = useState(0)
+
 
     const { userData, setUserData } = useContext(userContext)
 
+
+    const getAllPackagesData = async () => {
+        try {
+            let response = await api('/course/packages/all', 'get')
+
+            if (response?.data?.length > 0) {
+                setAllPackagesData(response?.data)
+            }
+
+        } catch (error) {
+            console.log(error)
+            toast.error("Recommended packages couldn't be loaded!")
+        }
+    }
+
+    useEffect(() => {
+        getAllPackagesData()
+    }, [])
+
+
     useEffect(() => {
 
-        let amountFromPercentage = ((planData?.discountedPrice * promocodeData?.discountPercentage) / 100).toFixed(2)
+        if ((planData?.type == 'Emi subscription') && (planTypeTabIndex == 1)) {
 
-        if (amountFromPercentage < promocodeData?.maxDiscountAmount) {
-            setPromocodeDiscountAmount(amountFromPercentage)
-            setPriceAfterPromocode((planData?.discountedPrice - amountFromPercentage).toFixed(2))
+            let amountAfterBaseAmount = planData?.discountedPrice - planData?.baseAmount
+
+            let amountFromPercentage = ((amountAfterBaseAmount * promocodeData?.discountPercentage) / 100).toFixed(2)
+
+            if (amountFromPercentage < promocodeData?.maxDiscountAmount) {
+                setPromocodeDiscountAmount((amountFromPercentage / 3).toFixed(2))
+                setPriceAfterPromocode(((amountAfterBaseAmount - amountFromPercentage) / 3).toFixed(2))
+            } else {
+                setPromocodeDiscountAmount(promocodeData?.maxDiscountAmount / 3)
+                setPriceAfterPromocode(((amountAfterBaseAmount - promocodeData?.maxDiscountAmount) / 3).toFixed(2))
+            }
+
         } else {
-            setPromocodeDiscountAmount(promocodeData?.maxDiscountAmount)
-            setPriceAfterPromocode((planData?.discountedPrice - promocodeData?.maxDiscountAmount).toFixed(2))
+            let amountFromPercentage = ((planData?.discountedPrice * promocodeData?.discountPercentage) / 100).toFixed(2)
+
+            if (amountFromPercentage < promocodeData?.maxDiscountAmount) {
+                setPromocodeDiscountAmount(amountFromPercentage)
+                setPriceAfterPromocode((planData?.discountedPrice - amountFromPercentage).toFixed(2))
+            } else {
+                setPromocodeDiscountAmount(promocodeData?.maxDiscountAmount)
+                setPriceAfterPromocode((planData?.discountedPrice - promocodeData?.maxDiscountAmount).toFixed(2))
+            }
         }
 
-    }, [promocodeData])
+
+    }, [promocodeData, planTypeTabIndex])
 
     useEffect(() => {
         if (!userData?._id && courseID && planID) {
@@ -76,7 +118,7 @@ export default function Checkout() {
             setUserMobileNumber(userData?.phoneNumber)
             if (userData?.purchases && userData?.purchases?.length > 0) {
                 let purchasedPlan = userData.purchases.find((purchase) => {
-                    return purchase?.planDetail == planID
+                    return purchase?.planDetail?._id == planID
                 })
                 if (purchasedPlan) {
                     setPurchasedData(purchasedPlan)
@@ -95,22 +137,30 @@ export default function Checkout() {
 
             let promocodeData = await api(`/promocodes/${promocodeInput}`, 'get')
 
-            console.log(promocodeData?.data)
+            if (!moment().isAfter(moment(promocodeData?.data?.startDate))) {
+                toast.error(`Offer is not started yet!`)
+                return false
+            }
+
+            if (!moment().isBefore(moment(promocodeData?.data?.endDate))) {
+                toast.error(`Offer has been expired!`)
+                return false
+            }
 
             if (promocodeData?.data?.minimumCartValue > planData?.discountedPrice) {
                 toast.error(`Minimum cart value should be ${promocodeData?.data?.minimumCartValue}`)
                 return false
             }
 
-            if( promocodeData?.data?.coursesType == 'selected'){
-                if(promocodeData?.data?.courses && promocodeData?.data?.courses?.length>0 && !promocodeData?.data?.courses?.includes(courseID)){
+            if (promocodeData?.data?.coursesType == 'selected') {
+                if (promocodeData?.data?.courses && promocodeData?.data?.courses?.length > 0 && !promocodeData?.data?.courses?.includes(courseID)) {
                     toast.error(`Promocode not valid for this course!`)
                     return false
                 }
-            } 
+            }
 
-            if(promocodeData?.data?.usersType == 'selected'){
-                if(promocodeData?.data?.users && promocodeData?.data?.users?.length>0 && !promocodeData?.data?.users?.includes(userData?._id)){
+            if (promocodeData?.data?.usersType == 'selected') {
+                if (promocodeData?.data?.users && promocodeData?.data?.users?.length > 0 && !promocodeData?.data?.users?.includes(userData?._id)) {
                     toast.error(`Promocode not valid for you!`)
                     return false
                 }
@@ -142,7 +192,13 @@ export default function Checkout() {
             }
         } else if (fieldName === "emiActiveTab") {
             if (value === "apply") {
-                setEmiActiveTab(true);
+                let result = await handleApplyPromocode()
+                if (result) {
+                    // setOneTimeActiveTab(true);
+                    setEmiActiveTab(true);
+                } else {
+
+                }
             } else if (value === "remove") {
                 setEmiActiveTab(false);
             }
@@ -181,7 +237,6 @@ export default function Checkout() {
     useEffect(() => {
         const { courseId, planId } = router?.query
         if (courseId && planId) {
-            console.log(courseId, planId, "This is course Id")
 
             if (courseId && planId) {
 
@@ -237,7 +292,6 @@ export default function Checkout() {
                 userId: userData?._id,
                 mode: 'Free'
             })
-            console.log(data)
             toast.success('Payment successful!')
             await updateUserDetails(userData, setUserData)
             router.push('/foryou')
@@ -258,6 +312,14 @@ export default function Checkout() {
 
     const handlePayment = async (type) => {
         try {
+
+            if (!userName) { return toast.error('Enter valid user name!') }
+            if (!userEmail) { return toast.error('Enter valid email address!') }
+            if (!userMobileNumber) { return toast.error('Enter valid mobile number!') }
+            if (!countryValue?.value) { return toast.error('Please select country & state!') }
+            if (!stateValue?.value) { return toast.error('Please select state!') }
+            if (!isTermsAccepted) { return toast.error('Please accept terms of service!') }
+
             setLoading(true)
 
             let isFree = await api('/course/free-plan', 'post', {
@@ -281,7 +343,6 @@ export default function Checkout() {
     }
 
     const makePayment = async (type) => {
-        console.log("here...");
         const res = await initializeRazorpay();
 
         if (!res) {
@@ -294,11 +355,10 @@ export default function Checkout() {
             courseId: courseID,
             planId: planID,
             type,
-            promocode: oneTImeActiveTab ? promocodeData?._id : null
+            promocode: promocodeData?._id
         })
         data = data?.data
 
-        console.log(data);
         var options = {
             key: process.env.NEXT_PUBLIC_RAZORPAY_KEY, // Enter the Key ID generated from the Dashboard
             name: "Civil Guruji Pvt Ltd",
@@ -319,9 +379,9 @@ export default function Checkout() {
                         userId: userData?._id,
                         mode: 'Razorpay',
                         type: type,
-                        purchaseId: purchasedData?._id
+                        purchaseId: purchasedData?._id,
+                        promocodeId: promocodeData?._id
                     })
-                    console.log(data)
                     toast.success('Payment successful!')
 
 
@@ -363,11 +423,25 @@ export default function Checkout() {
         });
     };
 
+    useEffect(() => {
+        if (purchasedData?.appliedPromocode) {
+            setPromocodeData(purchasedData?.appliedPromocode)
+            if (purchasedData?.emisPaid >= 0) {
+                setEmiActiveTab(true);
+            } else {
+                setOneTimeActiveTab(true);
+            }
+        }
+    }, [purchasedData, planTypeTabIndex])
+
+    useEffect(() => {
+        planData?.type == 'Emi subscription' ? setPlanTypeTabIndex(1) : setPlanTypeTabIndex(0)
+    }, [planData])
+
 
     return (
         <Layout>
             <div className={styles.container}>
-                {console.log(userData)}
                 <div className={styles.left}>
                     <div className={styles.content}>
                         <Text fontSize="3xl" fontWeight="500">
@@ -383,8 +457,8 @@ export default function Checkout() {
                             {
                                 loading ? <Skeleton baseColor="#5a5b5d" highlightColor="#787878" count={5} /> :
                                     <>
-                                        <div className={styles.inputGroup}>
-                                            <VStack alignItems="flex-start" paddingBottom='15px'>
+                                        <div className={styles.inputGroup} style={{ paddingBottom: '1rem' }} >
+                                            <VStack alignItems="flex-start" >
                                                 <Text paddingLeft="5px" color="gray.400">
                                                     Name
                                                 </Text>
@@ -463,7 +537,15 @@ export default function Checkout() {
                                     <Skeleton baseColor="#5a5b5d" highlightColor="#787878" count={3} />
                                 </>
                                     :
-                                    <PackageDetail />
+                                    <>
+                                        {
+                                            allPackagesData?.length > 0 &&
+                                            allPackagesData.map((packageData, index) => {
+                                                return <PackageDetail key={index} packageData={packageData} />
+                                            })
+                                        }
+                                        {/* <PackageDetail  /> */}
+                                    </>
                             }
                         </div>
                     </div>
@@ -481,11 +563,16 @@ export default function Checkout() {
                             </>
                             :
                             <div className={styles.content}>
-                                <Tabs size="sm" variant="button">
+                                <Tabs size="sm" index={planTypeTabIndex} onChange={setPlanTypeTabIndex} variant="button" >
                                     <div className={styles.section}>
                                         <p className={styles.headText}>Order details</p>
                                         <TabList>
-                                            <Tab style={{ fontSize: "14px" }}>One Time Payment</Tab>
+                                            <Tab
+                                                isDisabled={purchasedData?.emisPaid >= 0}
+                                                style={{ fontSize: "14px" }}
+                                            >
+                                                One Time Payment
+                                            </Tab>
                                             {
                                                 planData?.type == 'Emi subscription' &&
                                                 <Tab style={{ fontSize: "14px" }}>EMI Options</Tab>
@@ -547,6 +634,8 @@ export default function Checkout() {
                                                                 size="sm"
                                                                 colorScheme="gray"
                                                                 id="purchase-terms"
+                                                                isChecked={isTermsAccepted}
+                                                                onChange={(event) => { setIsTermsAccepted(event?.target?.checked) }}
                                                             />
                                                             <FormLabel
                                                                 htmlFor="purchase-terms"
@@ -633,6 +722,8 @@ export default function Checkout() {
                                                                 size="sm"
                                                                 colorScheme="gray"
                                                                 id="purchase-terms"
+                                                                isChecked={isTermsAccepted}
+                                                                onChange={(event) => { setIsTermsAccepted(event?.target?.checked) }}
                                                             />
                                                             <FormLabel
                                                                 htmlFor="purchase-terms"
@@ -737,6 +828,8 @@ export default function Checkout() {
                                                                 size="sm"
                                                                 colorScheme="gray"
                                                                 id="purchase-termsEMI"
+                                                                isChecked={isTermsAccepted}
+                                                                onChange={(event) => { setIsTermsAccepted(event?.target?.checked) }}
                                                             />
                                                             <FormLabel
                                                                 htmlFor="purchase-termsEMI"
@@ -776,16 +869,30 @@ export default function Checkout() {
                                                             width="full"
                                                             justifyContent="space-between"
                                                             alignItems="flex-start"
-                                                            backgroundColor="#454546"
+                                                            backgroundColor={(purchasedData?.expiresOn && (purchasedData?.emisPaid >= 0)) ? "inherit" : "#454546"}
                                                             padding="5px 10px"
+                                                        >
+                                                            <Text fontSize={14}>Base Amount</Text>
+                                                            <HStack justifyContent="space-between" width="">
+                                                                <Text fontSize={14} >
+                                                                    ₹{planData?.baseAmount}
+                                                                </Text>
+                                                            </HStack>
+                                                        </HStack>
+                                                        <HStack
+                                                            width="full"
+                                                            justifyContent="space-between"
+                                                            alignItems="flex-start"
+                                                            padding="5px 10px"
+                                                            backgroundColor={(purchasedData?.expiresOn && (purchasedData?.emisPaid == 0)) ? "#454546" : "inherit"}
                                                         >
                                                             <Text fontSize={14}>1st EMI</Text>
-                                                            <HStack justifyContent="space-between" width="30%">
+                                                            <HStack justifyContent="space-between" width="">
                                                                 <Text fontSize={14} textDecoration="line-through">
-                                                                    ₹399
+                                                                    ₹{planData?.emiAmount}
                                                                 </Text>
                                                                 <Text fontSize={14} color="#2BB970">
-                                                                    ₹359
+                                                                    ₹{priceAfterPromocode}
                                                                 </Text>
                                                             </HStack>
                                                         </HStack>
@@ -794,14 +901,15 @@ export default function Checkout() {
                                                             justifyContent="space-between"
                                                             alignItems="flex-start"
                                                             padding="5px 10px"
+                                                            backgroundColor={(purchasedData?.expiresOn && (purchasedData?.emisPaid == 1)) ? "#454546" : "inherit"}
                                                         >
                                                             <Text fontSize={14}>2nd EMI</Text>
-                                                            <HStack justifyContent="space-between" width="30%">
+                                                            <HStack justifyContent="space-between" width="">
                                                                 <Text fontSize={14} textDecoration="line-through">
-                                                                    ₹150
+                                                                    ₹{planData?.emiAmount}
                                                                 </Text>
                                                                 <Text fontSize={14} color="#2BB970">
-                                                                    ₹100
+                                                                    ₹{priceAfterPromocode}
                                                                 </Text>
                                                             </HStack>
                                                         </HStack>
@@ -810,14 +918,15 @@ export default function Checkout() {
                                                             justifyContent="space-between"
                                                             alignItems="flex-start"
                                                             padding="5px 10px"
+                                                            backgroundColor={(purchasedData?.expiresOn && (purchasedData?.emisPaid == 2)) ? "#454546" : "inherit"}
                                                         >
                                                             <Text fontSize={14}>3rd EMI</Text>
-                                                            <HStack justifyContent="space-between" width="30%">
+                                                            <HStack justifyContent="space-between" width="">
                                                                 <Text fontSize={14} textDecoration="line-through">
-                                                                    ₹150
+                                                                    ₹{planData?.emiAmount}
                                                                 </Text>
                                                                 <Text fontSize={14} color="#2BB970">
-                                                                    ₹100
+                                                                    ₹{priceAfterPromocode}
                                                                 </Text>
                                                             </HStack>
                                                         </HStack>
@@ -833,20 +942,20 @@ export default function Checkout() {
                                                             <Text fontWeight="700" fontSize="16px">
                                                                 Total:
                                                             </Text>
-                                                            <HStack justifyContent="space-between" width="30%">
+                                                            <HStack justifyContent="space-between" width="">
                                                                 <Text
                                                                     fontWeight="700"
                                                                     fontSize="16px"
                                                                     textDecoration="line-through"
                                                                 >
-                                                                    ₹699
+                                                                    ₹{(planData?.discountedPrice).toFixed(2)}
                                                                 </Text>
                                                                 <Text
                                                                     fontWeight="700"
                                                                     fontSize="16px"
                                                                     color="#2BB970"
                                                                 >
-                                                                    ₹559
+                                                                    ₹{((priceAfterPromocode * 3) + planData?.baseAmount).toFixed(2)}
                                                                 </Text>
                                                             </HStack>
                                                         </HStack>
@@ -862,23 +971,29 @@ export default function Checkout() {
                                                                     color="#2BB970"
                                                                 />
                                                                 <Text fontSize={14} color="#2BB970">
-                                                                    Civil20 Code Applied Successfully
+                                                                    {promocodeData?.name} Code Applied Successfully
                                                                 </Text>
                                                             </HStack>
-                                                            <button
-                                                                className={styles.redText}
-                                                                onClick={() =>
-                                                                    handleDiscountClick("emiActiveTab", "remove")
-                                                                }
-                                                            >
-                                                                remove
-                                                            </button>
+                                                            {
+                                                                !(purchasedData?.emisPaid >= 0 && promocodeData?._id) &&
+                                                                <button
+                                                                    className={styles.redText}
+                                                                    onClick={() =>
+                                                                        handleDiscountClick("emiActiveTab", "remove")
+                                                                    }
+
+                                                                >
+                                                                    remove
+                                                                </button>
+                                                            }
                                                         </HStack>
                                                         <HStack width="full" marginTop="10px !important">
                                                             <Checkbox
                                                                 size="sm"
                                                                 colorScheme="gray"
                                                                 id="purchase-termsEMI"
+                                                                isChecked={isTermsAccepted}
+                                                                onChange={(event) => { setIsTermsAccepted(event?.target?.checked) }}
                                                             />
                                                             <FormLabel
                                                                 htmlFor="purchase-termsEMI"
@@ -892,8 +1007,21 @@ export default function Checkout() {
                                                                 </Text>
                                                             </FormLabel>
                                                         </HStack>
-                                                        <Button borderRadius={4} height={12} width="full">
-                                                            Enroll @ ₹359
+                                                        <Button onClick={() => { (purchasedData?.expiresOn && (purchasedData?.emisPaid >= 0 && purchasedData?.emisPaid < 3)) ? handlePayment('emi') : handlePayment('base_amount') }} borderRadius={4} height={12} width="full">
+                                                            {/* Enroll @ {planData?.baseAmount} */}
+
+                                                            {
+                                                                (purchasedData?.expiresOn && (purchasedData?.emisPaid >= 0))
+                                                                    ?
+                                                                    (purchasedData?.expiresOn && (purchasedData?.emisPaid == 3))
+                                                                        ?
+                                                                        `Paid`
+                                                                        :
+                                                                        `Pay EMI @ ${priceAfterPromocode}`
+                                                                    :
+                                                                    `Enroll @ ${planData?.baseAmount}`
+                                                            }
+
                                                         </Button>
                                                     </VStack>
                                                 </div>
@@ -929,8 +1057,38 @@ function CourseDetail({ highlight, price, planData }) {
     );
 }
 
-function PackageDetail() {
+function CourseOfPackage({ courseData, highlight }) {
+    return (
+        <div
+            className={`${styles.courseDetail} ${highlight ? styles.highlight : ""} `}
+        >
+            <Image
+                borderRadius={3}
+                src={courseData?.thumbnail || ''}
+                alt="thumbnail"
+            />
+            <VStack alignItems="flex-start">
+                <Text>{courseData?.name}</Text>
+            </VStack>
+            <VStack marginLeft="auto" alignItems="flex-start">
+                <HStack>
+                    <Text>₹{courseData?.prices?.find((plan) => {
+                        return plan?.isDisplay == true
+                    })?.discountedPrice || 'Free'}</Text>
+                    <Text marginTop="0 !important" color="gray.500" as="s">
+                        ₹{courseData?.prices?.find((plan) => {
+                            return plan?.isDisplay == true
+                        })?.listPrice || 'Free'}
+                    </Text>
+                </HStack>
+            </VStack>
+        </div>
+    );
+}
+
+function PackageDetail({ packageData }) {
     const [showCourses, setShowCourses] = useState(true);
+    const router = useRouter()
 
     const toggleCourses = () => {
         setShowCourses((prev) => !prev);
@@ -941,11 +1099,11 @@ function PackageDetail() {
             <div className={styles.courseDetail}>
                 <Image
                     borderRadius={3}
-                    src="https://images.unsplash.com/photo-1662880195918-63fecf8a8b71?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=300&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY3NzE4MDIzNQ&ixlib=rb-4.0.3&q=80&w=600"
+                    src={packageData?.thumbnail || ""}
                     alt="Blockchain"
                 />
                 <VStack alignItems="flex-start">
-                    <Text>Complete Blockchain Development Bootcamp</Text>
+                    <Text>{packageData?.name}</Text>
                     <HStack
                         cursor="pointer"
                         color="gray.500"
@@ -953,15 +1111,21 @@ function PackageDetail() {
                         _hover={{ color: "gray.400" }}
                         onClick={toggleCourses}
                     >
-                        <Text>Includes 5 Courses</Text>
+                        <Text>Includes {packageData?.courses?.length} Courses</Text>
                         {showCourses ? <AiOutlineUp /> : <AiOutlineDown />}
                     </HStack>
                 </VStack>
                 <VStack alignItems="flex-end" marginLeft="auto">
-                    <Text>₹1999</Text>
-                    {/* <Text marginTop="0 !important" color="gray.500" as="s">
-              ₹4999
-            </Text> */}
+                    <HStack>
+                        <Text>₹{packageData?.prices?.find((plan) => {
+                            return plan?.isDisplay == true
+                        })?.discountedPrice || 'Free'}</Text>
+                        <Text marginTop="0 !important" color="gray.500" as="s">
+                            ₹{packageData?.prices?.find((plan) => {
+                                return plan?.isDisplay == true
+                            })?.listPrice || 'Free'}
+                        </Text>
+                    </HStack>
                     <Button
                         px={3}
                         py={2}
@@ -969,6 +1133,9 @@ function PackageDetail() {
                         height="max-content"
                         fontSize="12px"
                         marginTop="0 !important"
+                        onClick={() => {
+                            router.push(`/package/${packageData?._id}`)
+                        }}
                     >
                         Purchase
                     </Button>
@@ -976,10 +1143,11 @@ function PackageDetail() {
             </div>
             {showCourses ? (
                 <VStack marginTop={4} gap={2} px={4}>
-                    <CourseDetail />
-                    <CourseDetail highlight />
-                    <CourseDetail />
-                    <CourseDetail />
+                    {
+                        packageData?.courses?.length > 0 && packageData?.courses?.map((courseData, index) => {
+                            return <CourseOfPackage key={index} courseData={courseData?.course} />
+                        })
+                    }
                 </VStack>
             ) : null}
         </>

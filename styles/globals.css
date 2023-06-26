@@ -1,16 +1,21 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat&family=Poppins:wght@300;400;500;600;700;800&display=swap");
 
 :root {
-  --primary: #0d52a7;
+  /* --primary: #0d52a7; */
+  --primary: #276897;
   --secondary: #d6bcfa;
+  /* --secondary: #ff0060; */
   /* --secondary: #f6e05e; */
   --gray: #bebebe;
+  /* --gray: #010203; */
   --link: #0d7ae0;
   --red: #d42424;
   --bg: #0f0f0f;
+  /* --bg: #ffffff; */
   --card-bg: #151515;
   --shadow: 0px 0px 6px #00000025;
   --border: 1px solid #1a1a1a;
+  /* --border: 1px solid #1d344a; */
   --nav-height: 70px;
 }
 
@@ -102,11 +107,11 @@ button:active:disabled {
 }
 
 .wrapper {
-  padding: 2rem 0;
+  padding: 2rem 8rem;
   padding-top: 3rem;
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+  /* max-width: 1200px; */
+  margin: 0 0;
 }
 
 .courseCards .swiper-slide {
@@ -171,5 +176,11 @@ button:active:disabled {
 
   ::-webkit-scrollbar {
     width: 0px;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .wrapper {
+    padding: 2rem !important;
   }
 }

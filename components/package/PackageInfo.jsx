@@ -30,8 +30,6 @@ export default function PackageInfo({ packageData }) {
         <TabList>
           <Tab>Learnings</Tab>
           <Tab>Career</Tab>
-          <Tab>Feedback</Tab>
-          <Tab>Live Sessions</Tab>
         </TabList>
 
         <TabPanels>
@@ -49,20 +47,6 @@ export default function PackageInfo({ packageData }) {
                 Lakhs
               </div>
             </div>
-          </TabPanel>
-          <TabPanel>
-            <div className={styles.feedbacks}>
-              <FeedbackCard />
-              <FeedbackCard />
-              <FeedbackCard />
-              <FeedbackCard />
-              <FeedbackCard />
-            </div>
-          </TabPanel>
-          <TabPanel>
-            <SessionCard isLive />
-            <SessionCard />
-            <SessionCard />
           </TabPanel>
         </TabPanels>
       </Tabs>

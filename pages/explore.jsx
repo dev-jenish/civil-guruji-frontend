@@ -11,7 +11,7 @@ import { api } from "utils/urls";
 export default function Explore() {
 
   const [courses, setCourses] = useState([])
-  const [packages, setPackages] = useState([])
+  const [bannersData, setBannersData] = useState([])
 
 
   const getAllCourses = async () => {
@@ -22,7 +22,7 @@ export default function Explore() {
       // }
       let priorityWiseCourses = []
       coursesResult?.data && Object.keys(coursesResult?.data).map((key) => {
-        priorityWiseCourses[coursesResult?.data?.[key]?.priority] = { name: key, data: coursesResult?.data?.[key]?.data }
+        priorityWiseCourses[coursesResult?.data?.[key]?.priority] = { name: key.split('-Id-')[0], data: coursesResult?.data?.[key]?.data, categoryId: key.split('-Id-')[1] }
       })
       setCourses(priorityWiseCourses)
     }catch(error){
@@ -31,25 +31,27 @@ export default function Explore() {
     }
   }
 
-  const getAllPackages = async () => {
+  const getAllBanners = async () => {
     try{
-      let response = await api('/course/packages/all', 'get')
-      setPackages(response?.data)
+      let response = await api('/assets/list-banners', 'get')
+      if(response?.data?.length>0){
+        setBannersData(response?.data)
+      }
     }catch(error){
       console.log(error)
     }
   }
 
   useEffect(() => {
+    getAllBanners()
     getAllCourses()
-    getAllPackages()
   }, [])
 
 
   return (
     <Layout>
       <div className={`wrapper ${styles.container}`}>
-        <Banner />
+        <Banner bannersData={bannersData} />
         <div className={styles.content}>
           {/* {
             Object.keys(courses)?.length > 0 && Object.keys(courses)?.map((category) => {
@@ -59,7 +61,7 @@ export default function Explore() {
           {
             courses && courses?.map((course, index) => {
               if(course){
-                return <CourseCarousel key={index} title={course?.name} courses={course?.data || []} />
+                return <CourseCarousel key={index} title={course?.name} courses={course?.data || []} categoryId={course?.categoryId} />
               }
             })
           }

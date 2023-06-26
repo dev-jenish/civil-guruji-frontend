@@ -39,9 +39,10 @@ import { toast } from "react-hot-toast";
 import QuizComponent from "@/components/course/QuizComponent";
 import ZoomComponent from "@/components/zoom/ZoomComponent";
 import CommentsSection from "@/components/comments/Comments";
-import VideoPlayer from "@/components/Player";
+// import VideoPlayer from "@/components/Player";
 import { userContext } from "@/context/userContext";
 import moment from "moment";
+import FinalQuizComponent from "@/components/course/FinalQuizComponent";
 
 export default function Topic({ topic, course }) {
   const router = useRouter()
@@ -61,6 +62,8 @@ export default function Topic({ topic, course }) {
     moduleIndex: 0,
     subModuleIndex: 0,
     isLive: false,
+    isFinalQuiz: false,
+    finalQuizData: {},
     liveData: {}
   });
   const [videoProgeress, setVideoProgress] = useState(0);
@@ -176,7 +179,6 @@ export default function Topic({ topic, course }) {
         courseProgressionId: courseProgressionData?._id
       })
 
-      console.log(response?.data)
 
       getCourseProgressionData()
 
@@ -194,7 +196,6 @@ export default function Topic({ topic, course }) {
       })
 
       if(response?.data){
-        console.log(response?.data)
         setCourseProgressionData(response?.data)
       }
 
@@ -265,14 +266,13 @@ export default function Topic({ topic, course }) {
   }
 
   useEffect(() => {
-    if(selectedTopic?.subModule?._id){
+    if(selectedTopic?.subModule?._id && !selectedTopic?.subModule?.quiz){
       if(!(courseProgressionData?.subModules?.find((subModuleData) => {
 
         return subModuleData?.subModule == selectedTopic?.subModule?._id
       }))){
         saveSubModuleProgress(selectedTopic?.subModule?._id)
       }
-
 
 
     }
@@ -413,8 +413,6 @@ export default function Topic({ topic, course }) {
         let maxModuleIndex = courseData?.courseDetail?.courseContents.length - 1
         let maxSubModuleIndex = courseData?.courseDetail?.courseContents[maxModuleIndex]?.courseSubContents?.length - 1
 
-        console.log(maxModuleIndex, maxSubModuleIndex)
-
         if ((selectedTopic?.moduleIndex == maxModuleIndex) && (selectedTopic?.subModuleIndex == maxSubModuleIndex)) {
           setDisableNext(true)
         } else {
@@ -464,8 +462,6 @@ export default function Topic({ topic, course }) {
 
     if (iframeRef?.current) {
 
-      console.log("came here")
-
       const iframe = iframeRef.current;
 
       const onLoad = () => {
@@ -501,6 +497,7 @@ export default function Topic({ topic, course }) {
     <Layout customHeader={customHeader}>
       <div className={styles.container}>
         <SideNav
+        courseData={courseData}
           savedPro={savedPro}
           learningPercentage={learningPercentage}
           videoProgeress={videoProgeress}
@@ -514,6 +511,9 @@ export default function Topic({ topic, course }) {
         {
           selectedTopic?.isLive ?
           <ZoomComponent join_url={selectedTopic?.liveData?.join_url} liveData={selectedTopic?.liveData} meetingNumber={selectedTopic?.liveData?.id} username={userData?.userDetail?.name} password={selectedTopic?.liveData?.password} selectedTopic={selectedTopic} />
+          :
+          selectedTopic?.isFinalQuiz ?
+          <FinalQuizComponent finalQuizData={selectedTopic?.finalQuizData} courseProgressionData={courseProgressionData} courseId={courseId} getCourseProgressionData={getCourseProgressionData} />
           :
         <div className={styles.markdown}>
           <div className={styles.breadcrumbs}>
@@ -552,9 +552,9 @@ export default function Topic({ topic, course }) {
           {
             selectedTopic?.subModule?.type == 1 && (
               <div className={styles.iframe}>
-                {/* <ReactPlayer
-                  // url={selectedTopic?.subModule?.url || selectedTopic?.subModule?.videoUrl}
-                  url={'https://d1wxh31cdpnls0.cloudfront.net/file_library/videos/channel_vod_non_drm_hls/168657483492057856100/168657483492057856100_7856100.m3u8'}
+                <ReactPlayer
+                  url={selectedTopic?.subModule?.url || selectedTopic?.subModule?.videoUrl}
+                  // url={'https://d1wxh31cdpnls0.cloudfront.net/file_library/videos/channel_vod_non_drm_hls/168657483492057856100/168657483492057856100_7856100.m3u8'}
                   width={"100%"}
                   height={"100%"}
                   playing={true}
@@ -589,11 +589,11 @@ export default function Topic({ topic, course }) {
                   }}
                   
                 >
-                </ReactPlayer> */}
+                </ReactPlayer>
 
 
 
-                <VideoPlayer liveURL={'https://d1wxh31cdpnls0.cloudfront.net/file_library/videos/channel_vod_non_drm_hls/168657483492057856100/168657483492057856100_7856100.m3u8'} />
+                {/* <VideoPlayer liveURL={'https://d1i60clb34cfd8.cloudfront.net/file_library/videos/vod_non_drm_ios/3379331/1681111896_7814626759912629/1681111660844_477738947662471940_video_VOD.m3u8'} /> */}
 
                 {/* <iframe ref={iframeRef} src="https://www.videocrypt.com/website/player_code?id=3572813_0_4733329350030435" ></iframe> */}
                 {/* <iframe src='https://www.videocrypt.com/website/player_code?id=3572813_0_4733329350030435' title="VideoCrypt Video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" style="width:100%"></iframe> */}
@@ -607,7 +607,7 @@ export default function Topic({ topic, course }) {
 
           {selectedTopic?.subModule?.type == 5 && (
             <div className={styles.iframe}>
-              <QuizComponent courseProgressionData={courseProgressionData} subModule={selectedTopic?.subModule} courseId={courseId} getCourseProgressionData={getCourseProgressionData} />
+              <QuizComponent saveSubModuleProgress={saveSubModuleProgress} courseProgressionData={courseProgressionData} subModule={selectedTopic?.subModule} courseId={courseId} getCourseProgressionData={getCourseProgressionData} />
             </div>
           )}
           {selectedTopic?.subModule?.type == 2 && (
@@ -791,10 +791,13 @@ function SideNav({
   selectedTopic,
   setSelectedTopic,
   meetingsData,
-  courseProgressionData
+  courseProgressionData,
+  courseData
 }) {
   const [showNav, setShowNav] = useState(false);
+  const [canGiveFinalQuiz, setCanGiveFinalQuiz] = useState(false)
   const [search, setSearch] = useState("");
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter();
   const handleNav = () => {
     setShowNav(!showNav);
@@ -803,6 +806,28 @@ function SideNav({
   const handleBack = () => {
     router.push(`/course/Blockchain Developer course`);
   };
+
+  useEffect(() => {
+    
+    let courseSubModulesLength = 0
+    courseData?.courseDetail?.courseContents?.length>0 && courseData?.courseDetail?.courseContents.forEach((courseContent) => {
+      if(courseContent?.courseSubContents?.length>0){
+        courseSubModulesLength += courseContent?.courseSubContents?.length
+      }
+    })
+
+    let savedProgressSubModulesLength = 0
+    if(courseProgressionData?.subModules?.length>0){
+      savedProgressSubModulesLength += courseProgressionData?.subModules?.length
+    }
+
+    if(courseSubModulesLength == savedProgressSubModulesLength){
+      if(!canGiveFinalQuiz){
+        setCanGiveFinalQuiz(true)
+      }
+    }
+
+  }, [courseData, courseProgressionData])
 
   let searchModules = modules.filter((module) => {
     let bool = false;
@@ -813,6 +838,32 @@ function SideNav({
 
     return bool;
   });
+
+  const handleAttemptFinalQuiz = () => {
+    setSelectedTopic({
+      isFinalQuiz: true,
+      finalQuizData: courseData?.finalQuiz
+    })
+  }
+
+  const handleDownloadCertificate = async () => {
+    try{
+      setIsLoading(true)
+      const response = await api(`/certificates/generate/${courseData?.courseDetail?.certificate?._id}`, 'post', {
+        courseId: courseData?._id
+      }, {}, {
+        responseType: 'blob'
+      })
+      const url = window.URL.createObjectURL(response.data)
+      console.log(url, ' <== = I am url')
+      window.open(url);
+    }catch(error){
+      console.log(error)
+      toast.error('Error happened while downloading certificate!')
+    }finally{
+      setIsLoading(false)
+    }
+  }
 
   return (
     <>
@@ -881,7 +932,16 @@ function SideNav({
               </TabPanel>
             </TabPanels>
           </Tabs>
-          <Button className={styles.downloadBtn}>Attempt Final Quiz</Button>
+          {
+            canGiveFinalQuiz ?
+            <Button onClick={handleAttemptFinalQuiz} className={styles.downloadBtn}>Attempt Final Quiz</Button>
+            :
+            <Button isDisabled className={styles.downloadBtn} >Attempt Final Quiz</Button>
+          }
+          {
+            courseProgressionData?.completedOn &&
+            <Button isLoading={isLoading} onClick={handleDownloadCertificate} className={styles.downloadBtn}>Download Certificate</Button>
+          }
         </div>
       </div>
     </>
@@ -918,7 +978,6 @@ function Accordian({
 
       module.courseSubContents.map((topic) => {
         if(topic?._id == subModuleData?.subModule){
-          console.log(topic?._id)
           count += 1
         }
       })
@@ -964,9 +1023,6 @@ function Accordian({
                   setSelectedTopic({ module: module, subModule: topic, subModuleIndex: index, moduleIndex, isLive: false });
                 }}
               >
-                {console.log(courseProgressionData?.subModules?.find((subModuleData) => {
-              return subModuleData?.subModule == topic?._id
-            }), topic?._id)}
                 {topic?.type == 1 ? (
                   <IoMdRadioButtonOn
                     className={styles.accIcon}

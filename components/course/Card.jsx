@@ -5,6 +5,7 @@ import { AiOutlineTrophy } from "react-icons/ai";
 import { BsFillPlayFill, BsLaptop } from "react-icons/bs";
 import { FaRupeeSign } from "react-icons/fa";
 import Stars from "../Stars";
+import { useEffect, useState } from "react";
 
 export default function Card({
   index,
@@ -16,21 +17,82 @@ export default function Card({
 }) {
   const router = useRouter();
 
+  const [time, setTime] = useState(0)
+
   const handleClick = () => {
 
-    if(course?.isPackage){
+    if (course?.isPackage) {
       router.push({
         pathname: `/package/${course?._id}`,
-        query: {id: course?._id}
+        query: { id: course?._id }
       }, `/package/${course?._id}`);
-    }else{
+    } else {
       router.push({
         pathname: `/course/${course?._id}`,
-        query: {id: course?._id}
+        query: { id: course?._id }
       }, `/course/${course?._id}`);
     }
 
   };
+
+  useEffect(() => {
+
+    if(course?.isPackage){
+      if (course?.courses?.length > 0) {
+
+        let totalHours = 0
+        course?.courses?.map((course) => {
+  
+          let courseData = course?.course
+
+  
+          if (courseData?.courseDetail?.courseContents?.length > 0) {
+            courseData?.courseDetail?.courseContents?.map((courseContent) => {
+              if (courseContent?.totalDuration?.DD > 0) {
+                totalHours += (courseContent?.totalDuration?.DD * 8)
+              }
+              if (courseContent?.totalDuration?.HH > 0) {
+                totalHours += (courseContent?.totalDuration?.HH)
+              }
+              if (courseContent?.totalDuration?.MM > 0) {
+                totalHours += parseInt(courseContent?.totalDuration?.MM / 60)
+              }
+            })
+  
+  
+            if (totalHours > 0) {
+              setTime(totalHours)
+            }
+          }
+        })
+  
+      }
+    }else{
+      if (course?.courseDetail?.courseContents?.length > 0) {
+        let totalHours = 0
+        course?.courseDetail?.courseContents?.map((courseContent) => {
+          if (courseContent?.totalDuration?.DD > 0) {
+            totalHours += (courseContent?.totalDuration?.DD * 8)
+          }
+          if (courseContent?.totalDuration?.HH > 0) {
+            totalHours += (courseContent?.totalDuration?.HH)
+          }
+          if (courseContent?.totalDuration?.MM > 0) {
+            totalHours += parseInt(courseContent?.totalDuration?.MM / 60)
+          }
+        })
+  
+        if (totalHours > 0) {
+          setTime(totalHours)
+        }
+      }
+    }
+
+
+
+  }, [course])
+
+
 
   return (
     <div onClick={handleClick} className={styles.card}>
@@ -63,11 +125,11 @@ export default function Card({
           </>
         )}
 
-        {!showPreview ? (
+        {/* {!showPreview ? (
           <span id={styles.isLive}>
             <BsFillPlayFill id={styles.icon} /> Live
           </span>
-        ) : null}
+        ) : null} */}
       </div>
       <div className={styles.courseInfo}>
         <h2>{course?.name}</h2>
@@ -77,18 +139,21 @@ export default function Card({
           </p>
         </span>
         <p>
-          <i>{ course?.learnerCount || `1500`}+ Enrolled</i>
+          <i>{course?.learnerCount || `1500`}+ Enrolled</i>
         </p>
         <div className={styles.more}>
           <p>
             <AiOutlineTrophy className={styles.icon} /> Certificate
           </p>
           <p>
-            <BsLaptop className={styles.icon} /> 3 Hours
+            <BsLaptop className={styles.icon} /> {time} Hours
           </p>
           <p id={styles.price}>
             <FaRupeeSign className={styles.icon} />
-            499
+            {/* 499 */}
+            {course?.prices?.find((price) => {
+              return price?.isDisplay == true
+            })?.discountedPrice || 'Free'}
           </p>
         </div>
       </div>

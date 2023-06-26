@@ -7,14 +7,14 @@ import Layout from "@/components/reusable/Layout";
 import Stars from "@/components/Stars";
 import useScrollObserver from "@/hooks/useScrollObserver";
 import styles from "@/styles/CourseDetail.module.css";
-import { Button, Image } from "@chakra-ui/react";
+import { Button, Image, Skeleton, Text } from "@chakra-ui/react";
 import moment from "moment/moment";
 // import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { FreeMode } from "swiper";
+import { Autoplay, FreeMode } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { api, baseURL } from "utils/urls";
 
@@ -23,6 +23,22 @@ export default function CourseDetail({ }) {
   const router = useRouter();
   const [courseId, setCourseId] = useState("");
   const [courseData, setCourseData] = useState({});
+  const [learningDuration, setLearningDuration] = useState({})
+  const [totalLearningHours, setTotalLearningHours] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
+  const [meetingsData, setMeetingsData] = useState([])
+
+
+  const getMeetingsData = async () => {
+    try {
+      let response = await api(`/zoom/listMeetings/${courseId}`, 'get')
+      if (response?.data?.length > 0) {
+        setMeetingsData(response?.data)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   useEffect(() => {
     if (router?.query?.slug) {
@@ -32,6 +48,7 @@ export default function CourseDetail({ }) {
 
   const getCourseData = async (id) => {
     try {
+      setIsLoading(true)
       let response = await api(`/course/course-details/${id}`, "get");
       if (response?.data) {
         setCourseData(response?.data);
@@ -39,14 +56,53 @@ export default function CourseDetail({ }) {
     } catch (error) {
       console.log(error);
       toast.error("Course details fetching failed");
+    } finally {
+      setIsLoading(false)
     }
   };
 
   useEffect(() => {
     if (courseId) {
       getCourseData(courseId);
+      getMeetingsData()
     }
   }, [courseId]);
+
+  useEffect(() => {
+    if (courseData?.courseDetail?.courseContents?.length > 0) {
+      let totalHours = 0
+      courseData?.courseDetail?.courseContents?.map((courseContent) => {
+        if (courseContent?.totalDuration?.DD > 0) {
+          totalHours += (courseContent?.totalDuration?.DD * 8)
+        }
+        if (courseContent?.totalDuration?.HH > 0) {
+          totalHours += (courseContent?.totalDuration?.HH)
+        }
+        if (courseContent?.totalDuration?.MM > 0) {
+          totalHours += parseInt(courseContent?.totalDuration?.MM / 60)
+        }
+      })
+
+
+      if (totalHours > 0) {
+
+        setTotalLearningHours(totalHours)
+
+        let totalDays = parseInt(totalHours / 8)
+        let leftHours = totalHours % 8
+
+        let totalDuration = {
+          days: 0,
+          hours: 0
+        }
+
+        if (totalDays > 0) { totalDuration.days = totalDays }
+        if (totalHours > 0) { totalDuration.hours = leftHours }
+
+        setLearningDuration(totalDuration)
+      }
+    }
+  }, [courseData])
 
   return (
     <Layout
@@ -117,7 +173,7 @@ export default function CourseDetail({ }) {
             <div className={styles.boxContainer}>
               <div className={styles.contentBox}>
                 <h5 className={styles.boxHeading}>Learning Duration</h5>
-                <span className={styles.durationValue}>10 Days</span>
+                <span className={styles.durationValue}>{`${learningDuration?.days > 0 ? `${learningDuration?.days + ' days'}` : ''} & ${learningDuration?.hours > 0 ? `${learningDuration?.hours + ' hours'}` : ''}`}</span>
               </div>
               {
                 courseData?.courseDetail?.crackJobs && courseData?.courseDetail?.crackJobs?.length > 0 &&
@@ -150,15 +206,19 @@ export default function CourseDetail({ }) {
                 <Swiper
                   slidesPerView={"auto"}
                   spaceBetween={20}
-                  freeMode={true}
-                  modules={[FreeMode]}
+                  // freeMode={true}
+                  modules={[Autoplay]}
                   className="courseCards"
+                  autoplay={{
+                    delay: 1000,
+                    disableOnInteraction: false,
+                  }}
                 >
                   {courseData?.studentsGotJob && courseData?.studentsGotJob?.length > 0 && courseData?.studentsGotJob.map((student, idx) => (
                     <SwiperSlide key={idx} style={{ cursor: 'pointer' }}>
                       <div className={styles.jobCard}>
                         <div className={styles.Imagepart}>
-                          <Image width={180} height={250} src={baseURL + `/${student?.image}`} />
+                          <Image width={'80px'} height={'80px'} src={baseURL + `/${student?.image}`} />
                         </div>
                         <div className={styles.DetailsPart}>{student?.name}</div>
                       </div>
@@ -172,21 +232,26 @@ export default function CourseDetail({ }) {
             />
             <CourseContent
               contents={courseData?.courseDetail?.courseContents}
+              meetingsData={meetingsData}
             />
-            <div className={styles.feedbacks}>
-              <h3 className={styles.jobHeading}>FeedBack</h3><h5></h5>
-              <FeedbackCard />
-              <FeedbackCard />
-              <FeedbackCard />
-              <FeedbackCard />
-              <FeedbackCard />
+            <div style={{ margin: '2rem 0 2rem 0' }} >
+              <h3 className={styles.jobHeading}>FeedBack</h3>
+              <div className={styles.feedbacks}>
+                <Text>Coming soon.</Text>
+                {/* <FeedbackCard />
+                <FeedbackCard />
+                <FeedbackCard />
+                <FeedbackCard />
+                <FeedbackCard /> */}
+              </div>
             </div>
             <CourseCarousel
               title="Similar Related course"
               courses={courseData?.skills}
+              parentCourseId={courseData?._id}
             />
           </div>
-          <CourseFloatCard courseData={courseData} />
+          <CourseFloatCard totalLearningHours={totalLearningHours} courseData={courseData} />
         </div>
       </div>
     </Layout>
