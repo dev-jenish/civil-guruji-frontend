@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { FormControl, FormLabel, Image, Button } from '@chakra-ui/react';
 
 const ImageUpload = ({ onImageUpload, selectedImage, setSelectedImage }) => {
@@ -17,9 +17,15 @@ const ImageUpload = ({ onImageUpload, selectedImage, setSelectedImage }) => {
   const clearImage = () => {
     setSelectedImage(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = null;
     }
   };
+
+  useEffect(() => {
+    if((selectedImage == null) && fileInputRef.current){
+      fileInputRef.current.value = null
+    }
+  }, [selectedImage])
 
   return (
     <FormControl>
