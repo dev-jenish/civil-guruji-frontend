@@ -155,8 +155,8 @@ export default function Post({ postData, getAllPosts, setPostData, hideShare, ty
         {
           type == 'event' && postData?.buttons?.length > 0 &&
           <Stack style={{ margin: '1.5rem 0' }} >
-            {postData?.buttons?.map((buttonData) => {
-              return <Box><Button size={'sm'} variant={'outline'} >
+            {postData?.buttons?.map((buttonData, index) => {
+              return <Box key={index} ><Button size={'sm'} variant={'outline'} >
                 <Link href={buttonData?.data} >{buttonData?.label}</Link>
               </Button></Box>
             })}
