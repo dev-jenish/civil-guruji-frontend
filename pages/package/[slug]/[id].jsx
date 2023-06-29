@@ -31,8 +31,8 @@ export default function PackageCourse({}) {
             </span>
           </div>
           <HStack>
-            <Button variant="outline">Enroll in Course</Button>
-            <Button>Enroll in Package</Button>
+            {/* <Button variant="outline">Enroll in Course</Button> */}
+            {/* <Button>Enroll in Package</Button> */}
           </HStack>
         </div>
       ) : null}

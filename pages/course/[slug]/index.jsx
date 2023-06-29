@@ -127,7 +127,7 @@ export default function CourseDetail({ }) {
               <p>Enrolled engineers ({courseData?.learnerCount})</p>
             </span>
           </div>
-          <Button>Enroll in Course</Button>
+          {/* <Button>Enroll in Course</Button> */}
         </div>
       ) : null}
       <div className={`wrapper ${styles.container}`}>
