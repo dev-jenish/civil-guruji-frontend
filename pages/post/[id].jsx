@@ -13,6 +13,7 @@ export default function PostDetail() {
 const router = useRouter()
 
 const [postData, setPostData] = useState()
+const [postId, setPostId] = useState('')
 
 const getPostData = async (postId) => {
   try{
@@ -28,6 +29,9 @@ const getPostData = async (postId) => {
   useEffect(() => {
     if(router?.query?.id){
       getPostData(router?.query?.id)
+      setPostId(router.query.id)
+    }else{
+      postId && setPostId('')
     }
   }, [router?.query])
 
@@ -36,10 +40,10 @@ const getPostData = async (postId) => {
       <div className={`wrapper ${styles.container}`}>
         <div className={styles.left}>
           <Box borderRadius={8} overflow="hidden">
-            <Post postData={postData} />
+            <Post getAllPosts={getPostData} postData={postData} type={postData?.type} />
           </Box>
 
-          <Posts isComment posts={postData} />
+          <Posts isComment posts={postData} getAllPosts={() => getPostData(postId)} />
         </div>
         <div className={styles.right}>
           <Box borderRadius={8} overflow="hidden">

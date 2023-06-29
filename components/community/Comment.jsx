@@ -9,6 +9,7 @@ import { useContext, useEffect, useState } from "react";
 import { userContext } from "@/context/userContext";
 import { useRouter } from "next/router";
 import { api } from "utils/urls";
+import { refreshUser } from "utils/authentication";
 
 export default function Comment({ isPost, postData, getPostData, getAllPosts }) {
   const router = useRouter()
@@ -17,13 +18,14 @@ export default function Comment({ isPost, postData, getPostData, getAllPosts }) 
   const [text, setText] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
 
-  const { userData } = useContext(userContext)
+  const { userData, setUserData } = useContext(userContext)
 
-  useEffect(() => {
-    if (!userData?._id) {
-      router.push(`/login?previous=${router.asPath}`)
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (!userData?._id) {
+  //     // router.push(`/login?previous=${router.asPath}`)
+      
+  //   }
+  // }, [])
 
   const handleUploadImage = (file) => {
     setSelectedImage(file);
