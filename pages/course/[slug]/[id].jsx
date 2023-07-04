@@ -43,11 +43,14 @@ import CommentsSection from "@/components/comments/Comments";
 import { userContext } from "@/context/userContext";
 import moment from "moment";
 import FinalQuizComponent from "@/components/course/FinalQuizComponent";
+import { refreshUser } from "utils/authentication";
 
 export default function Topic({ topic, course }) {
   const router = useRouter()
 
-  const { userData } = useContext(userContext)
+  const { userData, setUserData } = useContext(userContext)
+
+  const [purchasedData, setPurchasedData] = useState({})
 
   // const courseId = "64532c7adb65b45ce71ec505";
   const [courseId, setCourseId] = useState('');
@@ -390,7 +393,11 @@ export default function Topic({ topic, course }) {
 
   useEffect(() => {
     if (!userData?._id) {
-      router.push(`/login?previous=${document.location.pathname}`)
+      (async () => {
+        let response = await refreshUser('post')
+        setUserData(response?.data)
+      })()
+      // router.push(`/login?previous=${document.location.pathname}`)
     }
   }, [])
 
@@ -429,6 +436,22 @@ export default function Topic({ topic, course }) {
     }
   }, [courseData, selectedTopic])
 
+  useEffect(() => {
+
+    console.log(userData)
+
+    if(userData?.purchases && (userData?.purchases?.length > 0) && courseId) {
+      let purchasedPlan = userData.purchases.find((purchase) => {
+        console.log(courseId)
+          return purchase?.courseDetail == courseId
+      })
+      if (purchasedPlan) {
+          setPurchasedData(purchasedPlan)
+          console.log(purchasedPlan, "planp")
+      }
+  }
+  }, [userData, courseId])
+
   // new added for customheader
   const customHeader = (
     <div className={styles.customHeader}>
@@ -436,10 +459,19 @@ export default function Topic({ topic, course }) {
         <h1>Civil Guruji</h1>
       </Link>
       <h2>{courseData.name}</h2>
+      {
+        purchasedData?.planDetail?.type == 'One time payment'
+        &&
+        <Text style={{ textDecoration: 'underline', color: '#E01C46', fontWeight: 'bold' }} >Lifetime</Text>
+      }
+      {
+        purchasedData?.planDetail?.type == 'Emi subscription'
+        &&
       <div className={styles.buttonWithDate}>
-        <Button style={{ fontSize: "0.90rem" }}>PAY EMI</Button>
-        <p style={{ fontSize: "0.75rem" }}>06 | May | 2023</p>
+        <Button style={{ fontSize: "0.90rem" }} onClick={() => {router.push(`/checkout/${courseId}/${purchasedData?.planDetail?._id}`)}} >PAY EMI</Button>
+        <p style={{ fontSize: "0.75rem" }}>{ moment(purchasedData?.expiresOn).format('DD | MMM | YYYY')}</p>
       </div>
+      }
     </div>
   );
 

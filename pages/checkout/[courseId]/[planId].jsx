@@ -388,7 +388,7 @@ export default function Checkout() {
                     await updateUserDetails(userData, setUserData)
 
 
-                    router.push('/foryou')
+                    router.push(`/course/learning/${courseID}`)
 
                 } catch (error) {
                     console.log(error)
