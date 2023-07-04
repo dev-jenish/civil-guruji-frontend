@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { FreeMode } from "swiper";
+import { FreeMode, Navigation } from "swiper";
 import Card from "./Card";
 import styles from "@/styles/Swiper.module.css";
 
@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 
 // const courses = [1, 2, 3, 4, 5, 6];
 
-export default function CourseCarousel({ title, className, hideBtn, courses, categoryId, parentCourseId, parentPackageId }) {
+export default function CourseCarousel({ title, className, hideBtn, courses, categoryId, parentCourseId, parentPackageId, learning }) {
   const router = useRouter()
   const [preview, setPreview] = useState(null);
 
@@ -54,8 +54,9 @@ export default function CourseCarousel({ title, className, hideBtn, courses, cat
       <Swiper
         slidesPerView={"auto"}
         spaceBetween={20}
+        navigation={true}
         freeMode={true}
-        modules={[FreeMode]}
+        modules={[FreeMode, Navigation]}
         className="courseCards"
         autoplay={{
           delay: 500,
@@ -69,10 +70,12 @@ export default function CourseCarousel({ title, className, hideBtn, courses, cat
               showPreview={preview === idx}
               mouseOver={mouseOver}
               mouseOut={mouseOut}
-              transformOrigin={
-                idx == 1 ? "left" : courses.length == idx ? "right" : "center"
-              }
+              // transformOrigin={
+              //   idx == 1 ? "left" : courses.length == idx ? "right" : "center"
+              // }
+
               course={course}
+              learning={learning}
             />
           </SwiperSlide>
         ))}

@@ -5,7 +5,8 @@ import { AiOutlineTrophy } from "react-icons/ai";
 import { BsFillPlayFill, BsLaptop } from "react-icons/bs";
 import { FaRupeeSign } from "react-icons/fa";
 import Stars from "../Stars";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { userContext } from "@/context/userContext";
 
 export default function Card({
   index,
@@ -19,6 +20,23 @@ export default function Card({
 
   const [time, setTime] = useState(0)
 
+  const [isPurchased, setIsPurchased] = useState(false)
+
+  const { userData } = useContext(userContext)
+
+  useEffect(() => {
+    if(userData?.purchases && userData?.purchases?.length > 0) {
+      let purchasedPlan = userData.purchases.find((purchase) => {
+        // console.log(purchase)
+          return purchase?.courseDetail == course?._id
+      })
+      if (purchasedPlan) {
+          setIsPurchased(true)
+          console.log(purchasedPlan)
+      }
+  }
+  }, [userData])
+
   const handleClick = () => {
 
     if (course?.isPackage) {
@@ -27,10 +45,18 @@ export default function Card({
         query: { id: course?._id }
       }, `/package/${course?._id}`);
     } else {
-      router.push({
-        pathname: `/course/${course?._id}`,
-        query: { id: course?._id }
-      }, `/course/${course?._id}`);
+      if(isPurchased){
+        console.log('Purchased')
+        router.push({
+          pathname: `/course/${course?.name}/${course?._id}`,
+          query: { id: course?._id }
+        }, `/course/${course?.name}/${course?._id}`);
+      }else{
+        router.push({
+          pathname: `/course/${course?._id}`,
+          query: { id: course?._id }
+        }, `/course/${course?._id}`);
+      }
     }
 
   };

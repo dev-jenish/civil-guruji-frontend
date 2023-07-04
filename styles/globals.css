@@ -133,6 +133,27 @@ button:active:disabled {
   color: #000000;
 }
 
+
+
+.courseCards .swiper-button-prev::after,
+.courseCards .swiper-button-next::after {
+  font-size: 20px;
+  font-weight: 800;
+  color: #000000;
+}
+
+.courseCards .swiper-button-prev::after {
+  translate: -15%;
+}
+
+.courseCards .swiper-button-next::after {
+  translate: 15%;
+}
+
+.swiper-button-prev.swiper-button-disabled {
+  pointer-events: inherit;
+}
+
 .bannerSwiper .swiper-button-prev::after {
   translate: -15%;
 }

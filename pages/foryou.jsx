@@ -115,7 +115,7 @@ export default function ForYou() {
           } */}
           {
             purchasedCourses && purchasedCourses?.length > 0 &&
-            <CourseCarousel title={"Start learning"} courses={purchasedCourses} />
+            <CourseCarousel title={"Start learning"} courses={purchasedCourses} learning={true} />
           }
           {
             // if(course){
