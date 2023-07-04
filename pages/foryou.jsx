@@ -19,9 +19,21 @@ export default function ForYou() {
   const [recommendedCourses, setReccomendedCourses] = useState([])
   const [purchasedCourses, setPurchasedCourses] = useState([])
   const [bannersData, setBannersData] = useState([])
+  const [filteredCourses, setFilteredCourses] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState('All')
 
 
   const { userData } = useContext(userContext)
+
+  useEffect(() => {
+    if(selectedCategory == 'All'){
+      setFilteredCourses(courses)
+    }else {
+      setFilteredCourses(courses.filter((course) => {
+        return course?.categoryId == selectedCategory
+      }))
+    }
+  }, [selectedCategory, courses])
 
 
   const getAllBanners = async () => {
@@ -106,7 +118,7 @@ export default function ForYou() {
   return (
     <Layout>
       <div className={`wrapper ${styles.container}`}>
-        <Banner bannersData={bannersData} />
+        <Banner selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} categories={courses.map((course) => ({name: course?.name, id: course?.categoryId }))} bannersData={bannersData} />
         <div className={styles.content}>
           {/* {
             Object.keys(courses)?.length > 0 && Object.keys(courses)?.map((category) => {
@@ -125,7 +137,7 @@ export default function ForYou() {
 
           }
           {
-            courses && courses?.map((course, index) => {
+            filteredCourses && filteredCourses?.map((course, index) => {
               if (course) {
                 return <CourseCarousel key={index} title={course?.name} courses={course?.data || []} categoryId={course?.categoryId} />
               }
