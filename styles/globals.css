@@ -133,7 +133,13 @@ button:active:disabled {
   color: #000000;
 }
 
-
+.courseCards .swiper-button-prev,
+.courseCards .swiper-button-next {
+  background-color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
 
 .courseCards .swiper-button-prev::after,
 .courseCards .swiper-button-next::after {
@@ -151,7 +157,10 @@ button:active:disabled {
 }
 
 .swiper-button-prev.swiper-button-disabled {
-  pointer-events: inherit;
+  pointer-events: inherit !important;
+}
+.swiper-button-next.swiper-button-disabled {
+  pointer-events: inherit !important;
 }
 
 .bannerSwiper .swiper-button-prev::after {

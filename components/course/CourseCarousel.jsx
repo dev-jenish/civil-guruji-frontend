@@ -30,17 +30,17 @@ export default function CourseCarousel({ title, className, hideBtn, courses, cat
   };
 
   const handleViewAll = async () => {
-    try{
-      if(categoryId){
+    try {
+      if (categoryId) {
         router.push(`/courses/${categoryId}`)
       }
-      if(parentCourseId){
+      if (parentCourseId) {
         router.push(`/courses/similar/${parentCourseId}`)
       }
-      if(parentPackageId){
+      if (parentPackageId) {
         router.push(`/packages/similar/${parentPackageId}`)
       }
-    }catch(error){
+    } catch (error) {
       console.log(error)
     }
   }
@@ -54,8 +54,8 @@ export default function CourseCarousel({ title, className, hideBtn, courses, cat
       <Swiper
         slidesPerView={"auto"}
         spaceBetween={20}
-        navigation={true}
         freeMode={true}
+        navigation={true}
         modules={[FreeMode, Navigation]}
         className="courseCards"
         autoplay={{
@@ -63,22 +63,24 @@ export default function CourseCarousel({ title, className, hideBtn, courses, cat
           disableOnInteraction: false,
         }}
       >
-        { courses && courses.map((course, idx) => (
-          <SwiperSlide key={idx} style={{ zIndex: preview === idx ? 2 : 1 }}>
-            <Card
-              index={idx}
-              showPreview={preview === idx}
-              mouseOver={mouseOver}
-              mouseOut={mouseOut}
-              // transformOrigin={
-              //   idx == 1 ? "left" : courses.length == idx ? "right" : "center"
-              // }
+        {courses && courses.map((course, idx) => {
+          if (course?.listed) {
+            return <SwiperSlide key={idx} style={{ zIndex: preview === idx ? 2 : 1 }}>
+              <Card
+                index={idx}
+                showPreview={preview === idx}
+                mouseOver={mouseOver}
+                mouseOut={mouseOut}
+                // transformOrigin={
+                //   idx == 1 ? "left" : courses.length == idx ? "right" : "center"
+                // }
 
-              course={course}
-              learning={learning}
-            />
-          </SwiperSlide>
-        ))}
+                course={course}
+                learning={learning}
+              />
+            </SwiperSlide>
+          }
+        })}
       </Swiper>
     </div>
   );

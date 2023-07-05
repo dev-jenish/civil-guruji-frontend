@@ -8,7 +8,7 @@ import { Box } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { baseURL } from "utils/urls";
 
-export default function Banner({ bannersData }) {
+export default function Banner({ bannersData, categories, selectedCategory, setSelectedCategory }) {
 
   const router = useRouter()
 
@@ -41,6 +41,31 @@ export default function Banner({ bannersData }) {
         }
       </Swiper>
       <Box className={styles.tabs}>
+      <button onClick={() => {
+              if(selectedCategory !== 'All'){
+                setSelectedCategory('All')
+              }
+            }} className={styles.enrollBtn}
+            style={{ backgroundColor: selectedCategory == 'All' ? '#fff' : '#474747' }}
+            >
+            All
+          </button>
+        {
+          categories?.length > 0 && categories.map((category, index) => {
+            return <button key={index} onClick={() => {
+              if(selectedCategory !== category?.id){
+                setSelectedCategory(category.id)
+              }
+            }}
+            className={styles.enrollBtn}
+            style={{ backgroundColor: selectedCategory == category?.id ? '#fff' : '#474747' }}
+            >
+            {category?.name}
+          </button>
+          })
+        }
+      </Box>
+      {/* <Box className={styles.tabs}>
         {
           bannersData?.length > 0 && bannersData.map((banner, index) => {
             return <button key={index} onClick={() => {
@@ -52,7 +77,7 @@ export default function Banner({ bannersData }) {
           </button>
           })
         }
-      </Box>
+      </Box> */}
     </div>
   );
 }

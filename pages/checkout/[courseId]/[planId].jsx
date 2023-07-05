@@ -189,6 +189,7 @@ export default function Checkout() {
 
             } else if (value === "remove") {
                 setOneTimeActiveTab(false);
+                setPromocodeData({})
             }
         } else if (fieldName === "emiActiveTab") {
             if (value === "apply") {
@@ -200,6 +201,7 @@ export default function Checkout() {
 
                 }
             } else if (value === "remove") {
+                setPromocodeData({})
                 setEmiActiveTab(false);
             }
         }
@@ -423,16 +425,16 @@ export default function Checkout() {
         });
     };
 
-    useEffect(() => {
-        if (purchasedData?.appliedPromocode) {
-            setPromocodeData(purchasedData?.appliedPromocode)
-            if (purchasedData?.emisPaid >= 0) {
-                setEmiActiveTab(true);
-            } else {
-                setOneTimeActiveTab(true);
-            }
-        }
-    }, [purchasedData, planTypeTabIndex])
+    // useEffect(() => {
+    //     if (purchasedData?.appliedPromocode) {
+    //         setPromocodeData(purchasedData?.appliedPromocode)
+    //         if (purchasedData?.emisPaid >= 0) {
+    //             setEmiActiveTab(true);
+    //         } else {
+    //             setOneTimeActiveTab(true);
+    //         }
+    //     }
+    // }, [purchasedData, planTypeTabIndex])
 
     useEffect(() => {
         planData?.type == 'Emi subscription' ? setPlanTypeTabIndex(1) : setPlanTypeTabIndex(0)
@@ -568,7 +570,7 @@ export default function Checkout() {
                                         <p className={styles.headText}>Order details</p>
                                         <TabList>
                                             <Tab
-                                                isDisabled={purchasedData?.emisPaid >= 0}
+                                                // isDisabled={purchasedData?.emisPaid >= 0}
                                                 style={{ fontSize: "14px" }}
                                             >
                                                 One Time Payment
@@ -975,7 +977,7 @@ export default function Checkout() {
                                                                 </Text>
                                                             </HStack>
                                                             {
-                                                                !(purchasedData?.emisPaid >= 0 && promocodeData?._id) &&
+                                                                // !(purchasedData?.emisPaid >= 0 && promocodeData?._id) &&
                                                                 <button
                                                                     className={styles.redText}
                                                                     onClick={() =>
