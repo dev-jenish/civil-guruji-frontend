@@ -117,7 +117,7 @@ export default function CourseDetail({ }) {
             <span
               style={{
                 display: "flex",
-                flexDirection: "column",
+                // flexDirection: "column",
                 alignItems: "flex-start",
               }}
               id="rating"
@@ -152,7 +152,7 @@ export default function CourseDetail({ }) {
               <span
                 style={{
                   display: "flex",
-                  flexDirection: "column",
+                  // flexDirection: "column",
                   alignItems: "flex-start",
                 }}
                 id="rating"

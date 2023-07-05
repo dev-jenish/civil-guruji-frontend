@@ -1,6 +1,7 @@
 import styles from "@/styles/CourseInfo.module.css";
 import { AiOutlineCheck, AiFillDollarCircle } from "react-icons/ai";
 import { BsBriefcaseFill } from "react-icons/bs";
+import { BiTimer } from "react-icons/bi";
 
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import FeedbackCard from "./FeedbackCard";
@@ -20,10 +21,12 @@ export default function CourseInfo({ learnings = [] }) {
     <div className={styles.contentWrapper}>
       <Tabs size="xl" variant="button">
         <TabList>
-          <Tab>Learnings</Tab>
+        <Tab>Info</Tab>
           <Tab>Career</Tab>
+          <Tab>Certificate</Tab>
+          <Tab><BiTimer/></Tab>
         </TabList>
-
+        <hr></hr>
         <TabPanels>
           <TabPanel>
             <Learnings learnings={learnings} />
