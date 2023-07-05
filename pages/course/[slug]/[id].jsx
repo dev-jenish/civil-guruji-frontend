@@ -460,17 +460,25 @@ export default function Topic({ topic, course }) {
       </Link>
       <h2>{courseData.name}</h2>
       {
-        purchasedData?.planDetail?.type == 'One time payment'
+        purchasedData?.planDetail?.type == 'One time payment' || purchasedData?.planDetail?.type == 'Free'
         &&
-        <Text style={{ textDecoration: 'underline', color: '#E01C46', fontWeight: 'bold' }} >Lifetime</Text>
+        <Text style={{ textDecoration: 'underline', color: '#E01C46', fontWeight: 'bold' }} >{ purchasedData?.planDetail?.validity == 'limited' ? moment(purchasedData?.validityDate).format('DD | MMM | YYYY') : 'Lifetime'}</Text>
       }
       {
         purchasedData?.planDetail?.type == 'Emi subscription'
         &&
+        (purchasedData?.emisPaid == 3
+        ?
+        <div className={styles.buttonWithDate}>
+        {/* <Button style={{ fontSize: "0.90rem" }} onClick={() => {router.push(`/checkout/${courseId}/${purchasedData?.planDetail?._id}`)}} >PAY EMI</Button> */}
+        <Text>Valid till</Text>
+        <p style={{ fontSize: "0.75rem" }}>{ purchasedData?.planDetail?.validity == 'limited' ? moment(purchasedData?.validityDate).format('DD | MMM | YYYY') : 'Lifetime'}</p>
+      </div>
+        :
       <div className={styles.buttonWithDate}>
         <Button style={{ fontSize: "0.90rem" }} onClick={() => {router.push(`/checkout/${courseId}/${purchasedData?.planDetail?._id}`)}} >PAY EMI</Button>
         <p style={{ fontSize: "0.75rem" }}>{ moment(purchasedData?.expiresOn).format('DD | MMM | YYYY')}</p>
-      </div>
+      </div>)
       }
     </div>
   );
