@@ -46,7 +46,7 @@ export default function Banner({ bannersData, categories, selectedCategory, setS
                 setSelectedCategory('All')
               }
             }} className={styles.enrollBtn}
-            style={{ backgroundColor: selectedCategory == 'All' ? '#fff' : '#474747' }}
+            style={{ backgroundColor: selectedCategory == 'All' ? '#fff' : '#474747', color: selectedCategory == 'All' ? '#000' : '#fff' }}
             >
             All
           </button>
@@ -58,7 +58,7 @@ export default function Banner({ bannersData, categories, selectedCategory, setS
               }
             }}
             className={styles.enrollBtn}
-            style={{ backgroundColor: selectedCategory == category?.id ? '#fff' : '#474747' }}
+            style={{ backgroundColor: selectedCategory == category?.id ? '#fff' : '#474747', color: selectedCategory == category?.id ? '#000' : '#fff' }}
             >
             {category?.name}
           </button>

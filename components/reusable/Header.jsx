@@ -56,6 +56,11 @@ export default function Header() {
             <MenuList>
               <MenuGroup title='Profile'>
                 <MenuItem onClick={() => {
+                  router.push('/my-profile')
+                }} >
+                  My profile
+                </MenuItem>
+                <MenuItem onClick={() => {
                   localStorage.removeItem('accessToken')
                   localStorage.removeItem('refreshToken')
                   router.push('/login')

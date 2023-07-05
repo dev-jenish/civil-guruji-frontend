@@ -25,16 +25,16 @@ export default function Card({
   const { userData } = useContext(userContext)
 
   useEffect(() => {
-    if(userData?.purchases && userData?.purchases?.length > 0) {
+    if (userData?.purchases && userData?.purchases?.length > 0) {
       let purchasedPlan = userData.purchases.find((purchase) => {
         // console.log(purchase)
-          return purchase?.courseDetail == course?._id
+        return purchase?.courseDetail == course?._id
       })
       if (purchasedPlan) {
-          setIsPurchased(true)
-          console.log(purchasedPlan)
+        setIsPurchased(true)
+        console.log(purchasedPlan)
       }
-  }
+    }
   }, [userData])
 
   const handleClick = () => {
@@ -45,13 +45,13 @@ export default function Card({
         query: { id: course?._id }
       }, `/package/${course?._id}`);
     } else {
-      if(isPurchased){
+      if (isPurchased) {
         console.log('Purchased')
         router.push({
           pathname: `/course/${course?.name}/${course?._id}`,
           query: { id: course?._id }
         }, `/course/${course?.name}/${course?._id}`);
-      }else{
+      } else {
         router.push({
           pathname: `/course/${course?._id}`,
           query: { id: course?._id }
@@ -63,15 +63,15 @@ export default function Card({
 
   useEffect(() => {
 
-    if(course?.isPackage){
+    if (course?.isPackage) {
       if (course?.courses?.length > 0) {
 
         let totalHours = 0
         course?.courses?.map((course) => {
-  
+
           let courseData = course?.course
 
-  
+
           if (courseData?.courseDetail?.courseContents?.length > 0) {
             courseData?.courseDetail?.courseContents?.map((courseContent) => {
               if (courseContent?.totalDuration?.DD > 0) {
@@ -84,16 +84,16 @@ export default function Card({
                 totalHours += parseInt(courseContent?.totalDuration?.MM / 60)
               }
             })
-  
-  
+
+
             if (totalHours > 0) {
               setTime(totalHours)
             }
           }
         })
-  
+
       }
-    }else{
+    } else {
       if (course?.courseDetail?.courseContents?.length > 0) {
         let totalHours = 0
         course?.courseDetail?.courseContents?.map((courseContent) => {
@@ -107,7 +107,7 @@ export default function Card({
             totalHours += parseInt(courseContent?.totalDuration?.MM / 60)
           }
         })
-  
+
         if (totalHours > 0) {
           setTime(totalHours)
         }
@@ -143,6 +143,12 @@ export default function Card({
           </>
         ) : (
           <>
+            {
+              course?.isPackage &&
+              <span id={styles.isLive}>
+                Package
+              </span>
+            }
             <img
               src={course?.thumbnail ? course?.thumbnail : "https://public.bnbstatic.com/static/academy/uploads-original/37ba7ddb25b14d3e9eb4d36c54837976.png"}
               alt="Course Name"
@@ -161,26 +167,61 @@ export default function Card({
         <h2>{course?.name}</h2>
         <span id="rating">
           <p>
-            {course?.rating || 4.3} <Stars value={course?.rating || 4.3} />
+            {parseFloat(course?.rating).toFixed(1) || 4.3} <Stars value={course?.rating || 4.3} />
           </p>
         </span>
         <p>
           <i>{course?.learnerCount || `1500`}+ Enrolled</i>
         </p>
+
+        {
+          course?.isPackage &&
+          <p>{course?.courses?.length} cources</p>
+        }
+
         <div className={styles.more}>
-          <p>
-            <AiOutlineTrophy className={styles.icon} /> Certificate
-          </p>
-          <p>
-            <BsLaptop className={styles.icon} /> {time} Hours
-          </p>
-          <p id={styles.price}>
-            <FaRupeeSign className={styles.icon} />
-            {/* 499 */}
-            {course?.prices?.find((price) => {
+
+
+          <div style={{ display: 'flex' }} >
+            <p id={styles.line}>
+              <FaRupeeSign className={styles.icon} />
+              {course?.prices?.find((price) => {
+                return price?.isDisplay == true
+              })?.listPrice || 'Free'}
+            </p>
+            <p id={styles.price}>
+              <FaRupeeSign className={styles.icon} />
+              {/* {course?.prices?.find((price) => {
               return price?.isDisplay == true
-            })?.discountedPrice || 'Free'}
+            })?.discountedPrice || 'sFree'} */}
+              {course?.prices?.find((price) => {
+                return price?.isDisplay == true
+              })?.discountedPrice || 'Free'}
+            </p>
+          </div>
+
+          <p>
+            {
+              (
+                (
+                  ((course?.prices?.find((price) => {
+                    return price?.isDisplay == true
+                  })?.listPrice)
+                    -
+                    (course?.prices?.find((price) => {
+                      return price?.isDisplay == true
+                    })?.discountedPrice))
+                  /
+                  (course?.prices?.find((price) => {
+                    return price?.isDisplay == true
+                  })?.discountedPrice)
+                )
+                * 100
+              ).toFixed(2) + '% OFF'
+            }
           </p>
+
+
         </div>
       </div>
     </div>

@@ -844,7 +844,7 @@ function SideNav({
   };
 
   const handleBack = () => {
-    router.push(`/course/Blockchain Developer course`);
+    router.back();
   };
 
   useEffect(() => {
@@ -978,13 +978,13 @@ function SideNav({
             </TabPanels>
           </Tabs>
           {
-            canGiveFinalQuiz ?
+            (canGiveFinalQuiz && courseData?.finalQuiz) ?
             <Button onClick={handleAttemptFinalQuiz} className={styles.downloadBtn}>Attempt Final Quiz</Button>
             :
             <Button isDisabled className={styles.downloadBtn} >Attempt Final Quiz</Button>
           }
           {
-            courseProgressionData?.completedOn &&
+            courseProgressionData?.completedOn && courseData?.courseDetail?.certificate &&
             <Button isLoading={isLoading} onClick={handleDownloadCertificate} className={styles.downloadBtn}>Download Certificate</Button>
           }
         </div>

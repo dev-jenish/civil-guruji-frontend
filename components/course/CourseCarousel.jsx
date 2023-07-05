@@ -7,6 +7,7 @@ import styles from "@/styles/Swiper.module.css";
 import "swiper/css/free-mode";
 import { Button } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import LearningCard from "./LearningCard";
 
 // const courses = [1, 2, 3, 4, 5, 6];
 
@@ -49,7 +50,7 @@ export default function CourseCarousel({ title, className, hideBtn, courses, cat
     <div className={`${styles.container} ${className}`}>
       <div className={styles.header}>
         <h3>{title}</h3>
-        {!hideBtn ? <Button variant="ghost" onClick={handleViewAll} >View All</Button> : null}
+        {!hideBtn ? <Button variant="ghost" onClick={handleViewAll} style={{ color: '#DE076E' }} >View All</Button> : null}
       </div>
       <Swiper
         slidesPerView={"auto"}
@@ -66,6 +67,12 @@ export default function CourseCarousel({ title, className, hideBtn, courses, cat
         {courses && courses.map((course, idx) => {
           if (course?.listed) {
             return <SwiperSlide key={idx} style={{ zIndex: preview === idx ? 2 : 1 }}>
+              {
+                learning ?
+                <LearningCard
+                course={course}
+                />
+                :
               <Card
                 index={idx}
                 showPreview={preview === idx}
@@ -78,6 +85,7 @@ export default function CourseCarousel({ title, className, hideBtn, courses, cat
                 course={course}
                 learning={learning}
               />
+              }
             </SwiperSlide>
           }
         })}
