@@ -58,7 +58,24 @@ export default function ForYou() {
       coursesResult?.data && Object.keys(coursesResult?.data).map((key) => {
         priorityWiseCourses[coursesResult?.data?.[key]?.priority] = { name: key.split('-Id-')[0], data: coursesResult?.data?.[key]?.data, categoryId: key.split('-Id-')[1] }
       })
-      setCourses(priorityWiseCourses)
+
+      let listedCourses = []
+
+      priorityWiseCourses.forEach((category) => {
+        if(category?.data){
+          let course = category.data.find((course) => {
+            return course?.listed == true
+          })
+
+          if(course){
+            console.log(category)
+            listedCourses.push(category)
+          }
+
+        }
+      })
+
+      setCourses(listedCourses)
     } catch (error) {
       console.log(error)
       toast.error('Error while fetching courses')

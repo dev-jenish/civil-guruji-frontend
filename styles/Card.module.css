@@ -149,3 +149,27 @@
   color: #dd9e15;
   gap: 2px;
 }
+
+#price {
+  font-size: 21px;
+  margin-left: 10px;
+  color: white;
+  gap: 2px;
+}
+
+#line {
+  font-size: 18px;
+  text-decoration: line-through; 
+}
+
+#validtil{
+  font-size: 16px;
+  margin-right: 5px;
+  color: #ffff;
+} 
+
+#date{
+  font-size: 15px;
+color: rgb(1, 184, 1);
+
+}
