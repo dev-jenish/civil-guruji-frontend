@@ -296,9 +296,11 @@ export default function Checkout() {
             })
             toast.success('Payment successful!')
             await updateUserDetails(userData, setUserData)
-            router.push('/foryou')
+            router.push(`/success/${courseID}`)
         } catch (error) {
+            toast.error('Error while purchasing course')
             console.log(error)
+            return router.push('/failure')
         }
     }
 
@@ -339,6 +341,7 @@ export default function Checkout() {
 
         } catch (error) {
             console.log(error)
+            return router.push('/failure')
         } finally {
             setLoading(false)
         }
@@ -390,11 +393,12 @@ export default function Checkout() {
                     await updateUserDetails(userData, setUserData)
 
 
-                    router.push(`/course/learning/${courseID}`)
+                    router.push(`/success/${courseID}`)
 
                 } catch (error) {
                     console.log(error)
                     toast.error('Payment faild!')
+                    return router.push('/failure')
                 }
 
             },
