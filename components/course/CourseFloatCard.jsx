@@ -192,15 +192,31 @@ export default function CourseFloatCard({ isPackage, courseData, totalLearningHo
             {
               pricePlans && pricePlans?.length > 0 &&
               <HStack>
-                <Accordion width="full" defaultIndex={[0]} allowMultiple>
+                <Accordion width="full" defaultIndex={[]} allowMultiple style={{ border: "0px #000" }} >
                   <AccordionItem width="full">
                     <AccordionButton
                       width="full"
                       display="flex"
                       justifyContent="space-between"
                     >
+                      <span style={{
+                        borderTop: "1px solid white",
+                        width: "15%"
+                      }}></span>
                       <Text>More Offers</Text>
-                      <AccordionIcon />
+                      <span style={{
+                        borderTop: "1px solid white",
+                        width: "45%"
+                      }}>
+                      </span>
+
+
+                      <AccordionIcon
+                        style={{
+                          border: "1px solid #de076e",
+                          borderRadius: "50%"
+                        }}
+                      />
                     </AccordionButton>
                     <AccordionPanel>
                       <div className={styles.accordianInsider}>
