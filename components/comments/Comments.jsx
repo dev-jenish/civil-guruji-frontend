@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic';
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 import React, { useEffect, useState } from 'react';
-import { Box, Text, Avatar, Button, Input, TabPanel, Tabs, TabList, Tab, TabPanels } from '@chakra-ui/react';
+import { Box, Text, Avatar, Button, Input, TabPanel, Tabs, TabList, Tab, TabPanels, useColorModeValue} from '@chakra-ui/react';
 // import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { api } from 'utils/urls';
@@ -57,7 +57,7 @@ const Comment = ({ comment, onReplySubmit, getAllComm }) => {
     }
 
     return (
-        <Box display="flex" alignItems="flex-start" mb={'3rem'} padding={'1rem'} borderRadius={'1rem'} _hover={{ backgroundColor: '#3A3939' }} >
+        <Box display="flex" alignItems="flex-start" mb={'9rem'} padding={'1rem'} borderRadius={'1rem'} _hover={{ backgroundColor: '#3A3939' }} >
             <Avatar name={userId.userDetail.name} src={userId.userDetail.profile_picture} />
             <Box ml={3}>
                 <Text fontWeight="bold">{userId.userDetail.name}</Text>
@@ -201,6 +201,8 @@ const CommentsSection = ({ comments, setCommentsData, userId, subModuleId }) => 
         }
     }, [commData])
 
+    const activeTabColor =  ("#DE076E", "#DE076E");
+
     return (
         <Box>
             {/* Render your content */}
@@ -215,9 +217,9 @@ const CommentsSection = ({ comments, setCommentsData, userId, subModuleId }) => 
 
             <Tabs>
                 <TabList>
-                    <Tab>All</Tab>
-                    <Tab>My Questions</Tab>
-                    <Tab>My replies</Tab>
+                    <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }}>All</Tab>
+                    <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }}>My Questions</Tab>
+                    <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }}>My replies</Tab>
                 </TabList>
 
                 <TabPanels>

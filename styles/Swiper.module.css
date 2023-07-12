@@ -10,8 +10,8 @@
 }
 
 .header h3 {
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 25px;
+  font-weight: 7  00;
 }
 
 .courseBanner {
@@ -21,7 +21,7 @@
   overflow: hidden;
 }
 
-.contentBox {
+.content  {
   display: flex;
   flex: 1;
   align-items: center;
@@ -44,10 +44,9 @@
   align-items: flex-start;
   flex-direction: column;
   justify-content: center;
-  width: 25%;
+  width: 35%;
   height: 100%;
   z-index: 5;
-  left: 10%;
   background: linear-gradient(
     90deg,
     rgba(0, 0, 0, 1) 0%,
