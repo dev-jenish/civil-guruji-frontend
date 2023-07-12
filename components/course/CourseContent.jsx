@@ -9,6 +9,7 @@ import {
   TabPanels,
   Tabs,
   Text,
+  useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
 import Link from "next/link";
@@ -50,17 +51,19 @@ export default function CourseContent({ contents, style, meetingsData }) {
   }
 
   if (!modules?.length) return;
+
+  const activeTabColor = useColorModeValue("#DE076E", "#DE076E");
+
   return (
     <div style={style} className={styles.contentWrapper}>
       <Tabs
         size="xl"
-        variant="button"
         index={tabIndex}
         onChange={handleTabsChange}
       >
-        <TabList>
-          <Tab>Course Content</Tab>
-          <Tab>Live Doubt Session</Tab>
+        <TabList className={styles.contentWrapper} style={{marginTop: "20px"}}>
+          <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }} >Course Content</Tab>
+          <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }} >Live Doubt Session</Tab>
           {!tabIndex ? (
             <Tab isDisabled marginLeft="auto">
               <span id={styles.longTab}>
@@ -178,7 +181,10 @@ function Accordian({ module }) {
             </Box>
           })}
         </div>
+        
       )}
     </div>
   );
+
 }
+

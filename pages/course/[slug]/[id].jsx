@@ -10,8 +10,15 @@ import {
   TabPanels,
   Tabs,
   Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import Link from "next/link";
+import { BsStar } from 'react-icons/bs';
+import {AiOutlineLock, AiOutlineUnlock} from 'react-icons/ai';
+import { Progress } from "@chakra-ui/react";
+
+
+// import myImage from "./assets/learner-logo.png";
 
 import { useRouter } from "next/router";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -43,14 +50,11 @@ import CommentsSection from "@/components/comments/Comments";
 import { userContext } from "@/context/userContext";
 import moment from "moment";
 import FinalQuizComponent from "@/components/course/FinalQuizComponent";
-import { refreshUser } from "utils/authentication";
 
 export default function Topic({ topic, course }) {
   const router = useRouter()
 
-  const { userData, setUserData } = useContext(userContext)
-
-  const [purchasedData, setPurchasedData] = useState({})
+  const { userData } = useContext(userContext)
 
   // const courseId = "64532c7adb65b45ce71ec505";
   const [courseId, setCourseId] = useState('');
@@ -393,11 +397,7 @@ export default function Topic({ topic, course }) {
 
   useEffect(() => {
     if (!userData?._id) {
-      (async () => {
-        let response = await refreshUser('post')
-        setUserData(response?.data)
-      })()
-      // router.push(`/login?previous=${document.location.pathname}`)
+      router.push(`/login?previous=${document.location.pathname}`)
     }
   }, [])
 
@@ -436,50 +436,50 @@ export default function Topic({ topic, course }) {
     }
   }, [courseData, selectedTopic])
 
-  useEffect(() => {
-
-    console.log(userData)
-
-    if(userData?.purchases && (userData?.purchases?.length > 0) && courseId) {
-      let purchasedPlan = userData.purchases.find((purchase) => {
-        console.log(courseId)
-          return purchase?.courseDetail == courseId
-      })
-      if (purchasedPlan) {
-          setPurchasedData(purchasedPlan)
-          console.log(purchasedPlan, "planp")
-      }
-  }
-  }, [userData, courseId])
-
   // new added for customheader
   const customHeader = (
+    <div>
     <div className={styles.customHeader}>
-      <Link href="/">
-        <h1>Civil Guruji</h1>
-      </Link>
-      <h2>{courseData.name}</h2>
-      {
-        purchasedData?.planDetail?.type == 'One time payment' || purchasedData?.planDetail?.type == 'Free'
-        &&
-        <Text style={{ textDecoration: 'underline', color: '#E01C46', fontWeight: 'bold' }} >{ purchasedData?.planDetail?.validity == 'limited' ? moment(purchasedData?.validityDate).format('DD | MMM | YYYY') : 'Lifetime'}</Text>
-      }
-      {
-        purchasedData?.planDetail?.type == 'Emi subscription'
-        &&
-        (purchasedData?.emisPaid == 3
-        ?
-        <div className={styles.buttonWithDate}>
-        {/* <Button style={{ fontSize: "0.90rem" }} onClick={() => {router.push(`/checkout/${courseId}/${purchasedData?.planDetail?._id}`)}} >PAY EMI</Button> */}
-        <Text>Valid till</Text>
-        <p style={{ fontSize: "0.75rem" }}>{ purchasedData?.planDetail?.validity == 'limited' ? moment(purchasedData?.validityDate).format('DD | MMM | YYYY') : 'Lifetime'}</p>
+    <div style={{display:"flex"}}>
+      <div>
+        <Link href="/">
+        <h1 style={{marginRight:"20px"}}>Logo</h1>
+        {/* <img src={myImage} alt="alternative-text"></img> */}
+        </Link>
       </div>
-        :
-      <div className={styles.buttonWithDate}>
-        <Button style={{ fontSize: "0.90rem" }} onClick={() => {router.push(`/checkout/${courseId}/${purchasedData?.planDetail?._id}`)}} >PAY EMI</Button>
-        <p style={{ fontSize: "0.75rem" }}>{ moment(purchasedData?.expiresOn).format('DD | MMM | YYYY')}</p>
-      </div>)
-      }
+      <div>
+       <h2>{courseData.name}</h2>
+       <div style={{display:"flex", alignItems:"center"}}>       
+        <p className={styles.rateFont}>Rate This Course</p>
+        <span className={styles.headerSpan}>
+        <BsStar />
+        <BsStar />
+        <BsStar />
+        <BsStar />
+        <BsStar />
+        </span>
+      </div>
+      </div>
+    </div>
+      <div className={styles.buttonWithDate} >
+      <div style={{display:"flex", alignItems:"center",gap:"10px"}}>
+        <span style={{display:"flex", gap:"5px"}}>
+          <AiOutlineUnlock/>
+          <AiOutlineLock/>
+          <AiOutlineLock/>
+          <AiOutlineLock/>
+        </span>
+        <p style={{marginRight:"10px"}}>Lifetime</p>
+        </div>
+        <div>
+          <Button style={{backgroundColor:"#E01C46", color:"white"}}>PAY EMI</Button>
+          <p style={{ fontSize: "0.75rem" }}>06 | May | 2023</p>
+        </div>
+      </div>
+    </div>
+    <div>
+    <Progress value={100} colorScheme="red" width={100} height={2}  />
+    </div>    
     </div>
   );
 
@@ -736,7 +736,7 @@ export default function Topic({ topic, course }) {
                         <span>{index + 1 + ". "}</span>
                         <span style={{ marginRight: "1rem", marginLeft: '6px' }} >{attachment?.label}</span>
                         {/* </div> */}
-                        <a rel="noopener noreferrer" download style={{ backgroundColor: '#D6BCFA', padding: "5px 10px", color: "black", borderRadius: '5px' }} href={attachment?.data}>Download</a>
+                        <a target="_blank" rel="noopener noreferrer" style={{ backgroundColor: '#D6BCFA', padding: "5px 10px", color: "black", borderRadius: '5px' }} href={attachment?.data}>Download</a>
                       </div>
                     })}
                   </TabPanel>)
@@ -816,9 +816,11 @@ export default function Topic({ topic, course }) {
             </div>
           </div> */}
         </div>
+
         }
         {/* <Navigator slug={topic.slug} /> */}
       </div>
+
     </Layout>
   );
 }
@@ -844,7 +846,7 @@ function SideNav({
   };
 
   const handleBack = () => {
-    router.back();
+    router.push(`/course/Blockchain Developer course`);
   };
 
   useEffect(() => {
@@ -910,6 +912,8 @@ function SideNav({
     }
   }
 
+  const activeTabColor = useColorModeValue("#DE076E", "#DE076E");
+
   return (
     <>
       <div onClick={handleNav} className={styles.floatBtn}>
@@ -931,17 +935,14 @@ function SideNav({
         </div>
         {/* new added for tab part and button */}
         <div className={styles.tabWrapper}>
-          <Tabs variant="button">
+        <Tabs
+        size="xl"      >
             <TabList>
-              <Tab>
-                <span className={styles.tab}>
+              <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }} >
                   <p>Content</p>
-                </span>
               </Tab>
-              <Tab>
-                <span className={styles.tab}>
+              <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }} >
                   <p>Live Class</p>
-                </span>
               </Tab>
             </TabList>
 
@@ -977,16 +978,18 @@ function SideNav({
               </TabPanel>
             </TabPanels>
           </Tabs>
+          <div className={styles.stickyButton}>
           {
-            (canGiveFinalQuiz && courseData?.finalQuiz) ?
-            <Button onClick={handleAttemptFinalQuiz} className={styles.downloadBtn}>Attempt Final Quiz</Button>
+            canGiveFinalQuiz ?
+            <Button onClick={handleAttemptFinalQuiz} className={styles.downloadBtn} style={{marginBottom:"0px"}}>Attempt Final Quiz</Button>
             :
             <Button isDisabled className={styles.downloadBtn} >Attempt Final Quiz</Button>
           }
           {
-            courseProgressionData?.completedOn && courseData?.courseDetail?.certificate &&
+            courseProgressionData?.completedOn &&
             <Button isLoading={isLoading} onClick={handleDownloadCertificate} className={styles.downloadBtn}>Download Certificate</Button>
           }
+        </div>
         </div>
       </div>
     </>

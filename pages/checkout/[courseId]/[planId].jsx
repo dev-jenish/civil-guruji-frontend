@@ -189,7 +189,6 @@ export default function Checkout() {
 
             } else if (value === "remove") {
                 setOneTimeActiveTab(false);
-                setPromocodeData({})
             }
         } else if (fieldName === "emiActiveTab") {
             if (value === "apply") {
@@ -201,7 +200,6 @@ export default function Checkout() {
 
                 }
             } else if (value === "remove") {
-                setPromocodeData({})
                 setEmiActiveTab(false);
             }
         }
@@ -296,11 +294,9 @@ export default function Checkout() {
             })
             toast.success('Payment successful!')
             await updateUserDetails(userData, setUserData)
-            router.push(`/success/${courseID}`)
+            router.push('/foryou')
         } catch (error) {
-            toast.error('Error while purchasing course')
             console.log(error)
-            return router.push('/failure')
         }
     }
 
@@ -341,7 +337,6 @@ export default function Checkout() {
 
         } catch (error) {
             console.log(error)
-            return router.push('/failure')
         } finally {
             setLoading(false)
         }
@@ -393,12 +388,11 @@ export default function Checkout() {
                     await updateUserDetails(userData, setUserData)
 
 
-                    router.push(`/success/${courseID}`)
+                    router.push('/foryou')
 
                 } catch (error) {
                     console.log(error)
                     toast.error('Payment faild!')
-                    return router.push('/failure')
                 }
 
             },
@@ -429,16 +423,16 @@ export default function Checkout() {
         });
     };
 
-    // useEffect(() => {
-    //     if (purchasedData?.appliedPromocode) {
-    //         setPromocodeData(purchasedData?.appliedPromocode)
-    //         if (purchasedData?.emisPaid >= 0) {
-    //             setEmiActiveTab(true);
-    //         } else {
-    //             setOneTimeActiveTab(true);
-    //         }
-    //     }
-    // }, [purchasedData, planTypeTabIndex])
+    useEffect(() => {
+        if (purchasedData?.appliedPromocode) {
+            setPromocodeData(purchasedData?.appliedPromocode)
+            if (purchasedData?.emisPaid >= 0) {
+                setEmiActiveTab(true);
+            } else {
+                setOneTimeActiveTab(true);
+            }
+        }
+    }, [purchasedData, planTypeTabIndex])
 
     useEffect(() => {
         planData?.type == 'Emi subscription' ? setPlanTypeTabIndex(1) : setPlanTypeTabIndex(0)
@@ -463,25 +457,25 @@ export default function Checkout() {
                             {
                                 loading ? <Skeleton baseColor="#5a5b5d" highlightColor="#787878" count={5} /> :
                                     <>
-                                        <div className={styles.inputGroup} style={{ paddingBottom: '1rem' }} >
-                                            <VStack alignItems="flex-start" >
+                                        <div className={styles.inputGroup} style={{ paddingBottom: '1rem'}} >
+                                            <VStack alignItems="flex-start" className={styles.inputtext}>
                                                 <Text paddingLeft="5px" color="gray.400">
                                                     Name
                                                 </Text>
-                                                <Input type="text" value={userName} onChange={(event) => setUserName(event?.target?.value)} ></Input>
+                                                <Input  type="text" value={userName} onChange={(event) => setUserName(event?.target?.value)} ></Input>
                                             </VStack>
-                                            <VStack alignItems="flex-start">
-                                                <Text paddingLeft="5px" color="gray.400">E-mail ID*</Text>
-                                                <Input type="email" value={userEmail} onChange={(event) => setUserEmail(event?.target?.value)} ></Input>
+                                            <VStack alignItems="flex-start" className={styles.inputtext}>
+                                                <Text  paddingLeft="5px" color="gray.400">E-mail ID*</Text>
+                                                <Input  type="email" value={userEmail} onChange={(event) => setUserEmail(event?.target?.value)} ></Input>
                                             </VStack>
-                                            <VStack alignItems="flex-start">
-                                                <Text paddingLeft="5px" color="gray.400">Mobile No.*</Text>
-                                                <Input type="tel" value={userMobileNumber} onChange={(event) => { setUserMobileNumber(event?.target?.value) }} ></Input>
+                                            <VStack alignItems="flex-start" className={styles.inputtext}>
+                                                <Text  paddingLeft="5px" color="gray.400">Mobile No.*</Text>
+                                                <Input  type="tel" value={userMobileNumber} onChange={(event) => { setUserMobileNumber(event?.target?.value) }} ></Input>
                                             </VStack>
                                         </div>
-                                        <VStack>
-                                            <HStack width="full">
-                                                <VStack alignItems="flex-start" flex={1}>
+                                        <VStack >
+                                            <HStack width="full" className={styles.country} >
+                                                <VStack alignItems="flex-start" flex={1} >
                                                     <Text color="gray.400">Country</Text>
                                                     <Select
                                                         options={countryOptions}
@@ -574,7 +568,7 @@ export default function Checkout() {
                                         <p className={styles.headText}>Order details</p>
                                         <TabList>
                                             <Tab
-                                                // isDisabled={purchasedData?.emisPaid >= 0}
+                                                isDisabled={purchasedData?.emisPaid >= 0}
                                                 style={{ fontSize: "14px" }}
                                             >
                                                 One Time Payment
@@ -981,7 +975,7 @@ export default function Checkout() {
                                                                 </Text>
                                                             </HStack>
                                                             {
-                                                                // !(purchasedData?.emisPaid >= 0 && promocodeData?._id) &&
+                                                                !(purchasedData?.emisPaid >= 0 && promocodeData?._id) &&
                                                                 <button
                                                                     className={styles.redText}
                                                                     onClick={() =>

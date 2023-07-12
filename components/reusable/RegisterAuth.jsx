@@ -222,7 +222,7 @@ function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [dob, setDob] = useState('');
-    const [yearOfPassing, setYearOfPassing] = useState(0);
+    const [yearOfPassing, setYearOfPassing] = useState(2016);
     const [mobileNumber, setMobileNumber] = useState('');
     const [isNameAvailable, setIsNameAvailable] = useState(false);
     const [isEmailAvailable, setIsEmailAvailable] = useState(false);
@@ -341,7 +341,7 @@ function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
             </HStack>
             {/* <Input value={confirmPassword} type="password" onChange={(event) => { setConfirmPassword(event?.target?.value) }} placeholder="confirm password" size="lg" /> */}
             <p>Date of Birth</p>
-            <Input value={dob} onChange={(event) => { setDob(event?.target?.value) }} type="date" placeholder="Harsh Pandey" size="lg" />
+            <Input value={dob} onChange={(event) => { setDob(event?.target?.value) }} type="date" placeholder="Year" size="lg" />
             <p>Year of Passing</p>
             <Input
                 value={yearOfPassing} onChange={(event) => { setYearOfPassing(event?.target?.value) }}
@@ -349,7 +349,7 @@ function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
                 min="1900"
                 max="2099"
                 step="1"
-                placeholder="Harsh Pandey"
+                placeholder="Year"
                 size="lg"
             />
 

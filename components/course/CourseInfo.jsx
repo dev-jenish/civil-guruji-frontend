@@ -3,8 +3,9 @@ import { AiOutlineCheck, AiFillDollarCircle } from "react-icons/ai";
 import { BsBriefcaseFill } from "react-icons/bs";
 import { BiTimer } from "react-icons/bi";
 
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Tooltip, Box, useColorModeValue, withStyle } from "@chakra-ui/react";
 import FeedbackCard from "./FeedbackCard";
+
 
 // const learnings = [
 //   "Learn about all topics in the Blockchain world",
@@ -17,14 +18,23 @@ export default function CourseInfo({ learnings = [] }) {
 
   if (!learnings?.length) return;
 
+  const activeTabColor = useColorModeValue("#DE076E", "#DE076E");
+
+
   return (
     <div className={styles.contentWrapper}>
-      <Tabs size="xl" variant="button">
+      <Tabs size="xl" >
         <TabList>
-        <Tab>Info</Tab>
-          <Tab>Career</Tab>
-          <Tab>Certificate</Tab>
-          <Tab><BiTimer/></Tab>
+        <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }}>Info</Tab>
+          <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }}>Career</Tab>
+          <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }}>Certificate</Tab>
+          <Tab  _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }}>
+        <Box display="flex" justifyContent="flex-end">
+          <Tooltip label="If you learn for 4hours daily, it will take 10 days to complete">
+            <Box ml={1} style={{fontSize:"24px"}}><BiTimer /></Box>
+          </Tooltip>
+        </Box>
+      </Tab>
         </TabList>
         <hr></hr>
         <TabPanels>
@@ -43,6 +53,15 @@ export default function CourseInfo({ learnings = [] }) {
               </div>
             </div>
           </TabPanel>
+          <TabPanel>
+          <div>
+          <img src="https://i.pinimg.com/originals/b9/12/8b/b9128b7913c0791e41b89436fec82868.jpg" alt="alternative-text" width="213px" height="300px"></img>
+          </div>
+          </TabPanel>
+          <TabPanel>
+            If you learn for 4hours daily, it will take 10 days to complete. 
+          </TabPanel>
+
         </TabPanels>
       </Tabs>
     </div>

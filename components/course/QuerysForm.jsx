@@ -8,6 +8,7 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  useColorModeValue,
   Text,
   VStack,
   color,
@@ -18,6 +19,9 @@ import { IoMdRadioButtonOff } from "react-icons/io";
 import { BiPhoneCall } from "react-icons/bi";
 
 export default function QuerysForm({}) {
+
+  const activeTabColor = useColorModeValue("#DE076E", "#DE076E");
+
   const [tabIndex, setTabIndex] = useState(0);
   return (
     <div>
@@ -26,10 +30,10 @@ export default function QuerysForm({}) {
           className={styles.contentWrapper}
           style={{ marginTop: "20px" }}
         >
-          <Tab>Still unsure about the course</Tab>
+          <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }}>Still unsure about the course</Tab>
         </TabList>
       </Tabs>
-      <div style={{ display: "flex", marginTop: "30px", }}>
+      <div className={styles.get} >
         <div style={{flex: "9 0"}}>
           <h1 style={{fontSize:"16px"}}>Get the free counseling session with the expert</h1>
           <div className={styles.phoneBlock}>
@@ -49,14 +53,14 @@ export default function QuerysForm({}) {
               type="text"
               id="fname"
               name="fname"
-              placeholder="Full Name"
+              placeholder="Full Name*"
               className={styles.inputType}
             />
             <input
             style={{width:"48%", margin:"0 0 10px 4%"}}
               type="text"
-              id="lname"
-              name="lname"
+              id="email"
+              name="email"
               placeholder="E-Mail ID*"
               className={styles.inputType}
 
@@ -65,26 +69,26 @@ export default function QuerysForm({}) {
             <input
             style={{width:"48%"}}
               type="text"
-              id="fname"
-              name="fname"
-              placeholder="Full Name"
+              id="mno"
+              name="mno"
+              placeholder="Mobile Number*"
               className={styles.inputType}
 
             />
             <input
               style={{width:"48%", margin:"0 0 10px 4%"}}
               type="text"
-              id="lname"
-              name="lname"
-              placeholder="E-Mail ID*"
+              id="qualification"
+              name="qualification"
+              placeholder="Current Qualification*"
               className={styles.inputType}
             />
             <input
               style={{width:"100%"}}
               type="text"
-              id="fname"
-              name="fname"
-              placeholder="Full Name"
+              id="problem"
+              name="problem"
+              placeholder="Describe your problem"
               className={styles.inputType}
             />
             <br></br>
