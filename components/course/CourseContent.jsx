@@ -49,10 +49,11 @@ export default function CourseContent({ contents, style, meetingsData }) {
       }
     })
   }
+  const activeTabColor = useColorModeValue("#DE076E", "#DE076E");
 
   if (!modules?.length) return;
 
-  const activeTabColor = useColorModeValue("#DE076E", "#DE076E");
+  
 
   return (
     <div style={style} className={styles.contentWrapper}>

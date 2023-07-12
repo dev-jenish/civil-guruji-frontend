@@ -15,10 +15,11 @@ import FeedbackCard from "./FeedbackCard";
 // ];
 
 export default function CourseInfo({ learnings = [] }) {
+  const activeTabColor = useColorModeValue("#DE076E", "#DE076E");
 
   if (!learnings?.length) return;
 
-  const activeTabColor = useColorModeValue("#DE076E", "#DE076E");
+  
 
 
   return (
