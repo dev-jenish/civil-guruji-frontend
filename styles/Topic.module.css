@@ -161,9 +161,9 @@
   aspect-ratio: 16 / 9;
 }
 
-/* .topicInfo {
+.topicInfo {
   margin-top: 4rem;
-} */
+}
 
 .tab {
   display: flex;
@@ -173,12 +173,11 @@
 
 .cta {
   background-color: var(--bg);
-  /* margin-top: 24px; */
+  margin-top: 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding-block: 1rem;
-  padding-bottom: 0px;
 }
 
 .next {
@@ -266,10 +265,9 @@
 }
 .customHeader h2 {
   font-size: 24px;
-  font-weight: 500;
+  font-weight: 700;
   color: white;
 }
-
 .buttonWithDate {
   display: flex;
   align-items: center;
@@ -311,31 +309,26 @@
   }
 }
 
-/* new added for responsive  */
-@media only screen and (max-width: 740px) {
-  .customHeader .buttonWithDate {
-    display: none;
-  }
-}
-
-.stickyButton{
-  display: flex;
-  gap: 15px;
-  position: sticky;
-  bottom: 0px;
-  background-color: #0f0f0f;
-  padding: 10px 5px;
-}
-
 .headerSpan{
-    display: flex;
-    gap: 4px;
-    font-size: 13px;
-    color: #DD9E15;
-    margin-left: 9px;
+  display: flex;
+  gap: 4px;
+  font-size: 13px;
+  color: #DD9E15;
+  margin-left: 9px;
 }
 
 .rateFont{
   font-size: 12px;
   font-weight: 8px;
+}
+
+/* new added for responsive  */
+@media only screen and (max-width: 740px) {
+  .customHeader .buttonWithDate {
+    display: none;
+  }
+
+  .starEnrolled{
+    /* font-size: 12px; */
+  }
 }

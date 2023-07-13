@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic';
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 import React, { useEffect, useState } from 'react';
-import { Box, Text, Avatar, Button, Input, TabPanel, Tabs, TabList, Tab, TabPanels, useColorModeValue} from '@chakra-ui/react';
+import { Box, Text, Avatar, Button, Input, TabPanel, Tabs, TabList, Tab, TabPanels, useColorModeValue } from '@chakra-ui/react';
 // import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { api } from 'utils/urls';
@@ -57,7 +57,7 @@ const Comment = ({ comment, onReplySubmit, getAllComm }) => {
     }
 
     return (
-        <Box display="flex" alignItems="flex-start" mb={'9rem'} padding={'1rem'} borderRadius={'1rem'} _hover={{ backgroundColor: '#3A3939' }} >
+        <Box display="flex" alignItems="flex-start" mb={'3rem'} padding={'1rem'} borderRadius={'1rem'} _hover={{ backgroundColor: '#3A3939' }} >
             <Avatar name={userId.userDetail.name} src={userId.userDetail.profile_picture} />
             <Box ml={3}>
                 <Text fontWeight="bold">{userId.userDetail.name}</Text>

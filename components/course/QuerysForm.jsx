@@ -8,10 +8,10 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
-  useColorModeValue,
   Text,
   VStack,
   color,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { useState } from "react";
@@ -19,10 +19,10 @@ import { IoMdRadioButtonOff } from "react-icons/io";
 import { BiPhoneCall } from "react-icons/bi";
 
 export default function QuerysForm({}) {
+  const [tabIndex, setTabIndex] = useState(0);
 
   const activeTabColor = useColorModeValue("#DE076E", "#DE076E");
 
-  const [tabIndex, setTabIndex] = useState(0);
   return (
     <div>
       <Tabs size="xl" index={tabIndex}>
@@ -30,10 +30,11 @@ export default function QuerysForm({}) {
           className={styles.contentWrapper}
           style={{ marginTop: "20px" }}
         >
-          <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }}>Still unsure about the course</Tab>
+          <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}`, fontSize:"14px" }}>Still unsure about the course</Tab>
         </TabList>
       </Tabs>
-      <div className={styles.get} >
+
+      <div className={styles.get}>
         <div style={{flex: "9 0"}}>
           <h1 style={{fontSize:"16px"}}>Get the free counseling session with the expert</h1>
           <div className={styles.phoneBlock}>
@@ -53,14 +54,14 @@ export default function QuerysForm({}) {
               type="text"
               id="fname"
               name="fname"
-              placeholder="Full Name*"
+              placeholder="Full Name"
               className={styles.inputType}
             />
             <input
             style={{width:"48%", margin:"0 0 10px 4%"}}
               type="text"
-              id="email"
-              name="email"
+              id="lname"
+              name="lname"
               placeholder="E-Mail ID*"
               className={styles.inputType}
 
@@ -69,26 +70,26 @@ export default function QuerysForm({}) {
             <input
             style={{width:"48%"}}
               type="text"
-              id="mno"
-              name="mno"
-              placeholder="Mobile Number*"
+              id="fname"
+              name="fname"
+              placeholder="Full Name"
               className={styles.inputType}
 
             />
             <input
               style={{width:"48%", margin:"0 0 10px 4%"}}
               type="text"
-              id="qualification"
-              name="qualification"
-              placeholder="Current Qualification*"
+              id="lname"
+              name="lname"
+              placeholder="E-Mail ID*"
               className={styles.inputType}
             />
             <input
               style={{width:"100%"}}
               type="text"
-              id="problem"
-              name="problem"
-              placeholder="Describe your problem"
+              id="fname"
+              name="fname"
+              placeholder="Full Name"
               className={styles.inputType}
             />
             <br></br>

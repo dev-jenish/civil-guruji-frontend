@@ -10,8 +10,8 @@
 }
 
 .header h3 {
-  font-size: 25px;
-  font-weight: 7  00;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .courseBanner {
@@ -21,7 +21,7 @@
   overflow: hidden;
 }
 
-.content  {
+.contentBox {
   display: flex;
   flex: 1;
   align-items: center;
@@ -44,17 +44,18 @@
   align-items: flex-start;
   flex-direction: column;
   justify-content: center;
-  width: 35%;
+  width: 25%;
   height: 100%;
   z-index: 5;
+  left: 10%;
   background: linear-gradient(
     90deg,
     rgba(0, 0, 0, 1) 0%,
     rgba(16, 15, 35, 1) 65%,
     rgba(0, 0, 0, 0) 100%
   );
-  padding-left: 10%;
 }
+
 .headingText {
   font-size: 35px;
   font-weight: 700;
@@ -107,6 +108,7 @@
     padding: 5px 10px;
   }
 }
+
 @media screen and (max-width: 767px) {
   .contentBox {
     flex-direction: column-reverse;
@@ -124,8 +126,27 @@
     padding: 10px 25px;
     flex-wrap: wrap;
   }
+
   .headingText {
     font-size: 18px;
     font-weight: 500;
   }
+
+  .tabs{
+    display: flex;
+    gap: 0rem;
+    padding: 0rem;
+    flex-direction: column;
+    align-items: center;
+    
+  
+  }
+}
+
+@media (max-width: 668px) {
+  .header h3 {
+    font-size: 16px;
+    font-weight: 500;
+  }
+  
 }

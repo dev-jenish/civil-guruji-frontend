@@ -49,11 +49,10 @@ export default function CourseContent({ contents, style, meetingsData }) {
       }
     })
   }
-  const activeTabColor = useColorModeValue("#DE076E", "#DE076E");
 
   if (!modules?.length) return;
 
-  
+  const activeTabColor = useColorModeValue("#DE076E", "#DE076E");
 
   return (
     <div style={style} className={styles.contentWrapper}>
@@ -63,8 +62,8 @@ export default function CourseContent({ contents, style, meetingsData }) {
         onChange={handleTabsChange}
       >
         <TabList className={styles.contentWrapper} style={{marginTop: "20px"}}>
-          <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }} >Course Content</Tab>
-          <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }} >Live Doubt Session</Tab>
+        <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}`}} >Course Content</Tab>
+          <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}`}} >Live Doubt Session</Tab>
           {!tabIndex ? (
             <Tab isDisabled marginLeft="auto">
               <span id={styles.longTab}>
@@ -182,10 +181,7 @@ function Accordian({ module }) {
             </Box>
           })}
         </div>
-        
       )}
     </div>
   );
-
 }
-

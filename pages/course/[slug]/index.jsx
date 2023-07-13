@@ -3,6 +3,7 @@ import CourseContent from "@/components/course/CourseContent";
 import CourseFloatCard from "@/components/course/CourseFloatCard";
 import CourseInfo from "@/components/course/CourseInfo";
 import FeedbackCard from "@/components/course/FeedbackCard";
+import QuerysForm from "@/components/course/QuerysForm";
 import Layout from "@/components/reusable/Layout";
 import Stars from "@/components/Stars";
 import useScrollObserver from "@/hooks/useScrollObserver";
@@ -17,7 +18,6 @@ import { toast } from "react-hot-toast";
 import { Autoplay, FreeMode } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { api, baseURL } from "utils/urls";
-import QuerysForm from "@/components/course/QuerysForm";
 
 export default function CourseDetail({ }) {
   const { ref, visible } = useScrollObserver();
@@ -117,12 +117,12 @@ export default function CourseDetail({ }) {
             <span
               style={{
                 display: "flex",
-                flexDirection: "column",
+                // flexDirection: "column",
                 alignItems: "flex-start",
               }}
               id="rating"
             >
-              <p style={{ display: "flex", alignItems: "center"  }}>
+              <p style={{ display: "flex", alignItems: "center" }}>
                 {courseData?.rating} <Stars value={courseData?.rating} />
               </p>
               <p>Enrolled engineers ({courseData?.learnerCount})</p>
@@ -171,7 +171,7 @@ export default function CourseDetail({ }) {
               </div>
             </div>
             {/* new added for box of three content box */}
-            {/* <div className={styles.boxContainer} style={{display:"none"}}>
+            <div className={styles.boxContainer}>
               <div className={styles.contentBox}>
                 <h5 className={styles.boxHeading}>Learning Duration</h5>
                 <span className={styles.durationValue}>{`${learningDuration?.days > 0 ? `${learningDuration?.days + ' days'}` : ''} & ${learningDuration?.hours > 0 ? `${learningDuration?.hours + ' hours'}` : ''}`}</span>
@@ -198,7 +198,8 @@ export default function CourseDetail({ }) {
                   </span>
                 </div>
               }
-            </div> */}
+            </div>
+
             <CourseInfo
               learnings={courseData?.courseDetail?.learningObjectives}
             />
@@ -206,7 +207,7 @@ export default function CourseDetail({ }) {
               contents={courseData?.courseDetail?.courseContents}
               meetingsData={meetingsData}
             />
-            <div style={{ margin: '2rem 0 2rem 0' }} >
+            <div style={{ margin: '2rem 0 2rem 0' }} className={styles.feedback}>
               <h3 className={styles.jobHeading}>FeedBack</h3>
               <div className={styles.feedbacks}>
                 <Text>Coming soon.</Text>
@@ -216,51 +217,49 @@ export default function CourseDetail({ }) {
                 <FeedbackCard />
                 <FeedbackCard /> */}
               </div>
-                          {/* new added for job container */}
-            <div className={styles.jobContainer}>
-              <h3 className={styles.jobHeading}>Student Got Job</h3>
-              <div className={styles.jobCardContainer}>
 
-                <Swiper
-                  slidesPerView={"auto"}
-                  spaceBetween={20}
-                  // freeMode={true}
-                  modules={[Autoplay]}
-                  className="courseCards"
-                  autoplay={{
-                    delay: 1000,
-                    disableOnInteraction: false,
-                  }}
-                >
-                  {courseData?.studentsGotJob && courseData?.studentsGotJob?.length > 0 && courseData?.studentsGotJob.map((student, idx) => (
-                    <SwiperSlide key={idx} style={{ cursor: 'pointer' }}>
-                      <div className={styles.jobCard}>
-                        <div className={styles.Imagepart}>
-                          <Image width={'80px'} height={'80px'} src={baseURL + `/${student?.image}`} />
+              {/* new added for job container */}
+              <div className={styles.jobContainer}>
+                <h3 className={styles.jobHeading}>Student Got Job</h3>
+                <div className={styles.jobCardContainer}>
+
+                  <Swiper
+                    slidesPerView={"auto"}
+                    spaceBetween={20}
+                    // freeMode={true}
+                    modules={[Autoplay]}
+                    className="courseCards"
+                    autoplay={{
+                      delay: 1000,
+                      disableOnInteraction: false,
+                    }}
+                  >
+                    {courseData?.studentsGotJob && courseData?.studentsGotJob?.length > 0 && courseData?.studentsGotJob.map((student, idx) => (
+                      <SwiperSlide key={idx} style={{ cursor: 'pointer' }}>
+                        <div className={styles.jobCard}>
+                          <div className={styles.Imagepart}>
+                            <Image width={'80px'} height={'80px'} src={baseURL + `/${student?.image}`} />
+                          </div>
+                          <div className={styles.DetailsPart}>{student?.name}</div>
                         </div>
-                        <div className={styles.DetailsPart}>{student?.name}</div>
-                      </div>
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                </div>
               </div>
-            </div>
 
-            <QuerysForm/>
+              <QuerysForm />
 
             </div>
+            <CourseCarousel
+              title="Similar Related course"
+              courses={courseData?.skills}
+              parentCourseId={courseData?._id}
+            />
           </div>
           <CourseFloatCard totalLearningHours={totalLearningHours} courseData={courseData} />
         </div>
-        <div style={{borderTop:"1px solid #FFFFFF", marginTop:"20px",marginBottom:"0px"}}>            
-        <CourseCarousel
-          title="Similar Related course"
-          courses={courseData?.skills}
-          parentCourseId={courseData?._id}
-        />
       </div>
-      </div>
-
     </Layout>
   );
 }

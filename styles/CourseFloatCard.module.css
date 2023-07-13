@@ -165,4 +165,24 @@
     border-top: none;
     padding-top: 0;
   }
+
+  .afterDiscountPrice {
+    font-size: 17px;
+  }
+
+  .originalPrice{
+    font-size: 10px;
+  }
+  
+  .discountPercentage{
+    font-size: 12px;
+  }
+}
+
+@media(max-width:668px){
+  /* .offerBtn{
+    font-size: 12px;
+    padding: 7px;
+  } */
+
 }

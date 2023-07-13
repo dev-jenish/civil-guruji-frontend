@@ -183,6 +183,7 @@
   justify-content: space-between;
   padding: 1.5rem 1rem;
   border: 1.5px solid white;
+  display: none;
 }
 
 .contentBox {
@@ -195,22 +196,27 @@
   border-right: 1px solid gray;
   padding-left: 2.5rem;
 }
+
 .contentBox:last-child {
   border: none;
 }
+
 .boxHeading {
   font-size: 16px;
   margin: 0;
 }
+
 .durationValue {
   font-size: 14px;
 }
+
 .chipsPart {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   gap: 10px;
 }
+
 .chip {
   display: inline-flex;
   text-align: center;
@@ -219,6 +225,7 @@
   padding: 3px 8px;
   background-color: rgba(255, 255, 255, 0.3);
 }
+
 .jobContainer {
   display: flex;
   padding: 2rem 1rem;
@@ -226,6 +233,7 @@
   align-items: flex-start;
   justify-content: center;
 }
+
 .jobCardContainer {
   display: flex;
   align-items: center;
@@ -233,21 +241,25 @@
   gap: 15px;
   margin-top: 15px;
 }
+
 .jobCard {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 }
+
 .jobHeading {
   font-size: 20px;
   font-weight: 500;
 }
+
 .feedbacks {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 16px;
 }
+
 .feedbackCard {
   display: flex;
   flex-direction: column;
@@ -256,7 +268,8 @@
   border-radius: 8px;
   background-color: var(--card-bg);
 }
-.DetailsPart{
+
+.DetailsPart {
   margin-top: 0.5rem;
 }
 
@@ -311,4 +324,40 @@
   .topic {
     padding: 0.6rem 1.2rem;
   }
+}
+
+@media(max-width:668px) {
+  .courseInfo h1 {
+    font-size: 16px;
+  }
+
+  .courseInfo p {
+    font-size: 14px;
+  }
+
+  .jobHeading {
+    font-size: 14px;
+    font-weight: 20;
+  }
+  
+  .jobContainer{
+    padding: 10px 2px 0px 0px;
+  }
+  
+  .nav {
+    padding-inline: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    height: 130px;
+  }
+
+  .accordianHeading,
+.topic {
+padding: 5px;
+font-size: 13px;
+}
+
+.feedback{
+  margin-top: 0px;
+}
 }

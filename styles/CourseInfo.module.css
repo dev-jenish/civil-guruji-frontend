@@ -111,3 +111,23 @@
   margin-top: auto;
   color: #dd9e15;
 }
+
+@media (max-width: 668px) {
+  .flex {
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+  }
+
+  .points span p {
+    font-size: 14px;
+  }
+
+  .career {
+    font-size: 14px;
+  }
+
+  .tooltipText{
+    font-size: 12px;
+  }
+}
