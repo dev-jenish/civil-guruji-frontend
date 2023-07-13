@@ -113,3 +113,35 @@
   justify-content: space-between;
   gap: 10px;
 }
+
+@media (max-width: 668px) {
+  .inputGroup{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+  }
+  .country{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+  }
+  .billingParts {
+    
+    padding: 1rem ;
+    
+  }
+  .container {
+    display: block;
+  }
+  .left,
+.right {
+  --pad-inline: 1rem;
+  padding-block: 2rem;
+}
+.inputtext{
+  width:100%
+}
+}
+

@@ -1,7 +1,7 @@
 import Layout from "@/components/reusable/Layout";
 import React, { useContext, useEffect, useState } from "react";
 import styles from "@/styles/Community.module.css";
-import { Tabs, TabList, TabPanels, Tab, TabPanel, Box } from "@chakra-ui/react";
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Box, useColorModeValue} from "@chakra-ui/react";
 import Posts from "@/components/community/Posts";
 import Comment from "@/components/community/Comment";
 import { toast } from "react-hot-toast";
@@ -84,16 +84,18 @@ export default function Community() {
     }
   }, [userData])
 
+  const activeTabColor = useColorModeValue("#DE076E", "#DE076E");
+
   return (
     <Layout>
       <div className={`wrapper ${styles.container}`}>
         <div className={styles.left}>
           <Tabs size="lg" colorScheme="purple">
             <TabList>
-              <Tab>Trending</Tab>
-              <Tab>Learning</Tab>
-              <Tab>Events</Tab>
-              <Tab>Profile</Tab>
+              <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }}>Trending</Tab>
+              <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }}>Learning</Tab>
+              <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }}>Events</Tab>
+              <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }}>Profile</Tab>
             </TabList>
 
             <TabPanels>
@@ -115,8 +117,8 @@ export default function Community() {
         <div className={styles.right}>
           <Tabs size="lg" colorScheme="purple">
             <TabList>
-              <Tab>Post</Tab>
-              <Tab>
+              <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }}>Post</Tab>
+              <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }}>
                 <p id={styles.notif} data-content="2">
                   Notifications
                 </p>

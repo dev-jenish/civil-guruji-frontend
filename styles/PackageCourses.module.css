@@ -28,7 +28,7 @@
 }
 
 .card:hover .details h2 {
-  text-decoration: underline;
+  /* text-decoration: underline; */
 }
 
 .card img {

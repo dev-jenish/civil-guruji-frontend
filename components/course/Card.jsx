@@ -14,7 +14,8 @@ export default function Card({
   mouseOver,
   mouseOut,
   transformOrigin,
-  course
+  course,
+  preview
 }) {
   const router = useRouter();
 
@@ -121,7 +122,7 @@ export default function Card({
 
 
   return (
-    <div onClick={handleClick} className={styles.card}>
+    <div style={preview == 0 ? {} : {}} onClick={handleClick} className={styles.card}>
       <div
         className={`${styles.img} ${showPreview ? styles.scale : ""} `}
         style={{ transformOrigin }}
@@ -169,11 +170,12 @@ export default function Card({
           <p>
             {parseFloat(course?.rating).toFixed(1) || 4.3} <Stars value={course?.rating || 4.3} />
           </p>
-        </span>
-        <p>
+          <p className={styles.enrolled}>
           <i>{course?.learnerCount || `1500`}+ Enrolled</i>
         </p>
-
+        </span>
+        
+        
         {
           course?.isPackage &&
           <p>{course?.courses?.length} cources</p>
@@ -182,7 +184,7 @@ export default function Card({
         <div className={styles.more}>
 
 
-          <div style={{ display: 'flex' }} >
+          <div style={{ display: 'flex'}} >
             <p id={styles.line}>
               <FaRupeeSign className={styles.icon} />
               {course?.prices?.find((price) => {

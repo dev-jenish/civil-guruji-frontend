@@ -213,4 +213,13 @@ button:active:disabled {
   .wrapper {
     padding: 2rem !important;
   }
+
+  #rating {
+    font-size: 14px;
+  }
+
+  #rating p{
+    font-size: 12px;
+  }
+
 }

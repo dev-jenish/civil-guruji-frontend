@@ -18,8 +18,6 @@ import {AiOutlineLock, AiOutlineUnlock} from 'react-icons/ai';
 import { Progress } from "@chakra-ui/react";
 
 
-// import myImage from "./assets/learner-logo.png";
-
 import { useRouter } from "next/router";
 import { useContext, useEffect, useRef, useState } from "react";
 import {
@@ -50,11 +48,14 @@ import CommentsSection from "@/components/comments/Comments";
 import { userContext } from "@/context/userContext";
 import moment from "moment";
 import FinalQuizComponent from "@/components/course/FinalQuizComponent";
+import { refreshUser } from "utils/authentication";
 
 export default function Topic({ topic, course }) {
   const router = useRouter()
 
-  const { userData } = useContext(userContext)
+  const { userData, setUserData } = useContext(userContext)
+
+  const [purchasedData, setPurchasedData] = useState({})
 
   // const courseId = "64532c7adb65b45ce71ec505";
   const [courseId, setCourseId] = useState('');
@@ -397,7 +398,11 @@ export default function Topic({ topic, course }) {
 
   useEffect(() => {
     if (!userData?._id) {
-      router.push(`/login?previous=${document.location.pathname}`)
+      (async () => {
+        let response = await refreshUser('post')
+        setUserData(response?.data)
+      })()
+      // router.push(`/login?previous=${document.location.pathname}`)
     }
   }, [])
 
@@ -436,7 +441,22 @@ export default function Topic({ topic, course }) {
     }
   }, [courseData, selectedTopic])
 
-  // new added for customheader
+  useEffect(() => {
+
+    console.log(userData)
+
+    if(userData?.purchases && (userData?.purchases?.length > 0) && courseId) {
+      let purchasedPlan = userData.purchases.find((purchase) => {
+        console.log(courseId)
+          return purchase?.courseDetail == courseId
+      })
+      if (purchasedPlan) {
+          setPurchasedData(purchasedPlan)
+          console.log(purchasedPlan, "planp")
+      }
+  }
+  }, [userData, courseId])
+
   const customHeader = (
     <div>
     <div className={styles.customHeader}>
@@ -736,7 +756,7 @@ export default function Topic({ topic, course }) {
                         <span>{index + 1 + ". "}</span>
                         <span style={{ marginRight: "1rem", marginLeft: '6px' }} >{attachment?.label}</span>
                         {/* </div> */}
-                        <a target="_blank" rel="noopener noreferrer" style={{ backgroundColor: '#D6BCFA', padding: "5px 10px", color: "black", borderRadius: '5px' }} href={attachment?.data}>Download</a>
+                        <a rel="noopener noreferrer" download style={{ backgroundColor: '#D6BCFA', padding: "5px 10px", color: "black", borderRadius: '5px' }} href={attachment?.data}>Download</a>
                       </div>
                     })}
                   </TabPanel>)
@@ -816,11 +836,9 @@ export default function Topic({ topic, course }) {
             </div>
           </div> */}
         </div>
-
         }
         {/* <Navigator slug={topic.slug} /> */}
       </div>
-
     </Layout>
   );
 }
@@ -846,7 +864,7 @@ function SideNav({
   };
 
   const handleBack = () => {
-    router.push(`/course/Blockchain Developer course`);
+    router.back();
   };
 
   useEffect(() => {
@@ -935,14 +953,17 @@ function SideNav({
         </div>
         {/* new added for tab part and button */}
         <div className={styles.tabWrapper}>
-        <Tabs
-        size="xl"      >
+          <Tabs variant="button">
             <TabList>
               <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }} >
+                <span className={styles.tab}>
                   <p>Content</p>
+                </span>
               </Tab>
-              <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }} >
+              <Tab  _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }} >
+                <span className={styles.tab}>
                   <p>Live Class</p>
+                </span>
               </Tab>
             </TabList>
 
@@ -978,18 +999,16 @@ function SideNav({
               </TabPanel>
             </TabPanels>
           </Tabs>
-          <div className={styles.stickyButton}>
           {
-            canGiveFinalQuiz ?
-            <Button onClick={handleAttemptFinalQuiz} className={styles.downloadBtn} style={{marginBottom:"0px"}}>Attempt Final Quiz</Button>
+            (canGiveFinalQuiz && courseData?.finalQuiz) ?
+            <Button onClick={handleAttemptFinalQuiz} className={styles.downloadBtn}>Attempt Final Quiz</Button>
             :
             <Button isDisabled className={styles.downloadBtn} >Attempt Final Quiz</Button>
           }
           {
-            courseProgressionData?.completedOn &&
+            courseProgressionData?.completedOn && courseData?.courseDetail?.certificate &&
             <Button isLoading={isLoading} onClick={handleDownloadCertificate} className={styles.downloadBtn}>Download Certificate</Button>
           }
-        </div>
         </div>
       </div>
     </>

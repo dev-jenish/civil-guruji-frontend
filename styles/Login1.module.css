@@ -25,6 +25,8 @@
     padding: 1.6rem;
   }
 
+
+
 .cardContainer {
     display: flex;
   }
@@ -89,7 +91,6 @@
     font-size: 12px;
 }
 
-
 @media (max-width: 676px) {
     .cardContainer {
         display: block;
@@ -101,13 +102,12 @@
         width: 76%;
         margin: auto;
         text-align: center;
-        margin-top: 45%;
-      }
+        margin-top: 40%;
+        }
 
       .card:nth-child(2){
         padding-top: 20px;
       }
-
 
       .card{
         gap: 1rem;
