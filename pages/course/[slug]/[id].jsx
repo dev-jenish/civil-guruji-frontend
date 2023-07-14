@@ -612,7 +612,7 @@ export default function Topic({ topic, course }) {
           {
             selectedTopic?.subModule?.type == 1 && (
               <div className={styles.iframe}>
-                <ReactPlayer
+                {/* <ReactPlayer
                   url={selectedTopic?.subModule?.url || selectedTopic?.subModule?.videoUrl}
                   // url={'https://d1wxh31cdpnls0.cloudfront.net/file_library/videos/channel_vod_non_drm_hls/168657483492057856100/168657483492057856100_7856100.m3u8'}
                   width={"100%"}
@@ -649,9 +649,14 @@ export default function Topic({ topic, course }) {
                   }}
                   
                 >
-                </ReactPlayer>
+                </ReactPlayer> */}
+                {/* {console.log(selectedTopic?.subModule?.videoUrl?.split('/')[4])} */}
 
-
+                <iframe
+                  src={`https://iframe.mediadelivery.net/embed/${selectedTopic?.subModule?.videoUrl?.split('/')[4]}/${selectedTopic?.subModule?.videoUrl?.split('/')[5]}?autoplay=true`}
+                  allow="autoplay"
+                  allowFullScreen
+                ></iframe>
 
                 {/* <VideoPlayer liveURL={'https://d1i60clb34cfd8.cloudfront.net/file_library/videos/vod_non_drm_ios/3379331/1681111896_7814626759912629/1681111660844_477738947662471940_video_VOD.m3u8'} /> */}
 
