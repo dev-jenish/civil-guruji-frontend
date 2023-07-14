@@ -41,9 +41,9 @@ export default function Card({
 
     if (course?.isPackage) {
       router.push({
-        pathname: `/package/${course?._id}`,
+        pathname: `/package/${course?.name}/${course?._id}`,
         query: { id: course?._id }
-      }, `/package/${course?._id}`);
+      }, `/package/${course?.name}/${course?._id}`);
     } else {
       if (isPurchased) {
         console.log('Purchased')
