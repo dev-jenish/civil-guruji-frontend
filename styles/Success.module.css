@@ -38,3 +38,10 @@
     border: 1px solid white;
 
 }
+
+@media(max-width: 668px){
+    .man{
+        height: 187px;
+    }
+}
+

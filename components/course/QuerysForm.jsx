@@ -11,6 +11,7 @@ import {
   Text,
   VStack,
   color,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { useState } from "react";
@@ -19,6 +20,9 @@ import { BiPhoneCall } from "react-icons/bi";
 
 export default function QuerysForm({}) {
   const [tabIndex, setTabIndex] = useState(0);
+
+  const activeTabColor = useColorModeValue("#DE076E", "#DE076E");
+
   return (
     <div>
       <Tabs size="xl" index={tabIndex}>
@@ -26,10 +30,11 @@ export default function QuerysForm({}) {
           className={styles.contentWrapper}
           style={{ marginTop: "20px" }}
         >
-          <Tab>Still unsure about the course</Tab>
+          <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}`, fontSize:"14px" }}>Still unsure about the course</Tab>
         </TabList>
       </Tabs>
-      <div style={{ display: "flex", marginTop: "30px", }}>
+
+      <div className={styles.get}>
         <div style={{flex: "9 0"}}>
           <h1 style={{fontSize:"16px"}}>Get the free counseling session with the expert</h1>
           <div className={styles.phoneBlock}>

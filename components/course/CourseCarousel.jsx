@@ -11,8 +11,17 @@ import LearningCard from "./LearningCard";
 
 // const courses = [1, 2, 3, 4, 5, 6];
 
-export default function CourseCarousel({ title, className, hideBtn, courses, categoryId, parentCourseId, parentPackageId, learning }) {
-  const router = useRouter()
+export default function CourseCarousel({
+  title,
+  className,
+  hideBtn,
+  courses,
+  categoryId,
+  parentCourseId,
+  parentPackageId,
+  learning,
+}) {
+  const router = useRouter();
   const [preview, setPreview] = useState(null);
 
   let timer;
@@ -33,24 +42,32 @@ export default function CourseCarousel({ title, className, hideBtn, courses, cat
   const handleViewAll = async () => {
     try {
       if (categoryId) {
-        router.push(`/courses/${categoryId}`)
+        router.push(`/courses/${categoryId}`);
       }
       if (parentCourseId) {
-        router.push(`/courses/similar/${parentCourseId}`)
+        router.push(`/courses/similar/${parentCourseId}`);
       }
       if (parentPackageId) {
-        router.push(`/packages/similar/${parentPackageId}`)
+        router.push(`/packages/similar/${parentPackageId}`);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   return (
     <div className={`${styles.container} ${className}`}>
       <div className={styles.header}>
         <h3>{title}</h3>
-        {!hideBtn ? <Button variant="ghost" onClick={handleViewAll} style={{ color: '#DE076E' }} >View All</Button> : null}
+        {!hideBtn ? (
+          <Button
+            variant="ghost"
+            onClick={handleViewAll}
+            style={{ color: "#DE076E" }}
+          >
+            View All
+          </Button>
+        ) : null}
       </div>
       <Swiper
         slidesPerView={"auto"}
@@ -63,32 +80,43 @@ export default function CourseCarousel({ title, className, hideBtn, courses, cat
           delay: 500,
           disableOnInteraction: false,
         }}
-      >
-        {courses && courses.map((course, idx) => {
-          if (course?.listed) {
-            return <SwiperSlide key={idx} style={{ zIndex: preview === idx ? 2 : 1 }}>
-              {
-                learning ?
-                <LearningCard
-                course={course}
-                />
-                :
-              <Card
-                index={idx}
-                showPreview={preview === idx}
-                mouseOver={mouseOver}
-                mouseOut={mouseOut}
-                // transformOrigin={
-                //   idx == 1 ? "left" : courses.length == idx ? "right" : "center"
-                // }
-
-                course={course}
-                learning={learning}
-              />
+        style={
+          preview == 0
+            ? {
+                paddingLeft: "40px",
               }
-            </SwiperSlide>
-          }
-        })}
+            : {}
+        }
+      >
+        {courses &&
+          courses.map((course, idx) => {
+            if (course?.listed) {
+              return (
+                <SwiperSlide
+                  key={idx}
+                  style={{ zIndex: preview === idx ? 2 : 1 }}
+                >
+                  {learning ? (
+                    <LearningCard course={course} />
+                  ) : (
+                    <Card
+                      index={idx}
+                      showPreview={preview === idx}
+                      mouseOver={mouseOver}
+                      mouseOut={mouseOut}
+                      preview={preview}
+                      // transformOrigin={
+                      //   idx == 1 ? "left" : courses.length == idx ? "right" : "center"
+                      // }
+
+                      course={course}
+                      learning={learning}
+                    />
+                  )}
+                </SwiperSlide>
+              );
+            }
+          })}
       </Swiper>
     </div>
   );

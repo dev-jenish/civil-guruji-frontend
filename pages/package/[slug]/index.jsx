@@ -114,7 +114,7 @@ export default function Package({ }) {
               <p>Enrolled engineers ({packageData?.learnerCount})</p>
             </span>
           </div>
-          <Button>Enroll in Package</Button>
+          <Button className={styles.packageBtn}>Enroll in Package</Button>
         </div>
       ) : null}
       <div className={`wrapper ${styles.container}`}>

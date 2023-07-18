@@ -81,7 +81,7 @@ function CourseCard({ courseData }) {
                   flexDirection: "column",
                   alignItems: "flex-start",
                 }} >
-          <p>
+          <p className={styles.starEnrolled}>
           {courseData?.course?.rating} <Stars value={courseData?.course?.rating} />
           </p>
           <p>Enrolled engineers ({courseData?.course?.learnerCount})</p>

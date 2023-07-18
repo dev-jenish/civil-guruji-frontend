@@ -34,7 +34,7 @@ export default function Checkout() {
     const [discount, setDiscount] = useState("Civil20");
     const [oneTImeActiveTab, setOneTimeActiveTab] = useState(false);
     const [emiActiveTab, setEmiActiveTab] = useState(false);
-    const [isTermsAccepted, setIsTermsAccepted] = useState(false);
+    const [isTermsAccepted, setIsTermsAccepted] = useState(true);
     const [planData, setPlanData] = useState({});
     const [countryOptions, setCountryOptions] = useState([])
     const [stateOptions, setStateOptions] = useState([])
@@ -225,16 +225,33 @@ export default function Checkout() {
 
     useEffect(() => {
         if (country_state?.countries && country_state?.countries?.length > 0) {
-            setCountryOptions(
-                country_state?.countries.map((country) => {
-                    return {
-                        label: country?.country,
-                        value: country?.states
-                    }
-                })
-            )
+          setCountryOptions(
+            country_state.countries.map((country) => {
+              return {
+                label: country.country,
+                value: country.states,
+              };
+            })
+          );
         }
-    }, [country_state])
+      }, [country_state]);
+    
+      useEffect(() => {
+        // Set default value to "India"
+        const defaultCountry = countryOptions.find(
+          (country) => country.label === "India"
+        );
+        setCountryValue(defaultCountry);
+        setStateOptions(
+          defaultCountry?.value?.map((state) => {
+            return {
+              label: state,
+              value: state,
+            };
+          })
+        );
+        setStateValue({});
+      }, [countryOptions]);
 
     useEffect(() => {
         const { courseId, planId } = router?.query
@@ -447,10 +464,10 @@ export default function Checkout() {
 
     return (
         <Layout>
-            <div className={styles.container}>
+                    <div className={styles.container}>
                 <div className={styles.left}>
                     <div className={styles.content}>
-                        <Text fontSize="3xl" fontWeight="500">
+                        <Text fontSize="3xl" fontWeight="500" >
                             Checkout
                         </Text>
                         <div className={styles.billingParts}>
@@ -464,71 +481,59 @@ export default function Checkout() {
                                 loading ? <Skeleton baseColor="#5a5b5d" highlightColor="#787878" count={5} /> :
                                     <>
                                         <div className={styles.inputGroup} style={{ paddingBottom: '1rem' }} >
-                                            <VStack alignItems="flex-start" >
+                                            <VStack alignItems="flex-start" className={styles.inputtext}>
                                                 <Text paddingLeft="5px" color="gray.400">
                                                     Name
                                                 </Text>
                                                 <Input type="text" value={userName} onChange={(event) => setUserName(event?.target?.value)} ></Input>
                                             </VStack>
-                                            <VStack alignItems="flex-start">
+                                            <VStack alignItems="flex-start" className={styles.inputtext}>
                                                 <Text paddingLeft="5px" color="gray.400">E-mail ID*</Text>
                                                 <Input type="email" value={userEmail} onChange={(event) => setUserEmail(event?.target?.value)} ></Input>
                                             </VStack>
-                                            <VStack alignItems="flex-start">
+                                            <VStack alignItems="flex-start" className={styles.inputtext}>
                                                 <Text paddingLeft="5px" color="gray.400">Mobile No.*</Text>
                                                 <Input type="tel" value={userMobileNumber} onChange={(event) => { setUserMobileNumber(event?.target?.value) }} ></Input>
                                             </VStack>
                                         </div>
                                         <VStack>
-                                            <HStack width="full">
-                                                <VStack alignItems="flex-start" flex={1}>
-                                                    <Text color="gray.400">Country</Text>
-                                                    <Select
-                                                        options={countryOptions}
-                                                        value={countryValue}
-                                                        onChange={(data) => {
-                                                            setStateOptions(data?.value.map((state) => {
-                                                                return {
-                                                                    label: state,
-                                                                    value: state
-                                                                }
-                                                            }));
-                                                            setCountryValue(data)
-                                                            setStateValue({})
-                                                        }}
-                                                        styles={customStyles}
-                                                    />
-                                                    {/* <SelectChakra placeholder="Select Country">
-                                                        {
-                                                            countryOptions?.length > 0 && countryOptions.map((country) => {
-                                                                return <option value={country?.value}>
-                                                                    {country?.label}
-                                                                </option>
-                                                            })
-                                                        }
-
-                                                    </SelectChakra> */}
-                                                </VStack>
-                                                <VStack alignItems="flex-start" flex={1}>
-                                                    <Text color="gray.400">State / Union Territory</Text>
-                                                    <Select
-                                                        options={stateOptions}
-                                                        value={stateValue}
-                                                        onChange={(data) => setStateValue(data)}
-                                                        styles={customStyles}
-                                                    />
-                                                    {/* <SelectChakra placeholder="Select State">
-                                                        <option value="maharashtra">Maharashtra</option>
-                                                        <option value="karnataka">Karnataka</option>
-                                                        <option value="west bengal">West Bengal</option>
-                                                    </SelectChakra> */}
-                                                </VStack>
-                                            </HStack>
-                                            <Text fontSize="xs" color="gray.500">
-                                                Civil Guruji is required by law to collect applicable
-                                                transaction taxes for purchases made in certain tax
-                                                jurisdictions.
-                                            </Text>
+                                            <HStack width="full" className={styles.country}>
+                      <VStack alignItems="flex-start" flex={1}>
+                        <Text color="gray.400">Country</Text>
+                        <Select
+                          options={countryOptions}
+                          value={countryValue}
+                          onChange={(data) => {
+                            const selectedCountry = data.value;
+                            setCountryValue(data);
+                            setStateOptions(
+                              selectedCountry?.map((state) => {
+                                return {
+                                  label: state,
+                                  value: state,
+                                };
+                              })
+                            );
+                            setStateValue({});
+                          }}
+                          styles={customStyles}
+                        />
+                      </VStack>
+                      <VStack alignItems="flex-start" flex={1}>
+                        <Text color="gray.400">State / Union Territory</Text>
+                        <Select
+                          options={stateOptions}
+                          value={stateValue}
+                          onChange={(data) => setStateValue(data)}
+                          styles={customStyles}
+                        />
+                      </VStack>
+                    </HStack>
+                    <Text fontSize="xs" color="gray.500">
+                      Civil Guruji is required by law to collect applicable
+                      transaction taxes for purchases made in certain tax
+                      jurisdictions.
+                    </Text>
                                         </VStack>
                                     </>
                             }
@@ -1039,9 +1044,622 @@ export default function Checkout() {
                     }
                 </div>
             </div>
+            
+            <div className={styles.desktopContainer}>
+                <div className={styles.left}>
+                    <div className={styles.content}>
+                        <Text fontSize="3xl" fontWeight="500" >
+                            Checkout
+                        </Text>
+                        <div className={styles.billingParts}>
+                            <Text fontSize="xl" marginBottom="16px">
+                                {
+                                    loading ? <Skeleton baseColor="#5a5b5d" highlightColor="#787878" /> :
+                                        'Billing Address'
+                                }
+                            </Text>
+                            {
+                                loading ? <Skeleton baseColor="#5a5b5d" highlightColor="#787878" count={5} /> :
+                                    <>
+                                        <div className={styles.inputGroup} style={{ paddingBottom: '1rem' }} >
+                                            <VStack alignItems="flex-start" className={styles.inputtext}>
+                                                <Text paddingLeft="5px" color="gray.400">
+                                                    Name
+                                                </Text>
+                                                <Input type="text" value={userName} onChange={(event) => setUserName(event?.target?.value)} ></Input>
+                                            </VStack>
+                                            <VStack alignItems="flex-start" className={styles.inputtext}>
+                                                <Text paddingLeft="5px" color="gray.400">E-mail ID*</Text>
+                                                <Input type="email" value={userEmail} onChange={(event) => setUserEmail(event?.target?.value)} ></Input>
+                                            </VStack>
+                                            <VStack alignItems="flex-start" className={styles.inputtext}>
+                                                <Text paddingLeft="5px" color="gray.400">Mobile No.*</Text>
+                                                <Input type="tel" value={userMobileNumber} onChange={(event) => { setUserMobileNumber(event?.target?.value) }} ></Input>
+                                            </VStack>
+                                        </div>
+                                        <VStack>
+                                            <HStack width="full" className={styles.country}>
+                                                <VStack alignItems="flex-start" flex={1} >
+                                                    <Text color="gray.400">Country</Text>
+                                                    <Select
+                                                        options={countryOptions}
+                                                        value={countryValue}
+                                                        onChange={(data) => {
+                                                            setStateOptions(data?.value.map((state) => {
+                                                                return {
+                                                                    label: state,
+                                                                    value: state
+                                                                }
+                                                            }));
+                                                            setCountryValue(data)
+                                                            setStateValue({})
+                                                        }}
+                                                        styles={customStyles}
+                                                    />
+                                                    {/* <SelectChakra placeholder="Select Country">
+                                                        {
+                                                            countryOptions?.length > 0 && countryOptions.map((country) => {
+                                                                return <option value={country?.value}>
+                                                                    {country?.label}
+                                                                </option>
+                                                            })
+                                                        }
+
+                                                    </SelectChakra> */}
+                                                </VStack>
+                                                <VStack alignItems="flex-start" flex={1}>
+                                                    <Text color="gray.400">State / Union Territory</Text>
+                                                    <Select
+                                                        options={stateOptions}
+                                                        value={stateValue}
+                                                        onChange={(data) => setStateValue(data)}
+                                                        styles={customStyles}
+                                                    />
+                                                    {/* <SelectChakra placeholder="Select State">
+                                                        <option value="maharashtra">Maharashtra</option>
+                                                        <option value="karnataka">Karnataka</option>
+                                                        <option value="west bengal">West Bengal</option>
+                                                    </SelectChakra> */}
+                                                </VStack>
+                                            </HStack>
+                                            <Text fontSize="xs" color="gray.500">
+                                                Civil Guruji is required by law to collect applicable
+                                                transaction taxes for purchases made in certain tax
+                                                jurisdictions.
+                                            </Text>
+                                        </VStack>
+                                    </>
+                            }
+                        </div>
+                        <div className={styles.right}>
+                    {
+                        loading ?
+                            <>
+                                <Skeleton baseColor="#5a5b5d" highlightColor="#787878" />
+                                {/* <div style={{ display: 'grid', columnCount: 2 }} > */}
+                                <Skeleton baseColor="#5a5b5d" style={{ marginTop: '2rem', height: '1.5rem', marginBottom: '0.5rem' }} highlightColor="#787878" count={2} inline width={'48%'} wrapper={InlineWrapperWithMargin} />
+                                <Skeleton baseColor="#5a5b5d" style={{ marginTop: '1rem' }} highlightColor="#787878" count={3} />
+                                <Skeleton baseColor="#5a5b5d" style={{ marginTop: '2rem', height: '2.5rem' }} highlightColor="#787878" />
+                                {/* </div> */}
+                            </>
+                            :
+                            <div className={styles.content}>
+                                <Tabs size="sm" index={planTypeTabIndex} onChange={setPlanTypeTabIndex} variant="button" >
+                                    <div className={styles.section}>
+                                        <p className={styles.headText}>Order details</p>
+                                        <TabList>
+                                            <Tab
+                                                // isDisabled={purchasedData?.emisPaid >= 0}
+                                                style={{ fontSize: "14px" }}
+                                            >
+                                                One Time Payment
+                                            </Tab>
+                                            {
+                                                planData?.type == 'Emi subscription' &&
+                                                <Tab style={{ fontSize: "14px" }}>EMI Options</Tab>
+                                            }
+                                        </TabList>
+                                    </div>
+                                    <TabPanels>
+                                        <TabPanel>
+                                            {!oneTImeActiveTab ? (
+                                                <div className={styles.tabInnerContent}>
+                                                    <CourseDetail price={"₹499"} planData={planData} />
+                                                    <span className={styles.liner}></span>
+                                                    <h6 className={styles.summary}>Summary</h6>
+                                                    <VStack alignItems="flex-start">
+                                                        <HStack
+                                                            width="full"
+                                                            justifyContent="space-between"
+                                                            alignItems="flex-start"
+                                                            marginBottom="20px"
+                                                        >
+                                                            <Text>Discounted Price:</Text>
+                                                            <Text>₹{planData?.discountedPrice || 'Free'}</Text>
+                                                        </HStack>
+                                                        <HStack
+                                                            width="full"
+                                                            justifyContent="space-between"
+                                                            marginTop="0 !important"
+                                                            borderTop="1px solid"
+                                                            borderColor="gray.700"
+                                                            paddingTop={4}
+                                                            marginBottom="24px !important"
+                                                        >
+                                                            <Text as="b">Total:</Text>
+                                                            <Text as="b">₹{planData?.discountedPrice || 'Free'}</Text>
+                                                        </HStack>
+                                                        {
+                                                            planData?.discountedPrice ?
+                                                                <HStack
+                                                                    width="full"
+                                                                    justifyContent="space-between"
+                                                                    marginTop="0 !important"
+                                                                    marginBottom="24px !important"
+                                                                >
+                                                                    <Input placeholder="Promo Code" value={promocodeInput} onChange={(event) => setPromocodeInput(event?.target?.value)} _placeholder={discount} />
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        onClick={() =>
+                                                                            handleDiscountClick("oneTimeActiveTab", "apply")
+                                                                        }
+                                                                    >
+                                                                        Apply
+                                                                    </Button>
+                                                                </HStack>
+                                                                :
+                                                                null
+                                                        }
+                                                        <HStack width="full" marginTop="0 !important">
+                                                            <Checkbox
+                                                                size="sm"
+                                                                colorScheme="gray"
+                                                                id="purchase-terms"
+                                                                isChecked={isTermsAccepted}
+                                                                onChange={(event) => { setIsTermsAccepted(event?.target?.checked) }}
+                                                            />
+                                                            <FormLabel
+                                                                htmlFor="purchase-terms"
+                                                                fontSize="xs"
+                                                                color="gray.500"
+                                                                cursor="pointer"
+                                                            >
+                                                                <Text as="span" marginLeft={1}>
+                                                                    By completing your purchase you agree to these
+                                                                    Terms of Service.
+                                                                </Text>
+                                                            </FormLabel>
+                                                        </HStack>
+                                                        <Button onClick={() => handlePayment('pay_all')} borderRadius={4} height={12} width="full">
+                                                            Checkout
+                                                        </Button>
+                                                    </VStack>
+                                                </div>
+                                            ) : (
+                                                <div className={styles.tabInnerContent}>
+                                                    <CourseDetail price={"₹499"} planData={planData} />
+                                                    <span className={styles.liner}></span>
+                                                    <h6 className={styles.summary}>Summary</h6>
+                                                    <VStack alignItems="flex-start">
+                                                        <HStack
+                                                            width="full"
+                                                            justifyContent="space-between"
+                                                            alignItems="flex-start"
+                                                        >
+                                                            <Text>Original Price:</Text>
+                                                            <Text>₹{planData?.discountedPrice || 'Free'}</Text>
+                                                        </HStack>
+                                                        <HStack
+                                                            width="full"
+                                                            justifyContent="space-between"
+                                                            paddingBottom={4}
+                                                        >
+                                                            <HStack gap="5px">
+                                                                <FaTag size={12} color="#2BB970" />
+                                                                <Text>{promocodeData?.name}</Text>
+                                                            </HStack>
+                                                            <Text color="#2BB970">-₹{promocodeDiscountAmount}</Text>
+                                                        </HStack>
+                                                        <HStack
+                                                            width="full"
+                                                            justifyContent="space-between"
+                                                            marginTop="0 !important"
+                                                            borderTop="1px solid"
+                                                            borderColor="gray.700"
+                                                            paddingTop={4}
+                                                            marginBottom="24px !important"
+                                                        >
+                                                            <Text as="b">Total:</Text>
+                                                            <Text as="b" color="#2BB970">
+                                                                ₹{priceAfterPromocode}
+                                                            </Text>
+                                                        </HStack>
+                                                        <HStack
+                                                            width="full"
+                                                            justifyContent="space-between"
+                                                            marginTop="0 !important"
+                                                            marginBottom="24px !important"
+                                                        >
+                                                            <HStack>
+                                                                <IoIosCheckmarkCircleOutline
+                                                                    size={18}
+                                                                    color="#2BB970"
+                                                                />
+                                                                <Text fontSize={14} color="#2BB970">
+                                                                    {promocodeData?.name} Code Applied Successfully
+                                                                </Text>
+                                                            </HStack>
+                                                            <button
+                                                                className={styles.redText}
+                                                                onClick={() =>
+                                                                    handleDiscountClick("oneTimeActiveTab", "remove")
+                                                                }
+                                                            >
+                                                                remove
+                                                            </button>
+                                                        </HStack>
+                                                        <HStack width="full" marginTop="0 !important">
+                                                            <Checkbox
+                                                                size="sm"
+                                                                colorScheme="gray"
+                                                                id="purchase-terms"
+                                                                isChecked={isTermsAccepted}
+                                                                onChange={(event) => { setIsTermsAccepted(event?.target?.checked) }}
+                                                            />
+                                                            <FormLabel
+                                                                htmlFor="purchase-terms"
+                                                                fontSize="xs"
+                                                                color="gray.500"
+                                                                cursor="pointer"
+                                                            >
+                                                                <Text as="span" marginLeft={1}>
+                                                                    By completing your purchase you agree to these
+                                                                    Terms of Service.
+                                                                </Text>
+                                                            </FormLabel>
+                                                        </HStack>
+                                                        <Button onClick={() => handlePayment('pay_all')} borderRadius={4} height={12} width="full">
+                                                            Checkout
+                                                        </Button>
+                                                    </VStack>
+                                                </div>
+                                            )}
+                                        </TabPanel>
+                                        <TabPanel>
+                                            {!emiActiveTab ? (
+                                                <div className={styles.tabInnerContent}>
+                                                    <CourseDetail price={"₹699"} planData={planData} />
+                                                    <span className={styles.liner}></span>
+                                                    <h6 className={styles.summary}>Summary</h6>
+                                                    <VStack alignItems="flex-start">
+                                                        <HStack
+                                                            width="full"
+                                                            justifyContent="space-between"
+                                                            alignItems="flex-start"
+                                                            backgroundColor={(purchasedData?.expiresOn && (purchasedData?.emisPaid >= 0)) ? "inherit" : "#454546"}
+                                                            padding="5px 10px"
+                                                        >
+                                                            <Text fontSize={14}>Base Amount</Text>
+                                                            <Text fontSize={14}>₹{planData?.baseAmount}</Text>
+                                                        </HStack>
+                                                        <HStack
+                                                            width="full"
+                                                            justifyContent="space-between"
+                                                            alignItems="flex-start"
+                                                            padding="5px 10px"
+                                                            backgroundColor={(purchasedData?.expiresOn && (purchasedData?.emisPaid == 0)) ? "#454546" : "inherit"}
+                                                        >
+                                                            <Text fontSize={14}>1st EMI</Text>
+                                                            <Text fontSize={14}>₹{planData?.emiAmount}</Text>
+                                                        </HStack>
+                                                        <HStack
+                                                            width="full"
+                                                            justifyContent="space-between"
+                                                            alignItems="flex-start"
+                                                            padding="5px 10px"
+                                                            backgroundColor={(purchasedData?.expiresOn && (purchasedData?.emisPaid == 1)) ? "#454546" : "inherit"}
+                                                        >
+                                                            <Text fontSize={14}>2nd EMI</Text>
+                                                            <Text fontSize={14}>₹{planData?.emiAmount}</Text>
+                                                        </HStack>
+                                                        <HStack
+                                                            width="full"
+                                                            justifyContent="space-between"
+                                                            alignItems="flex-start"
+                                                            padding="5px 10px"
+                                                            backgroundColor={(purchasedData?.expiresOn && (purchasedData?.emisPaid == 2)) ? "#454546" : "inherit"}
+                                                        >
+                                                            <Text fontSize={14}>3rd EMI</Text>
+                                                            <Text fontSize={14}>₹{planData?.emiAmount}</Text>
+                                                        </HStack>
+                                                        <HStack
+                                                            width="full"
+                                                            justifyContent="space-between"
+                                                            marginTop="0 !important"
+                                                            borderTop="1px solid"
+                                                            borderColor="gray.700"
+                                                            padding="5px 10px"
+                                                            marginBottom="24px !important"
+                                                        >
+                                                            <Text fontWeight="700" fontSize="16px">
+                                                                Total:
+                                                            </Text>
+                                                            <Text fontWeight="700" fontSize="16px">
+                                                                ₹{planData?.discountedPrice}
+                                                            </Text>
+                                                        </HStack>
+                                                        <HStack
+                                                            width="full"
+                                                            justifyContent="space-between"
+                                                            marginTop="0 !important"
+                                                            marginBottom="24px !important"
+                                                        >
+                                                            <Input placeholder="Promo Code" value={promocodeInput} onChange={(event) => setPromocodeInput(event?.target?.value)} _placeholder={discount} />
+                                                            <Button
+                                                                variant="outline"
+                                                                onClick={() =>
+                                                                    handleDiscountClick("emiActiveTab", "apply")
+                                                                }
+                                                            >
+                                                                Apply
+                                                            </Button>
+                                                        </HStack>
+                                                        <HStack width="full" marginTop="0 !important">
+                                                            <Checkbox
+                                                                size="sm"
+                                                                colorScheme="gray"
+                                                                id="purchase-termsEMI"
+                                                                isChecked={isTermsAccepted}
+                                                                onChange={(event) => { setIsTermsAccepted(event?.target?.checked) }}
+                                                            />
+                                                            <FormLabel
+                                                                htmlFor="purchase-termsEMI"
+                                                                fontSize="xs"
+                                                                color="gray.500"
+                                                                cursor="pointer"
+                                                            >
+                                                                <Text as="span" marginLeft={1}>
+                                                                    By completing your purchase you agree to these
+                                                                    Terms of Service.
+                                                                </Text>
+                                                            </FormLabel>
+                                                        </HStack>
+                                                        <Button onClick={() => { (purchasedData?.expiresOn && (purchasedData?.emisPaid >= 0 && purchasedData?.emisPaid < 3)) ? handlePayment('emi') : handlePayment('base_amount') }} borderRadius={4} height={12} width="full">
+                                                            {
+                                                                (purchasedData?.expiresOn && (purchasedData?.emisPaid >= 0))
+                                                                    ?
+                                                                    (purchasedData?.expiresOn && (purchasedData?.emisPaid == 3))
+                                                                        ?
+                                                                        `Paid`
+                                                                        :
+                                                                        `Pay EMI @ ${planData?.emiAmount}`
+                                                                    :
+                                                                    `Enroll @ ${planData?.baseAmount}`
+                                                            }
+
+                                                        </Button>
+                                                    </VStack>
+                                                </div>
+                                            ) : (
+                                                <div className={styles.tabInnerContent}>
+                                                    <CourseDetail price={"₹699"} planData={planData} />
+                                                    <span className={styles.liner}></span>
+                                                    <h6 className={styles.summary}>Summary</h6>
+                                                    <VStack alignItems="flex-start">
+                                                        <HStack
+                                                            width="full"
+                                                            justifyContent="space-between"
+                                                            alignItems="flex-start"
+                                                            backgroundColor={(purchasedData?.expiresOn && (purchasedData?.emisPaid >= 0)) ? "inherit" : "#454546"}
+                                                            padding="5px 10px"
+                                                        >
+                                                            <Text fontSize={14}>Base Amount</Text>
+                                                            <HStack justifyContent="space-between" width="">
+                                                                <Text fontSize={14} >
+                                                                    ₹{planData?.baseAmount}
+                                                                </Text>
+                                                            </HStack>
+                                                        </HStack>
+                                                        <HStack
+                                                            width="full"
+                                                            justifyContent="space-between"
+                                                            alignItems="flex-start"
+                                                            padding="5px 10px"
+                                                            backgroundColor={(purchasedData?.expiresOn && (purchasedData?.emisPaid == 0)) ? "#454546" : "inherit"}
+                                                        >
+                                                            <Text fontSize={14}>1st EMI</Text>
+                                                            <HStack justifyContent="space-between" width="">
+                                                                <Text fontSize={14} textDecoration="line-through">
+                                                                    ₹{planData?.emiAmount}
+                                                                </Text>
+                                                                <Text fontSize={14} color="#2BB970">
+                                                                    ₹{priceAfterPromocode}
+                                                                </Text>
+                                                            </HStack>
+                                                        </HStack>
+                                                        <HStack
+                                                            width="full"
+                                                            justifyContent="space-between"
+                                                            alignItems="flex-start"
+                                                            padding="5px 10px"
+                                                            backgroundColor={(purchasedData?.expiresOn && (purchasedData?.emisPaid == 1)) ? "#454546" : "inherit"}
+                                                        >
+                                                            <Text fontSize={14}>2nd EMI</Text>
+                                                            <HStack justifyContent="space-between" width="">
+                                                                <Text fontSize={14} textDecoration="line-through">
+                                                                    ₹{planData?.emiAmount}
+                                                                </Text>
+                                                                <Text fontSize={14} color="#2BB970">
+                                                                    ₹{priceAfterPromocode}
+                                                                </Text>
+                                                            </HStack>
+                                                        </HStack>
+                                                        <HStack
+                                                            width="full"
+                                                            justifyContent="space-between"
+                                                            alignItems="flex-start"
+                                                            padding="5px 10px"
+                                                            backgroundColor={(purchasedData?.expiresOn && (purchasedData?.emisPaid == 2)) ? "#454546" : "inherit"}
+                                                        >
+                                                            <Text fontSize={14}>3rd EMI</Text>
+                                                            <HStack justifyContent="space-between" width="">
+                                                                <Text fontSize={14} textDecoration="line-through">
+                                                                    ₹{planData?.emiAmount}
+                                                                </Text>
+                                                                <Text fontSize={14} color="#2BB970">
+                                                                    ₹{priceAfterPromocode}
+                                                                </Text>
+                                                            </HStack>
+                                                        </HStack>
+                                                        <HStack
+                                                            width="full"
+                                                            justifyContent="space-between"
+                                                            marginTop="0 !important"
+                                                            borderTop="1px solid"
+                                                            borderColor="gray.700"
+                                                            padding="5px 10px"
+                                                            marginBottom="24px !important"
+                                                        >
+                                                            <Text fontWeight="700" fontSize="16px">
+                                                                Total:
+                                                            </Text>
+                                                            <HStack justifyContent="space-between" width="">
+                                                                <Text
+                                                                    fontWeight="700"
+                                                                    fontSize="16px"
+                                                                    textDecoration="line-through"
+                                                                >
+                                                                    ₹{(planData?.discountedPrice).toFixed(2)}
+                                                                </Text>
+                                                                <Text
+                                                                    fontWeight="700"
+                                                                    fontSize="16px"
+                                                                    color="#2BB970"
+                                                                >
+                                                                    ₹{((priceAfterPromocode * 3) + planData?.baseAmount).toFixed(2)}
+                                                                </Text>
+                                                            </HStack>
+                                                        </HStack>
+                                                        <HStack
+                                                            width="full"
+                                                            justifyContent="space-between"
+                                                            marginTop="0 !important"
+                                                            marginBottom="24px !important"
+                                                        >
+                                                            <HStack>
+                                                                <IoIosCheckmarkCircleOutline
+                                                                    size={18}
+                                                                    color="#2BB970"
+                                                                />
+                                                                <Text fontSize={14} color="#2BB970">
+                                                                    {promocodeData?.name} Code Applied Successfully
+                                                                </Text>
+                                                            </HStack>
+                                                            {
+                                                                // !(purchasedData?.emisPaid >= 0 && promocodeData?._id) &&
+                                                                <button
+                                                                    className={styles.redText}
+                                                                    onClick={() =>
+                                                                        handleDiscountClick("emiActiveTab", "remove")
+                                                                    }
+
+                                                                >
+                                                                    remove
+                                                                </button>
+                                                            }
+                                                        </HStack>
+                                                        <HStack width="full" marginTop="10px !important">
+                                                            <Checkbox
+                                                                size="sm"
+                                                                colorScheme="gray"
+                                                                id="purchase-termsEMI"
+                                                                isChecked={isTermsAccepted}
+                                                                onChange={(event) => { setIsTermsAccepted(event?.target?.checked) }}
+                                                            />
+                                                            <FormLabel
+                                                                htmlFor="purchase-termsEMI"
+                                                                fontSize="xs"
+                                                                color="gray.500"
+                                                                cursor="pointer"
+                                                            >
+                                                                <Text as="span" marginLeft={1}>
+                                                                    By completing your purchase you agree to these
+                                                                    Terms of Service.
+                                                                </Text>
+                                                            </FormLabel>
+                                                        </HStack>
+                                                        <Button onClick={() => { (purchasedData?.expiresOn && (purchasedData?.emisPaid >= 0 && purchasedData?.emisPaid < 3)) ? handlePayment('emi') : handlePayment('base_amount') }} borderRadius={4} height={12} width="full">
+                                                            {/* Enroll @ {planData?.baseAmount} */}
+
+                                                            {
+                                                                (purchasedData?.expiresOn && (purchasedData?.emisPaid >= 0))
+                                                                    ?
+                                                                    (purchasedData?.expiresOn && (purchasedData?.emisPaid == 3))
+                                                                        ?
+                                                                        `Paid`
+                                                                        :
+                                                                        `Pay EMI @ ${priceAfterPromocode}`
+                                                                    :
+                                                                    `Enroll @ ${planData?.baseAmount}`
+                                                            }
+
+                                                        </Button>
+                                                    </VStack>
+                                                </div>
+                                            )}
+                                        </TabPanel>
+                                    </TabPanels>
+                                </Tabs>
+                            </div>
+                    }
+                        </div>
+                    </div>
+                </div>
+
+                <div className={styles.mobileCard}>
+                    <div className={styles.section}>
+                                <Text fontSize="xl" marginBottom="16px">
+                                    We Recommend
+                                </Text>
+                                {
+                                    loading ? <>
+                                        <Skeleton baseColor="#5a5b5d" highlightColor="#787878" style={{ height: '2rem', marginBottom: '1rem' }} />
+                                        <Skeleton baseColor="#5a5b5d" highlightColor="#787878" count={3} />
+                                    </>
+                                        :
+                                        <>
+                                            {
+                                                allPackagesData?.length > 0 &&
+                                                allPackagesData.map((packageData, index) => {
+                                                    return <PackageDetail key={index} packageData={packageData} />
+                                                })
+                                            }
+                                            {/* <PackageDetail  /> */}
+                                        </>
+                                }
+                    </div>
+                </div>
+            </div>
         </Layout>
     );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function CourseDetail({ highlight, price, planData }) {
     return (
