@@ -10,8 +10,13 @@ import {
   TabPanels,
   Tabs,
   Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import Link from "next/link";
+import { BsStar } from 'react-icons/bs';
+import {AiOutlineLock, AiOutlineUnlock} from 'react-icons/ai';
+import { Progress } from "@chakra-ui/react";
+
 
 import { useRouter } from "next/router";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -452,34 +457,49 @@ export default function Topic({ topic, course }) {
   }
   }, [userData, courseId])
 
-  // new added for customheader
   const customHeader = (
+    <div>
     <div className={styles.customHeader}>
-      <Link href="/">
-        <h1>Civil Guruji</h1>
-      </Link>
-      <h2>{courseData.name}</h2>
-      {
-        purchasedData?.planDetail?.type == 'One time payment' || purchasedData?.planDetail?.type == 'Free'
-        &&
-        <Text style={{ textDecoration: 'underline', color: '#E01C46', fontWeight: 'bold' }} >{ purchasedData?.planDetail?.validity == 'limited' ? moment(purchasedData?.validityDate).format('DD | MMM | YYYY') : 'Lifetime'}</Text>
-      }
-      {
-        purchasedData?.planDetail?.type == 'Emi subscription'
-        &&
-        (purchasedData?.emisPaid == 3
-        ?
-        <div className={styles.buttonWithDate}>
-        {/* <Button style={{ fontSize: "0.90rem" }} onClick={() => {router.push(`/checkout/${courseId}/${purchasedData?.planDetail?._id}`)}} >PAY EMI</Button> */}
-        <Text>Valid till</Text>
-        <p style={{ fontSize: "0.75rem" }}>{ purchasedData?.planDetail?.validity == 'limited' ? moment(purchasedData?.validityDate).format('DD | MMM | YYYY') : 'Lifetime'}</p>
+    <div style={{display:"flex"}}>
+      <div>
+        <Link href="/">
+        <h1 style={{marginRight:"20px"}}>Logo</h1>
+        {/* <img src={myImage} alt="alternative-text"></img> */}
+        </Link>
       </div>
-        :
-      <div className={styles.buttonWithDate}>
-        <Button style={{ fontSize: "0.90rem" }} onClick={() => {router.push(`/checkout/${courseId}/${purchasedData?.planDetail?._id}`)}} >PAY EMI</Button>
-        <p style={{ fontSize: "0.75rem" }}>{ moment(purchasedData?.expiresOn).format('DD | MMM | YYYY')}</p>
-      </div>)
-      }
+      <div>
+       <h2>{courseData.name}</h2>
+       <div style={{display:"flex", alignItems:"center"}}>       
+        <p className={styles.rateFont}>Rate This Course</p>
+        <span className={styles.headerSpan}>
+        <BsStar />
+        <BsStar />
+        <BsStar />
+        <BsStar />
+        <BsStar />
+        </span>
+      </div>
+      </div>
+    </div>
+      <div className={styles.buttonWithDate} >
+      <div style={{display:"flex", alignItems:"center",gap:"10px"}}>
+        <span style={{display:"flex", gap:"5px"}}>
+          <AiOutlineUnlock/>
+          <AiOutlineLock/>
+          <AiOutlineLock/>
+          <AiOutlineLock/>
+        </span>
+        <p style={{marginRight:"10px"}}>Lifetime</p>
+        </div>
+        <div>
+          <Button style={{backgroundColor:"#E01C46", color:"white"}}>PAY EMI</Button>
+          <p style={{ fontSize: "0.75rem" }}>06 | May | 2023</p>
+        </div>
+      </div>
+    </div>
+    <div>
+    <Progress value={100} colorScheme="red" width={100} height={2}  />
+    </div>    
     </div>
   );
 
@@ -910,6 +930,8 @@ function SideNav({
     }
   }
 
+  const activeTabColor = useColorModeValue("#DE076E", "#DE076E");
+
   return (
     <>
       <div onClick={handleNav} className={styles.floatBtn}>
@@ -933,12 +955,12 @@ function SideNav({
         <div className={styles.tabWrapper}>
           <Tabs variant="button">
             <TabList>
-              <Tab>
+              <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }} >
                 <span className={styles.tab}>
                   <p>Content</p>
                 </span>
               </Tab>
-              <Tab>
+              <Tab  _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }} >
                 <span className={styles.tab}>
                   <p>Live Class</p>
                 </span>

@@ -12,8 +12,6 @@
 
 .right {
   flex: 4;
-  position: sticky;
-  top: 24px;
   height: max-content;
 }
 
@@ -117,4 +115,21 @@
   top: -8px;
   right: -16px;
   color: white !important;
+}
+
+@media (max-width:676px){
+  .container{
+    display: flex;
+    flex-direction: column-reverse;
+  }
+  .right{
+    margin-top: 10px;
+  }
+}
+
+@media (min-width:677px){
+  .right{
+  position: sticky !important;
+  top: 24px;
+}
 }

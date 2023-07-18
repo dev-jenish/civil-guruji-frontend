@@ -1,0 +1,44 @@
+.maindiv {
+    position: relative;
+  }
+  .bluepic {
+    position: absolute;
+    z-index: -1;
+    height: 100vh;
+    width: 100vw;
+  }
+  .heading {
+    position: absolute;
+    top: 10rem;
+    left: 39rem;
+    font-size: 2.5rem;
+  }
+  .robopic {
+    position: absolute;
+    top: 19rem;
+    left: 27rem;
+    height: 20rem;
+    width: 49rem;
+  }
+  
+  @media (max-width: 668px) {
+    .maindiv {
+      position: relative;
+    }
+    .robopic {
+      position: absolute;
+      top: 20rem;
+      left: 3.6rem;
+      height: 7rem;
+      width: 16rem;
+    }
+    
+    .heading {
+      position: absolute;
+      top: 13rem;
+      left: 13%;
+      text-align: center;
+      font-size: 24px;
+    }
+  }
+  

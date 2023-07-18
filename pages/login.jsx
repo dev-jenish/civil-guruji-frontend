@@ -81,7 +81,7 @@ export default function Login() {
 
                 <div className={styles.cardContainer} >
                     <div className={styles.card}>
-                    <Image width={115} height={135} src={logoPrimary} alt="logo-primary" />
+                    <Image  className={styles.loinImg} width={115} height={135} src={logoPrimary} alt="logo-primary" />
                     <h2 className={styles.title}>Hello Engineers!</h2>
                     <p className={styles.description}>To stay connected, Login with your personal details.</p>
                     <div className={styles.dotsContainer}>

@@ -222,7 +222,7 @@ function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [dob, setDob] = useState('');
-    const [yearOfPassing, setYearOfPassing] = useState(0);
+    const [yearOfPassing, setYearOfPassing] = useState(2016);
     const [mobileNumber, setMobileNumber] = useState('');
     const [isNameAvailable, setIsNameAvailable] = useState(false);
     const [isEmailAvailable, setIsEmailAvailable] = useState(false);

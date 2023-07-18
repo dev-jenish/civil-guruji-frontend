@@ -207,7 +207,7 @@ export default function CourseDetail({ }) {
               contents={courseData?.courseDetail?.courseContents}
               meetingsData={meetingsData}
             />
-            <div style={{ margin: '2rem 0 2rem 0' }} >
+            <div style={{ margin: '2rem 0 2rem 0' }} className={styles.feedback}>
               <h3 className={styles.jobHeading}>FeedBack</h3>
               <div className={styles.feedbacks}>
                 <Text>Coming soon.</Text>

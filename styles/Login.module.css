@@ -142,3 +142,15 @@
   text-align: center;
   margin-top: 3rem;
 }
+
+@media (max-width: 676px) {
+
+  .step{
+    padding-top: 0px !important;
+  }
+
+  .xs_text {
+    margin-top: 1rem;
+  }
+  
+}
