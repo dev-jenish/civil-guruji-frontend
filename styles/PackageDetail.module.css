@@ -255,7 +255,7 @@
   }
 
   .courseInfo h1 {
-    font-size: 20px;
+    font-size: 17px;
   }
 
   .metaInfo {
@@ -299,6 +299,7 @@
     display: flex;
       padding-inline: 31px;
       font-size: 16px;
+      height: 150px;
       flex-direction: column;
       justify-content: space-evenly;
       align-items: center;
@@ -310,4 +311,9 @@
     margin: 13px;
     padding: 4px;
   }
+
+  .nav h3 {
+    font-size: 16px;
+  }
+  
 }
