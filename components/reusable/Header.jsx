@@ -4,8 +4,11 @@ import styles from "@/styles/Header.module.css";
 import { Avatar, Button, Menu, MenuButton, MenuDivider, MenuGroup, MenuItem, MenuList, typography } from "@chakra-ui/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import { toast } from "react-hot-toast";
+import Select from "react-select";
 import { api } from "utils/urls";
+import debounce from 'lodash/debounce';
 
 export default function Header() {
 
@@ -26,11 +29,91 @@ export default function Header() {
     }
   }
 
+
+  const [query, setQuery] = useState("")
+  const [options, setOptions] = useState([])
+
+  const fetchData = async (value) => {
+    try{
+      console.log(value)
+      let response = await api(`/course/search-course/${value}`, 'get')
+      if(response?.data){
+        setOptions(response?.data)
+      }
+    }catch(error){
+      console.log(error)
+      toast.error("Error happened while searching courses!")
+    }
+  }
+
+  const debouncedFetchData = debounce((value) => {
+    fetchData(value)
+  }, 300); // 300ms debounce delay, adjust as needed
+
+  const handleInputChange = (value) => {
+    setQuery(value);
+    if(value){
+      debouncedFetchData(value);
+    }else{
+      setOptions([])
+    }
+  };
+
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      backgroundColor: '#333',
+      color: '#fff',
+      border: '1px solid #555',
+      minWidth: '30rem', // Add your desired minimum width
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isSelected ? '#555' : state.isFocused ? '#444' : '#333',
+      color: '#fff',
+      '&:hover': {
+        backgroundColor: '#555', // Change the hover background color
+      },
+      '&:focus': {
+        backgroundColor: '#555', // Change the hover background color
+      },
+    }),
+    input: (provided) => ({
+      ...provided,
+      color: '#fff', // Font color for the search control
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: '#fff', // Font color for the selected input value
+    }),
+    menu: (provided) => ({
+      ...provided,
+      backgroundColor: '#333',
+      marginTop: '1px', // Add a white strip at the top of the options container
+      marginBottom: '1px', // Add a white strip at the bottom of the options container
+    }),
+    menuList: (provided) => ({
+      ...provided,
+      padding: 0, // Remove default padding from the options container
+    }),
+    // Add more custom styles as needed
+  };
+  
+
   return (
     <div className={styles.header}>
       <Link href="/">
         <h1>Civil Guruji</h1>
       </Link>
+      <Select
+        options={options}
+        onInputChange={handleInputChange}
+        value={options.find((option) => option.value === query)}
+        onChange={(selectedOption) => {setQuery(selectedOption ? selectedOption.value : ''); router.push(`/${selectedOption?.value?.isPackage ? "package" : 'course'}/${selectedOption?.value?._id}`)}}
+        isClearable
+        isSearchable
+        styles={customStyles}
+      />
       <ul>
         <Link href="/explore">
           <li>Explore</li>
