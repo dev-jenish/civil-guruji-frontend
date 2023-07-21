@@ -2,7 +2,7 @@ import styles from "@/styles/PackageInfo.module.css";
 import { AiOutlineCheck, AiFillDollarCircle } from "react-icons/ai";
 import { BsBriefcaseFill } from "react-icons/bs";
 
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import { Tabs, TabList, TabPanels, Tab, TabPanel, useColorMode, useColorModeValue } from "@chakra-ui/react";
 import FeedbackCard from "../course/FeedbackCard";
 import SessionCard from "../course/SessionCard";
 
@@ -14,6 +14,9 @@ import SessionCard from "../course/SessionCard";
 // ];
 
 export default function PackageInfo({ packageData }) {
+
+  const activeTabColor = useColorModeValue("#DE076E","#DE076E");
+
   // if (!learnings?.length) return;
 
   let filteredLearnings = []
@@ -26,11 +29,11 @@ export default function PackageInfo({ packageData }) {
 
   return (
     <div className={styles.contentWrapper}>
-      <Tabs size="xl" variant="button">
+      <Tabs size="xl" >
         <TabList>
-          <Tab>Learnings</Tab>
-          <Tab>Career</Tab>
-        </TabList>
+        <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }}>Learnings</Tab>
+          <Tab _selected={{ color: activeTabColor, borderBottom: `2px solid ${activeTabColor}` }}>Career</Tab>
+          </TabList>
 
         <TabPanels>
           <TabPanel>
@@ -81,3 +84,4 @@ function Learnings({ learnings }) {
     </div>
   );
 }
+ 

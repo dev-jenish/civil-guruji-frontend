@@ -58,6 +58,11 @@
   background-color: var(--card-bg);
 }
 
+.img:hover{
+  box-shadow: 6px 0px 30px 10px #000;
+  z-index: 30;
+}
+
 .img:hover #hvrMsg {
   display: inline;
 }
