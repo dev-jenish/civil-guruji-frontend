@@ -299,7 +299,7 @@
     display: flex;
       padding-inline: 31px;
       font-size: 16px;
-      height: 150px;
+      height: 150px;  
       flex-direction: column;
       justify-content: space-evenly;
       align-items: center;
