@@ -15,6 +15,7 @@ export default function Header() {
   const { userData } = useContext(userContext)
 
   const router = useRouter()
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleDownload = async () => {
     try {
@@ -28,7 +29,6 @@ export default function Header() {
       console.log(error)
     }
   }
-
 
   const [query, setQuery] = useState("")
   const [options, setOptions] = useState([])
@@ -98,12 +98,20 @@ export default function Header() {
     }),
     // Add more custom styles as needed
   };
-  
+
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
 
   return (
     <div className={styles.header}>
       <Link href="/">
-        <h1>Civil Guruji</h1>
+        <h1>Civil Guruji</h1> 
       </Link>
       <Select
         options={options}
@@ -114,63 +122,56 @@ export default function Header() {
         isSearchable
         styles={customStyles}
       />
-      <ul>
-        <Link href="/explore">
-          <li>Explore</li>
-        </Link>
-        <Link href="/community">
-          <li>Community</li>
-        </Link>
-        <Link href="/foryou" >
-          <li>ForYou</li>
-        </Link>
-        {
-          !(userData?._id) &&
-          <Link href={`/login?previous=${router.asPath}`}>
-            <Button>Login</Button>
-          </Link>
-        }
-        {
-          userData?._id &&
-          <Menu>
-            <MenuButton as={Button} _hover={{ backgroundColor: '#2d2d2d' }} colorScheme="" padding={0}>
-              <Avatar size={'sm'} name={userData.userDetail.name} src={userData.userDetail.profile_picture} />
-            </MenuButton>
-            <MenuList>
-              <MenuGroup title='Profile'>
-                <MenuItem onClick={() => {
-                  router.push('/my-profile')
-                }} >
-                  My profile
-                </MenuItem>
-                <MenuItem onClick={() => {
-                  localStorage.removeItem('accessToken')
-                  localStorage.removeItem('refreshToken')
-                  router.push('/login')
-                }} >
-                  Logout
-                </MenuItem>
-                {/* <MenuItem>Payments </MenuItem> */}
-              </MenuGroup>
-              {/* <MenuDivider />
-              <MenuGroup title='Help'>
-                <MenuItem>Docs</MenuItem>
-                <MenuItem>FAQ</MenuItem>
-              </MenuGroup> */}
-            </MenuList>
-          </Menu>
-        }
-        {/* {
-          userData?._id &&
-          <Link href={'/login'}>
-            <Button onClick={() => {
-              localStorage.removeItem('accessToken')
-              localStorage.removeItem('refreshToken')
-            }} >Logout</Button>
-          </Link>
-        } */}
-        {/* <li id={styles.profile}>Harsh Pandey</li> */}
-      </ul>
+
+      <div className={styles.menuContainer}>
+        <button className={`${styles.hamburgerButton} ${isMenuOpen ? styles.active : ''}`} onClick={toggleMenu}>
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <ul className={`${styles.menu} ${isMenuOpen ? styles.open : ''}`}>
+          <li onClick={closeMenu}>
+            <Link href="/explore">Explore</Link>
+          </li>
+          <li onClick={closeMenu}>
+            <Link href="/community">Community</Link>
+          </li>
+          <li onClick={closeMenu}>
+            <Link href="/foryou">ForYou</Link>
+          </li>
+          {!userData?._id && (
+            <li onClick={closeMenu}>
+              <Link href={`/login?previous=${router.asPath}`}>Login</Link>
+            </li>
+          )}
+          {userData?._id && (
+            <li>
+              <Menu>
+                <MenuButton as={Button} _hover={{ backgroundColor: '#2d2d2d' }} colorScheme="" padding={0}>
+                  <Avatar size={'sm'} name={userData.userDetail.name} src={userData.userDetail.profile_picture} />
+                </MenuButton>
+                <MenuList>
+                  <MenuGroup title='Profile'>
+                    <MenuItem onClick={() => {
+                      localStorage.removeItem('accessToken');
+                      localStorage.removeItem('refreshToken');
+                      router.push('/login');
+                    }}>
+                      Logout
+                    </MenuItem>
+                    {/* { <MenuItem>Payments</MenuItem> } */}
+                  </MenuGroup>
+                  {/* <MenuDivider />
+                  <MenuGroup title='Help'>
+                    <MenuItem>Docs</MenuItem>
+                    <MenuItem>FAQ</MenuItem>
+                  </MenuGroup> */}
+                </MenuList>
+              </Menu>
+            </li>
+          )}
+        </ul>
+      </div>
     </div>
   );
 }
