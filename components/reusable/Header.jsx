@@ -65,7 +65,7 @@ export default function Header() {
       backgroundColor: '#333',
       color: '#fff',
       border: '1px solid #555',
-      minWidth: '30rem', // Add your desired minimum width
+      minWidth: '20rem', // Add your desired minimum width
     }),
     option: (provided, state) => ({
       ...provided,
@@ -113,7 +113,7 @@ export default function Header() {
       <Link href="/">
         <h1>Civil Guruji</h1> 
       </Link>
-      <Select
+      {/* <Select
         options={options}
         onInputChange={handleInputChange}
         value={options.find((option) => option.value === query)}
@@ -121,7 +121,7 @@ export default function Header() {
         isClearable
         isSearchable
         styles={customStyles}
-      />
+      /> */}
 
       <div className={styles.menuContainer}>
         <button className={`${styles.hamburgerButton} ${isMenuOpen ? styles.active : ''}`} onClick={toggleMenu}>
@@ -130,6 +130,17 @@ export default function Header() {
           <span></span>
         </button>
         <ul className={`${styles.menu} ${isMenuOpen ? styles.open : ''}`}>
+        <li>      
+        <Select
+        options={options}
+        onInputChange={handleInputChange}
+        value={options.find((option) => option.value === query)}
+        onChange={(selectedOption) => {setQuery(selectedOption ? selectedOption.value : ''); router.push(`/${selectedOption?.value?.isPackage ? "package" : 'course'}/${selectedOption?.value?._id}`)}}
+        isClearable
+        isSearchable
+        styles={customStyles}
+      />
+</li>
           <li onClick={closeMenu}>
             <Link href="/explore">Explore</Link>
           </li>
@@ -143,6 +154,7 @@ export default function Header() {
             <li onClick={closeMenu}>
               <Link href={`/login?previous=${router.asPath}`}>Login</Link>
             </li>
+
           )}
           {userData?._id && (
             <li>
