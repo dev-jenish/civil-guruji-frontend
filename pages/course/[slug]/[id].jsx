@@ -471,8 +471,6 @@ export default function Topic({ topic, course }) {
 
   useEffect(() => {
 
-    console.log(userData)
-
     if(userData?.purchases && (userData?.purchases?.length > 0) && courseId) {
       let purchasedPlan = userData.purchases.find((purchase) => {
         console.log(courseId)
@@ -726,12 +724,15 @@ export default function Topic({ topic, course }) {
           <div className={styles.topicInfo}>
             <Tabs variant="button">
               <TabList>
-                <Tab>
-                  <span className={styles.tab}>
-                    <AiOutlineBulb />
-                    <p>Description</p>
-                  </span>
-                </Tab>
+                {
+                  selectedTopic?.subModule?.description &&
+                  <Tab>
+                    <span className={styles.tab}>
+                      <AiOutlineBulb />
+                      <p>Description</p>
+                    </span>
+                  </Tab>
+                }
                 {selectedTopic?.subModule?.type == 1 && selectedTopic?.subModule?.modelUrl && <Tab>
                   <span className={styles.tab}>
                     <BiCube />
@@ -762,10 +763,12 @@ export default function Topic({ topic, course }) {
               </TabList>
 
               <TabPanels>
-                <TabPanel>
-                  {selectedTopic?.subModule?.description && <p dangerouslySetInnerHTML={{ __html: selectedTopic?.subModule?.description }} ></p>}
-                  {!selectedTopic?.subModule?.description && <p>No description...</p>}
-                </TabPanel>
+                  {selectedTopic?.subModule?.description &&
+                    <TabPanel>
+                      <p dangerouslySetInnerHTML={{ __html: selectedTopic?.subModule?.description }} ></p>
+                    </TabPanel>
+                   }
+                  {/* {!selectedTopic?.subModule?.description && <p>No description...</p>} */}
                 {/* <TabPanel>
                   <p>Comment Coming Soon!</p>
                 </TabPanel> */}
