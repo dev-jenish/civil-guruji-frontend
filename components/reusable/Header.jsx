@@ -5,9 +5,10 @@ import { Avatar, Button, Menu, MenuButton, MenuDivider, MenuGroup, MenuItem, Men
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
-import { api } from "utils/urls";
+import { toast } from "react-hot-toast";
 import Select from "react-select";
-
+import { api } from "utils/urls";
+import debounce from 'lodash/debounce';
 
 export default function Header() {
 
@@ -45,7 +46,9 @@ export default function Header() {
     }
   }
 
-
+  const debouncedFetchData = debounce((value) => {
+    fetchData(value)
+  }, 300); // 300ms debounce delay, adjust as needed
 
   const handleInputChange = (value) => {
     setQuery(value);
