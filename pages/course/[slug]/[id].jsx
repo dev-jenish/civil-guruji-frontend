@@ -407,17 +407,45 @@ export default function Topic({ topic, course }) {
   }, [])
 
   useEffect(() => {
-    if (courseData?.courseDetail?.courseContents?.length > 0) {
-      setSelectedTopic({
-        module: courseData?.courseDetail?.courseContents[0],
-        subModule:
-          courseData?.courseDetail?.courseContents[0]?.courseSubContents[0],
-        moduleIndex: 0,
-        subModuleIndex: 0,
-        isLive: false
-      });
+    // if (courseData?.courseDetail?.courseContents?.length > 0) {
+    //   setSelectedTopic({
+    //     module: courseData?.courseDetail?.courseContents[0],
+    //     subModule:
+    //       courseData?.courseDetail?.courseContents[0]?.courseSubContents[0],
+    //     moduleIndex: 0,
+    //     subModuleIndex: 0,
+    //     isLive: false
+    //   });
+    // }
+
+    if(courseProgressionData?.subModules?.length && courseData?.courseDetail?.courseContents?.length){
+      let savedSubModuleIds = courseProgressionData?.subModules?.map((item) => item?.subModule)
+      let filteredContents = []
+      let finalContent = {}
+      let indexContent = null
+      let indexSubContent = null
+      courseData?.courseDetail?.courseContents?.map((contents, indexContent) => {
+        contents?.courseSubContents?.map((subContent) => {
+          if(savedSubModuleIds.includes(subContent?._id, indexSubContent)){
+            filteredContents.push(subContent)
+            finalContent = contents
+            indexContent = indexContent
+            indexSubContent = indexSubContent
+          }
+        })
+      })
+      if((indexSubContent >=0) && (indexContent >= 0)){
+        setSelectedTopic({
+          module: finalContent,
+          subModule:
+          filteredContents?.[filteredContents?.length - 1],
+          moduleIndex: indexContent,
+          subModuleIndex: indexSubContent,
+          isLive: false
+        });
+      }
     }
-  }, [courseData]);
+  }, [courseData, courseProgressionData]);
 
   useEffect(() => {
     if (courseData?.courseDetail?.courseContents?.length > 0) {
@@ -442,8 +470,6 @@ export default function Topic({ topic, course }) {
   }, [courseData, selectedTopic])
 
   useEffect(() => {
-
-    console.log(userData)
 
     if(userData?.purchases && (userData?.purchases?.length > 0) && courseId) {
       let purchasedPlan = userData.purchases.find((purchase) => {
@@ -698,12 +724,15 @@ export default function Topic({ topic, course }) {
           <div className={styles.topicInfo}>
             <Tabs variant="button">
               <TabList>
-                <Tab>
-                  <span className={styles.tab}>
-                    <AiOutlineBulb />
-                    <p>Description</p>
-                  </span>
-                </Tab>
+                {
+                  selectedTopic?.subModule?.description &&
+                  <Tab>
+                    <span className={styles.tab}>
+                      <AiOutlineBulb />
+                      <p>Description</p>
+                    </span>
+                  </Tab>
+                }
                 {selectedTopic?.subModule?.type == 1 && selectedTopic?.subModule?.modelUrl && <Tab>
                   <span className={styles.tab}>
                     <BiCube />
@@ -734,10 +763,12 @@ export default function Topic({ topic, course }) {
               </TabList>
 
               <TabPanels>
-                <TabPanel>
-                  {selectedTopic?.subModule?.description && <p dangerouslySetInnerHTML={{ __html: selectedTopic?.subModule?.description }} ></p>}
-                  {!selectedTopic?.subModule?.description && <p>No description...</p>}
-                </TabPanel>
+                  {selectedTopic?.subModule?.description &&
+                    <TabPanel>
+                      <p dangerouslySetInnerHTML={{ __html: selectedTopic?.subModule?.description }} ></p>
+                    </TabPanel>
+                   }
+                  {/* {!selectedTopic?.subModule?.description && <p>No description...</p>} */}
                 {/* <TabPanel>
                   <p>Comment Coming Soon!</p>
                 </TabPanel> */}

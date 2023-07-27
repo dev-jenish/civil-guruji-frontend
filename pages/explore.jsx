@@ -7,6 +7,7 @@ import Banner from "@/components/course/Banner";
 import PackageCarousel from "@/components/package/PackageCarousel";
 import { toast } from "react-hot-toast";
 import { api } from "utils/urls";
+import { Center, Spinner } from "@chakra-ui/react";
 
 export default function Explore() {
 
@@ -14,6 +15,7 @@ export default function Explore() {
   const [bannersData, setBannersData] = useState([])
   const [filteredCourses, setFilteredCourses] = useState([])
   const [selectedCategory, setSelectedCategory] = useState('All')
+  const [loading, setLoading] = useState()
 
 
   const getAllCourses = async () => {
@@ -67,14 +69,22 @@ export default function Explore() {
   }, [])
 
   useEffect(() => {
-    if(selectedCategory == 'All'){
-      setFilteredCourses(courses)
-    }else {
-      setFilteredCourses(courses.filter((course) => {
-        return course?.categoryId == selectedCategory
-      }))
+    // Function to set filtered courses after a delay
+    const setFilteredCoursesWithDelay = (filteredCourses) => {
+      setLoading(true); // Set loading to true when the callback starts
+      setTimeout(() => {
+        setFilteredCourses(filteredCourses);
+        setLoading(false); // Set loading to false after the callback finishes
+      }, 1500); // 1.5 seconds delay
+    };
+
+    if (selectedCategory === 'All') {
+      setFilteredCoursesWithDelay(courses);
+    } else {
+      const filtered = courses.filter((course) => course?.categoryId === selectedCategory);
+      setFilteredCoursesWithDelay(filtered);
     }
-  }, [selectedCategory, courses])
+  }, [selectedCategory, courses]);
 
 
   return (
@@ -88,6 +98,11 @@ export default function Explore() {
             })
           } */}
           {
+            loading ?
+            <Center height={'10rem'} >
+              <Spinner />
+            </Center>
+            :
             filteredCourses && filteredCourses?.map((course, index) => {
               if(course){
                 return <CourseCarousel key={index} title={course?.name} courses={course?.data || []} categoryId={course?.categoryId} />
