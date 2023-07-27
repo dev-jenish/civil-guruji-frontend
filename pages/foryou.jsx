@@ -9,6 +9,7 @@ import { toast } from "react-hot-toast";
 import { api } from "utils/urls";
 import { userContext } from "@/context/userContext";
 import { useRouter } from "next/router";
+import { Spinner, Center } from "@chakra-ui/react";
 
 export default function ForYou() {
   const router = useRouter()
@@ -21,19 +22,28 @@ export default function ForYou() {
   const [bannersData, setBannersData] = useState([])
   const [filteredCourses, setFilteredCourses] = useState([])
   const [selectedCategory, setSelectedCategory] = useState('All')
+  // const [loading, setLoading] = useState(false)
 
 
   const { userData } = useContext(userContext)
 
   useEffect(() => {
-    if(selectedCategory == 'All'){
-      setFilteredCourses(courses)
-    }else {
-      setFilteredCourses(courses.filter((course) => {
-        return course?.categoryId == selectedCategory
-      }))
+    // Function to set filtered courses after a delay
+    const setFilteredCoursesWithDelay = (filteredCourses) => {
+      setLoading(true); // Set loading to true when the callback starts
+      setTimeout(() => {
+        setFilteredCourses(filteredCourses);
+        setLoading(false); // Set loading to false after the callback finishes
+      }, 1500); // 1.5 seconds delay
+    };
+
+    if (selectedCategory === 'All') {
+      setFilteredCoursesWithDelay(courses);
+    } else {
+      const filtered = courses.filter((course) => course?.categoryId === selectedCategory);
+      setFilteredCoursesWithDelay(filtered);
     }
-  }, [selectedCategory, courses])
+  }, [selectedCategory, courses]);
 
 
   const getAllBanners = async () => {
@@ -136,7 +146,13 @@ export default function ForYou() {
     <Layout>
       <div className={`wrapper ${styles.container}`}>
         <Banner selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} categories={courses.map((course) => ({name: course?.name, id: course?.categoryId }))} bannersData={bannersData} />
-        <div className={styles.content}>
+        {
+          loading ?
+          <Center height={'10rem'} >
+            <Spinner />
+          </Center>
+          :
+          <div className={styles.content}>
           {/* {
             Object.keys(courses)?.length > 0 && Object.keys(courses)?.map((category) => {
               return <CourseCarousel title={category} courses={courses?.[category]?.data || []} />
@@ -165,6 +181,7 @@ export default function ForYou() {
           <PackageCarousel title="Top Packages" />
           <CourseCarousel title="Free Courses" courses={courses?.['freeCourses'] || []} /> */}
         </div>
+        }
       </div>
     </Layout>
   );

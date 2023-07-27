@@ -407,17 +407,45 @@ export default function Topic({ topic, course }) {
   }, [])
 
   useEffect(() => {
-    if (courseData?.courseDetail?.courseContents?.length > 0) {
-      setSelectedTopic({
-        module: courseData?.courseDetail?.courseContents[0],
-        subModule:
-          courseData?.courseDetail?.courseContents[0]?.courseSubContents[0],
-        moduleIndex: 0,
-        subModuleIndex: 0,
-        isLive: false
-      });
+    // if (courseData?.courseDetail?.courseContents?.length > 0) {
+    //   setSelectedTopic({
+    //     module: courseData?.courseDetail?.courseContents[0],
+    //     subModule:
+    //       courseData?.courseDetail?.courseContents[0]?.courseSubContents[0],
+    //     moduleIndex: 0,
+    //     subModuleIndex: 0,
+    //     isLive: false
+    //   });
+    // }
+
+    if(courseProgressionData?.subModules?.length && courseData?.courseDetail?.courseContents?.length){
+      let savedSubModuleIds = courseProgressionData?.subModules?.map((item) => item?.subModule)
+      let filteredContents = []
+      let finalContent = {}
+      let indexContent = null
+      let indexSubContent = null
+      courseData?.courseDetail?.courseContents?.map((contents, indexContent) => {
+        contents?.courseSubContents?.map((subContent) => {
+          if(savedSubModuleIds.includes(subContent?._id, indexSubContent)){
+            filteredContents.push(subContent)
+            finalContent = contents
+            indexContent = indexContent
+            indexSubContent = indexSubContent
+          }
+        })
+      })
+      if((indexSubContent >=0) && (indexContent >= 0)){
+        setSelectedTopic({
+          module: finalContent,
+          subModule:
+          filteredContents?.[filteredContents?.length - 1],
+          moduleIndex: indexContent,
+          subModuleIndex: indexSubContent,
+          isLive: false
+        });
+      }
     }
-  }, [courseData]);
+  }, [courseData, courseProgressionData]);
 
   useEffect(() => {
     if (courseData?.courseDetail?.courseContents?.length > 0) {
