@@ -14,107 +14,111 @@ export default function Card({
   mouseOver,
   mouseOut,
   transformOrigin,
-  course,
+  course
 }) {
   const router = useRouter();
 
-  const [time, setTime] = useState(0);
+  const [time, setTime] = useState(0)
 
-  const [isPurchased, setIsPurchased] = useState(false);
+  const [isPurchased, setIsPurchased] = useState(false)
 
-  const { userData } = useContext(userContext);
+  const { userData } = useContext(userContext)
 
   useEffect(() => {
     if (userData?.purchases && userData?.purchases?.length > 0) {
       let purchasedPlan = userData.purchases.find((purchase) => {
         // console.log(purchase)
-        return purchase?.courseDetail == course?._id;
-      });
+        return purchase?.courseDetail == course?._id
+      })
       if (purchasedPlan) {
-        setIsPurchased(true);
-        console.log(purchasedPlan);
+        setIsPurchased(true)
+        console.log(purchasedPlan)
       }
     }
-  }, [userData]);
+  }, [userData])
 
   const handleClick = () => {
+
     if (course?.isPackage) {
-      router.push(
-        {
-          pathname: `/package/${course?._id}`,
-          query: { id: course?._id },
-        },
-        `/package/${course?._id}`
-      );
+      router.push({
+        pathname: `/package/${course?._id}`,
+        query: { id: course?._id }
+      }, `/package/${course?._id}`);
     } else {
       if (isPurchased) {
-        console.log("Purchased");
-        router.push(
-          {
-            pathname: `/course/${course?.name}/${course?._id}`,
-            query: { id: course?._id },
-          },
-          `/course/${course?.name}/${course?._id}`
-        );
+        console.log('Purchased')
+        router.push({
+          pathname: `/course/${course?.name}/${course?._id}`,
+          query: { id: course?._id }
+        }, `/course/${course?.name}/${course?._id}`);
       } else {
-        router.push(
-          {
-            pathname: `/course/${course?._id}`,
-            query: { id: course?._id },
-          },
-          `/course/${course?._id}`
-        );
+        router.push({
+          pathname: `/course/${course?._id}`,
+          query: { id: course?._id }
+        }, `/course/${course?._id}`);
       }
     }
+
   };
 
   useEffect(() => {
+
     if (course?.isPackage) {
       if (course?.courses?.length > 0) {
-        let totalHours = 0;
+
+        let totalHours = 0
         course?.courses?.map((course) => {
-          let courseData = course?.course;
+
+          let courseData = course?.course
+
 
           if (courseData?.courseDetail?.courseContents?.length > 0) {
             courseData?.courseDetail?.courseContents?.map((courseContent) => {
               if (courseContent?.totalDuration?.DD > 0) {
-                totalHours += courseContent?.totalDuration?.DD * 8;
+                totalHours += (courseContent?.totalDuration?.DD * 8)
               }
               if (courseContent?.totalDuration?.HH > 0) {
-                totalHours += courseContent?.totalDuration?.HH;
+                totalHours += (courseContent?.totalDuration?.HH)
               }
               if (courseContent?.totalDuration?.MM > 0) {
-                totalHours += parseInt(courseContent?.totalDuration?.MM / 60);
+                totalHours += parseInt(courseContent?.totalDuration?.MM / 60)
               }
-            });
+            })
+
 
             if (totalHours > 0) {
-              setTime(totalHours);
+              setTime(totalHours)
             }
           }
-        });
+        })
+
       }
     } else {
       if (course?.courseDetail?.courseContents?.length > 0) {
-        let totalHours = 0;
+        let totalHours = 0
         course?.courseDetail?.courseContents?.map((courseContent) => {
           if (courseContent?.totalDuration?.DD > 0) {
-            totalHours += courseContent?.totalDuration?.DD * 8;
+            totalHours += (courseContent?.totalDuration?.DD * 8)
           }
           if (courseContent?.totalDuration?.HH > 0) {
-            totalHours += courseContent?.totalDuration?.HH;
+            totalHours += (courseContent?.totalDuration?.HH)
           }
           if (courseContent?.totalDuration?.MM > 0) {
-            totalHours += parseInt(courseContent?.totalDuration?.MM / 60);
+            totalHours += parseInt(courseContent?.totalDuration?.MM / 60)
           }
-        });
+        })
 
         if (totalHours > 0) {
-          setTime(totalHours);
+          setTime(totalHours)
         }
       }
     }
-  }, [course]);
+
+
+
+  }, [course])
+
+
 
   return (
     <div onClick={handleClick} className={styles.card}>
@@ -128,12 +132,8 @@ export default function Card({
         {showPreview ? (
           <>
             <iframe
-              src={
-                course?.introVideo
-                  ? course?.introVideo
-                  : "https://iframe.mediadelivery.net/embed/42375/03a64964-f428-4638-b044-6d172f48f4ea?autoplay=true"
-              }
-              title="YouTube video player"
+              src={'https://iframe.mediadelivery.net/embed/42375/03a64964-f428-4638-b044-6d172f48f4ea?autoplay=true'}
+              title="How does a blockchain work?"
               allow="autoplay"
               allowFullScreen
               controls="false"
@@ -143,13 +143,14 @@ export default function Card({
           </>
         ) : (
           <>
-            {course?.isPackage && <span id={styles.isLive}>Package</span>}
+            {
+              course?.isPackage &&
+              <span id={styles.isLive}>
+                Package
+              </span>
+            }
             <img
-              src={
-                course?.thumbnail
-                  ? course?.thumbnail
-                  : "https://public.bnbstatic.com/static/academy/uploads-original/37ba7ddb25b14d3e9eb4d36c54837976.png"
-              }
+              src={course?.thumbnail ? course?.thumbnail : "https://public.bnbstatic.com/static/academy/uploads-original/37ba7ddb25b14d3e9eb4d36c54837976.png"}
               alt="Course Name"
             />
             <p id={styles.hvrMsg}>Keep hovering to preview</p>
@@ -166,23 +167,27 @@ export default function Card({
         <h2>{course?.name}</h2>
         <span id="rating">
           <p>
-            {parseFloat(course?.rating).toFixed(1) || 4.3}{" "}
-            <Stars value={course?.rating || 4.3} />
+            {parseFloat(course?.rating).toFixed(1) || 4.3} <Stars value={course?.rating || 4.3} />
           </p>
         </span>
         <p>
           <i>{course?.learnerCount || `1500`}+ Enrolled</i>
         </p>
 
-        {course?.isPackage && <p>{course?.courses?.length} cources</p>}
+        {
+          course?.isPackage &&
+          <p>{course?.courses?.length} cources</p>
+        }
 
         <div className={styles.more}>
-          <div style={{ display: "flex" }}>
+
+
+          <div style={{ display: 'flex' }} >
             <p id={styles.line}>
               <FaRupeeSign className={styles.icon} />
               {course?.prices?.find((price) => {
-                return price?.isDisplay == true;
-              })?.listPrice || "Free"}
+                return price?.isDisplay == true
+              })?.listPrice || 'Free'}
             </p>
             <p id={styles.price}>
               <FaRupeeSign className={styles.icon} />
@@ -190,25 +195,33 @@ export default function Card({
               return price?.isDisplay == true
             })?.discountedPrice || 'sFree'} */}
               {course?.prices?.find((price) => {
-                return price?.isDisplay == true;
-              })?.discountedPrice || "Free"}
+                return price?.isDisplay == true
+              })?.discountedPrice || 'Free'}
             </p>
           </div>
 
           <p>
-            {(
-              ((course?.prices?.find((price) => {
-                return price?.isDisplay == true;
-              })?.listPrice -
-                course?.prices?.find((price) => {
-                  return price?.isDisplay == true;
-                })?.discountedPrice) /
-                course?.prices?.find((price) => {
-                  return price?.isDisplay == true;
-                })?.discountedPrice) *
-              100
-            ).toFixed(2) + "% OFF"}
+            {
+              (
+                (
+                  ((course?.prices?.find((price) => {
+                    return price?.isDisplay == true
+                  })?.listPrice)
+                    -
+                    (course?.prices?.find((price) => {
+                      return price?.isDisplay == true
+                    })?.discountedPrice))
+                  /
+                  (course?.prices?.find((price) => {
+                    return price?.isDisplay == true
+                  })?.discountedPrice)
+                )
+                * 100
+              ).toFixed(2) + '% OFF'
+            }
           </p>
+
+
         </div>
       </div>
     </div>
