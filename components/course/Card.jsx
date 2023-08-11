@@ -7,6 +7,8 @@ import { FaRupeeSign } from "react-icons/fa";
 import Stars from "../Stars";
 import { useContext, useEffect, useState } from "react";
 import { userContext } from "@/context/userContext";
+import { api } from "utils/urls";
+import moment from "moment";
 
 export default function Card({
   index,
@@ -22,9 +24,12 @@ export default function Card({
 
   const [isPurchased, setIsPurchased] = useState(false);
 
+  const [isLive, setIsLive] = useState(false);
+
   const { userData } = useContext(userContext);
 
   useEffect(() => {
+    getMeetingsData();
     if (userData?.purchases && userData?.purchases?.length > 0) {
       let purchasedPlan = userData.purchases.find((purchase) => {
         // console.log(purchase)
@@ -36,6 +41,25 @@ export default function Card({
       }
     }
   }, [userData]);
+
+  const getMeetingsData = async () => {
+    try {
+      let response = await api(`/zoom/listMeetings/${course._id}`, "get");
+      if (response?.data?.length > 0) {
+        response.data.map((onlineSessions) => {
+          if (
+            moment().isAfter(moment(onlineSessions.start_time)) &&
+            !onlineSessions.isEnded
+          ) {
+            setIsLive(true);
+          }
+          return;
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleClick = () => {
     if (course?.isPackage) {
@@ -144,6 +168,7 @@ export default function Card({
         ) : (
           <>
             {course?.isPackage && <span id={styles.isLive}>Package</span>}
+            {isLive && <span id={styles.isLiveTag}>Live</span>}
             <img
               src={
                 course?.thumbnail
