@@ -162,6 +162,13 @@ export default function Topic({ topic, course }) {
 
   const [meetingsData, setMeetingsData] = useState([])
 
+  const [selectedSession, setSelectedSession] = useState(0)
+
+  const [tabIndex, setTabIndex] = useState(0)
+
+  const isLive = moment().isAfter(moment(meetingsData[selectedSession]?.start_time)) && !meetingsData[selectedSession]?.isEnded
+
+  // {meetingsData[selectedSession].recordedMeetingLink && console.log(meetingsData[selectedSession].recordedMeetingLink)}
 
   const getMeetingsData = async () => {
     try{
@@ -547,9 +554,13 @@ export default function Topic({ topic, course }) {
           meetingsData={meetingsData}
           setMeetingsData={setMeetingsData}
           courseProgressionData={courseProgressionData}
+          selectedSession={selectedSession}
+          setSelectedSession={setSelectedSession}
+          setTabIndex={setTabIndex}
+          tabIndex={tabIndex}
         />
         {
-          selectedTopic?.isLive ?
+          tabIndex === 0 ? selectedTopic?.isLive ?
           <ZoomComponent join_url={selectedTopic?.liveData?.join_url} liveData={selectedTopic?.liveData} meetingNumber={selectedTopic?.liveData?.id} username={userData?.userDetail?.name} password={selectedTopic?.liveData?.password} selectedTopic={selectedTopic} />
           :
           selectedTopic?.isFinalQuiz ?
@@ -815,8 +826,39 @@ export default function Topic({ topic, course }) {
                 <p>Why do we need blockchain?</p>
             </div>
           </div> */}
+        </div>: <>
+  {isLive ? (
+      <ZoomComponent
+        join_url={selectedTopic?.liveData?.join_url}
+        liveData={selectedTopic?.liveData}
+        meetingNumber={selectedTopic?.liveData?.id}
+        username={userData?.userDetail?.name}
+        password={selectedTopic?.liveData?.password}
+        selectedTopic={selectedTopic}
+      />
+  ) : (
+    <>
+      {meetingsData[selectedSession]?.recordedMeetingLink ? (
+        <div className={styles.recordedMeetingFrame}>
+          <h1>Recorded Meeting Video of {meetingsData[selectedSession]?.topic} session:</h1>
+          <iframe
+            className={styles.iframe}
+            width="650"
+            height="365"
+            src={meetingsData[selectedSession]?.recordedMeetingLink}
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+          ></iframe>
         </div>
-        }
+      ) : (
+        <h1>Session {meetingsData[selectedSession]?.topic} is yet to take place.</h1>
+      )}
+    </>
+  )}
+</>
+
+        } 
         {/* <Navigator slug={topic.slug} /> */}
       </div>
     </Layout>
@@ -832,7 +874,11 @@ function SideNav({
   setSelectedTopic,
   meetingsData,
   courseProgressionData,
-  courseData
+  courseData,
+  selectedSession,
+  setSelectedSession,
+  tabIndex,
+  setTabIndex
 }) {
   const [showNav, setShowNav] = useState(false);
   const [canGiveFinalQuiz, setCanGiveFinalQuiz] = useState(false)
@@ -931,7 +977,7 @@ function SideNav({
         </div>
         {/* new added for tab part and button */}
         <div className={styles.tabWrapper}>
-          <Tabs variant="button">
+          <Tabs onChange={(index) => setTabIndex(index)} variant="button">
             <TabList>
               <Tab>
                 <span className={styles.tab}>
@@ -967,7 +1013,7 @@ function SideNav({
                 {
                   meetingsData?.length>0 ?
                   meetingsData.map((meetingData, index) => {
-                    return <SessionCard key={index} meetingData={meetingData} isLive={moment().isAfter(moment(meetingData?.start_time))} setSelectedTopic={setSelectedTopic} />
+                    return <SessionCard key={index} index={index} selectedSession={selectedSession} setSelectedSession={setSelectedSession} tabIndex={tabIndex} meetingData={meetingData} isLive={moment().isAfter(moment(meetingData?.start_time))} setSelectedTopic={setSelectedTopic} />
                   })
                   :
                   <Text>No meetings scheduled!</Text>

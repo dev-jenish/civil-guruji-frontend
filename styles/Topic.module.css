@@ -295,6 +295,13 @@
   }
 }
 
+.recordedMeetingFrame{
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0px 0px 10px;
+  align-items: center;
+}
+
 @media only screen and (max-width: 800px) {
   .markdown {
     padding: 1rem 0;
@@ -314,5 +321,9 @@
 @media only screen and (max-width: 740px) {
   .customHeader .buttonWithDate {
     display: none;
+  }
+  .recordedMeetingFrame .iframe{
+    width: 90%;
+    height: 80%;
   }
 }
