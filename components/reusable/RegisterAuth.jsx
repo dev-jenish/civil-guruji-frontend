@@ -294,14 +294,9 @@ function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
 
     return (
         <div className={styles.step}>
-            {
-                !isNameAvailable && (
-                    <>
-                        <p>Name</p>
-                        <Input required value={name} onChange={(event) => { setName(event?.target?.value) }} placeholder="Harsh Pandey" size="lg" />
-                    </>
-                )
-            }
+
+            <p>Name</p>
+            <Input required value={isNameAvailable ? googleUser.name : name} onChange={(event) => { setName(event?.target?.value) }} placeholder="Harsh Pandey" size="lg" />
             {
                 googleUser?.email && (
                     <>
@@ -310,19 +305,21 @@ function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
                     </>
                 )
             }
+            <p>Email</p>
+            <Input value={isEmailAvailable ? googleUser.email : email} onChange={(event) => { setEmail(event?.target?.value) }} type="email" placeholder="coding.harshp@gmail.com" size="lg" />
+
             {
                 !isEmailAvailable && (
                     <>
-                        <p>Email</p>
-                        <Input value={email} onChange={(event) => { setEmail(event?.target?.value) }} type="email" placeholder="coding.harshp@gmail.com" size="lg" />
-                    </>
-                )
+                        <p>Username</p>
+                        <Input value={username} onChange={(event) => { setUsername(event?.target?.value) }} placeholder="jenish123" size="lg" />
+                    </>)
             }
-            <p>Username</p>
-            <Input value={username} onChange={(event) => { setUsername(event?.target?.value) }} placeholder="jenish123" size="lg" />
+            {/* <p>Username</p>
+            <Input value={username} onChange={(event) => { setUsername(event?.target?.value) }} placeholder="jenish123" size="lg" /> */}
             <p>Password</p>
             <HStack>
-                <PinInput value={password} onChange={(value) => { setPassword(value) }} >
+                <PinInput value={password} onChange={(value) => { setPassword(value) }} mask >
                     <PinInputField />
                     <PinInputField />
                     <PinInputField />
@@ -341,7 +338,7 @@ function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
             </HStack>
             {/* <Input value={confirmPassword} type="password" onChange={(event) => { setConfirmPassword(event?.target?.value) }} placeholder="confirm password" size="lg" /> */}
             <p>Date of Birth</p>
-            <Input value={dob} onChange={(event) => { setDob(event?.target?.value) }} type="date" placeholder="Harsh Pandey" size="lg" />
+            <Input value={dob} onChange={(event) => { setDob(event?.target?.value) }} type="date" placeholder="DOB" size="lg" />
             <p>Year of Passing</p>
             <Input
                 value={yearOfPassing} onChange={(event) => { setYearOfPassing(event?.target?.value) }}
@@ -349,7 +346,7 @@ function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
                 min="1900"
                 max="2099"
                 step="1"
-                placeholder="Harsh Pandey"
+                placeholder="YYYY"
                 size="lg"
             />
 
@@ -607,7 +604,7 @@ function LoginWithPassword({ setStep, nextStep, isPopup, user, setUser, onClose 
     };
 
     useEffect(() => {
-        if(password?.length == 4){
+        if (password?.length == 4) {
             handleNext()
         }
     }, [password])
@@ -617,16 +614,16 @@ function LoginWithPassword({ setStep, nextStep, isPopup, user, setUser, onClose 
             <p>Enter Password</p>
             {/* <Input value={password} onChange={(event) => setPassword(event.target.value)} type="text" placeholder="password" size="lg" /> */}
             <HStack>
-                <PinInput isInvalid={isPasswordInvalid} value={password} onComplete={(value) => {console.log(password, value); }} onChange={(value) => setPassword(value)} mask={!showPassword} size={'lg'}>
+                <PinInput isInvalid={isPasswordInvalid} value={password} onComplete={(value) => { console.log(password, value); }} onChange={(value) => setPassword(value)} mask={!showPassword} size={'lg'}>
                     <PinInputField />
                     <PinInputField />
                     <PinInputField />
                     <PinInputField />
                 </PinInput>
-                <Button onClick={() => {setShowPassword(!showPassword)}} variant={'ghost'} >
-                    { showPassword ? 
+                <Button onClick={() => { setShowPassword(!showPassword) }} variant={'ghost'} >
+                    {showPassword ?
                         <AiFillEyeInvisible size={'1.5rem'} />
-                    : 
+                        :
                         <AiFillEye size={'1.5rem'} />
                     }
                 </Button>
