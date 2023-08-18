@@ -92,6 +92,10 @@ export default function ForYou() {
           const checker = currTime.isBefore(course.validityDate)
           return (checker)
         })
+
+        validCourses?.forEach((course)=>{
+          if(!course.listed) course.listed=true
+        })
         setPurchasedCourses(validCourses)
       }
     } catch (error) {

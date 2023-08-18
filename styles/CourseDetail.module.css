@@ -150,6 +150,11 @@
   margin-top: 0 !important;
 }
 
+.active {
+  border-left: 3px solid fff;
+  background-color: #818181;
+}
+
 .nav h3 {
   font-size: 20px;
 }
@@ -160,6 +165,7 @@
   justify-content: space-between;
   padding: 16px;
   border-bottom: var(--border);
+  cursor: pointer;
 }
 
 .sessionCard span {
