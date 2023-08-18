@@ -9,10 +9,10 @@ import { toast } from "react-hot-toast";
 import { api } from "utils/urls";
 import { userContext } from "@/context/userContext";
 import { useRouter } from "next/router";
-
+import moment from "moment";
 export default function ForYou() {
   const router = useRouter()
-
+  const currTime = moment()
   const [courses, setCourses] = useState([])
   const [userId, setUserId] = useState('')
   const [loading, setLoading] = useState(false)
@@ -26,9 +26,9 @@ export default function ForYou() {
   const { userData } = useContext(userContext)
 
   useEffect(() => {
-    if(selectedCategory == 'All'){
+    if (selectedCategory == 'All') {
       setFilteredCourses(courses)
-    }else {
+    } else {
       setFilteredCourses(courses.filter((course) => {
         return course?.categoryId == selectedCategory
       }))
@@ -62,12 +62,12 @@ export default function ForYou() {
       let listedCourses = []
 
       priorityWiseCourses.forEach((category) => {
-        if(category?.data){
+        if (category?.data) {
           let course = category.data.find((course) => {
             return course?.listed == true
           })
 
-          if(course){
+          if (course) {
             console.log(category)
             listedCourses.push(category)
           }
@@ -88,10 +88,15 @@ export default function ForYou() {
         userId
       })
       if (response?.data && response?.data?.length > 0) {
-        response?.data.forEach((course)=>{
+        const validCourses = (response?.data).filter((course) => {
+          const checker = currTime.isBefore(course.validityDate)
+          return (checker)
+        })
+
+        validCourses?.forEach((course)=>{
           if(!course.listed) course.listed=true
         })
-        setPurchasedCourses(response?.data)
+        setPurchasedCourses(validCourses)
       }
     } catch (error) {
       console.log(error)
@@ -138,7 +143,7 @@ export default function ForYou() {
   return (
     <Layout>
       <div className={`wrapper ${styles.container}`}>
-        <Banner selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} categories={courses.map((course) => ({name: course?.name, id: course?.categoryId }))} bannersData={bannersData} />
+        <Banner selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} categories={courses.map((course) => ({ name: course?.name, id: course?.categoryId }))} bannersData={bannersData} />
         <div className={styles.content}>
           {/* {
             Object.keys(courses)?.length > 0 && Object.keys(courses)?.map((category) => {

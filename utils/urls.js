@@ -1,9 +1,9 @@
 import axios from "axios"
 import { toast } from "react-hot-toast"
 
-// export const baseURL = "http://localhost:3001" // local
+export const baseURL = "http://localhost:3001" // local
 // const baseURL = "http://142.93.208.13:3001/" // server
-export const baseURL = "https://civil-guruji-api.onrender.com" // server
+//export const baseURL = "https://civil-guruji-api.onrender.com" // server
 // export const baseURL = "http://civil-guruji.com/" // server
 
 const Axios = axios.create({
