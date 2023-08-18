@@ -88,6 +88,9 @@ export default function ForYou() {
         userId
       })
       if (response?.data && response?.data?.length > 0) {
+        response?.data.forEach((course)=>{
+          if(!course.listed) course.listed=true
+        })
         setPurchasedCourses(response?.data)
       }
     } catch (error) {
