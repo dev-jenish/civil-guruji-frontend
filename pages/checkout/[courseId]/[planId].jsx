@@ -385,7 +385,9 @@ export default function Checkout() {
                         mode: 'Razorpay',
                         type: type,
                         purchaseId: purchasedData?._id,
-                        promocodeId: promocodeData?._id
+                        promocodeId: promocodeData?._id,
+                        stateValue: stateValue,
+                        planDetails: planData,
                     })
                     toast.success('Payment successful!')
 
