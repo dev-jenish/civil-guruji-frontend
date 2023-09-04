@@ -683,12 +683,13 @@ export default function Topic({ topic, course }) {
           <div className={styles.topicInfo}>
             <Tabs variant="button">
               <TabList>
-                <Tab>
+               {selectedTopic?.subModule?.description &&
+                 <Tab>
                   <span className={styles.tab}>
                     <AiOutlineBulb />
                     <p>Description</p>
                   </span>
-                </Tab>
+                </Tab>}
                 {selectedTopic?.subModule?.type == 1 && selectedTopic?.subModule?.modelUrl && <Tab>
                   <span className={styles.tab}>
                     <BiCube />
@@ -721,7 +722,7 @@ export default function Topic({ topic, course }) {
               <TabPanels>
                 <TabPanel>
                   {selectedTopic?.subModule?.description && <p dangerouslySetInnerHTML={{ __html: selectedTopic?.subModule?.description }} ></p>}
-                  {!selectedTopic?.subModule?.description && <p>No description...</p>}
+                 {/* {!selectedTopic?.subModule?.description && <p>No description...</p>} */}
                 </TabPanel>
                 {/* <TabPanel>
                   <p>Comment Coming Soon!</p>
@@ -753,10 +754,7 @@ export default function Topic({ topic, course }) {
                   </TabPanel>)
                 }
                 <TabPanel>
-
                   <CommentsSection comments={commentsData} setCommentsData={setCommentsData} userId={userData?._id} subModuleId={selectedTopic?.subModule?._id} />
-
-
                   {/* <div>
                   <div className="comment_container" style={{ width: '100%', maxWidth: '500px' }} >
                     <div className="comment_doubt_container" style={{ display: 'flex' }} >

@@ -145,6 +145,7 @@ function StepTwo({ back, nextStep, isPopup, user, setUser, onClose }) {
     const handleNext = async () => {
 
         try {
+
             if (!otp.length == 6) {
                 return toast.error("Invalid OTP!")
             }
@@ -214,8 +215,6 @@ function StepTwo({ back, nextStep, isPopup, user, setUser, onClose }) {
 }
 
 function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
-
-
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
@@ -226,12 +225,14 @@ function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
     const [mobileNumber, setMobileNumber] = useState('');
     const [isNameAvailable, setIsNameAvailable] = useState(false);
     const [isEmailAvailable, setIsEmailAvailable] = useState(false);
+    const [addUsername,setAddUsername]=useState(true)
 
     useEffect(() => {
         setEmail(googleUser?.email)
         setName(googleUser?.name)
         googleUser?.email && setIsEmailAvailable(true)
         googleUser?.name && setIsNameAvailable(true)
+        googleUser?.email && setAddUsername(false)
     }, [googleUser])
 
     const { setUserData } = useContext(userContext)
@@ -241,7 +242,7 @@ function StepThree({ back, nextStep, isPopup, user, setUser, googleUser }) {
 
         if (!name) { return toast.error("Name is required!") }
         if (!email) { return toast.error("Email is required!") }
-        if (!username) { return toast.error("Username is required!") }
+        if (addUsername && !username) { return toast.error("Username is required!") }
         if (!dob) { return toast.error("Date of birth is required!") }
         if (!yearOfPassing) { return toast.error("Year of passing is required!") }
         if (!password) { return toast.error("password is required!") }

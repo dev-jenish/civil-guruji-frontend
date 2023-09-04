@@ -59,7 +59,7 @@ export default function CourseContent({ contents, style, meetingsData }) {
         onChange={handleTabsChange}
       >
         <TabList>
-          <Tab>Course Content</Tab>
+          {contents.length>0 &&<Tab>Course Content</Tab>}
           <Tab>Live Doubt Session</Tab>
           {!tabIndex ? (
             <Tab isDisabled marginLeft="auto">
