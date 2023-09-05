@@ -171,13 +171,14 @@ export default function CourseDetail({ }) {
               </div>
             </div>
             {/* new added for box of three content box */}
+            {(learningDuration>0||(courseData?.courseDetail?.crackJobs && courseData?.courseDetail?.crackJobs?.length > 0)||courseData?.skillsText )&&
             <div className={styles.boxContainer}>
-              <div className={styles.contentBox}>
+            { learningDuration>0 && <div className={styles.contentBox}>
                 <h5 className={styles.boxHeading}>Learning Duration</h5>
                 <span className={styles.durationValue}>{`${learningDuration?.days > 0 ? `${learningDuration?.days + ' days'}` : ''} & ${learningDuration?.hours > 0 ? `${learningDuration?.hours + ' hours'}` : ''}`}</span>
-              </div>
+              </div>}
               {
-                courseData?.courseDetail?.crackJobs && courseData?.courseDetail?.crackJobs?.length > 0 &&
+                (courseData?.courseDetail?.crackJobs && courseData?.courseDetail?.crackJobs?.length > 0) &&(
                 <div className={styles.contentBox}>
                   <h5 className={styles.boxHeading}>Crack Jobs</h5>
                   <div className={styles.chipsPart}>
@@ -187,9 +188,10 @@ export default function CourseDetail({ }) {
                       })
                     }
                   </div>
-                </div>
+                </div>)
               }
               {
+                
                 courseData?.skillsText &&
                 <div className={styles.contentBox}>
                   <h5 className={styles.boxHeading}>Skills</h5>
@@ -198,15 +200,16 @@ export default function CourseDetail({ }) {
                   </span>
                 </div>
               }
-            </div>
+            </div>}
 
             <CourseInfo
               learnings={courseData?.courseDetail?.learningObjectives}
             />
+            {courseData?.courseDetail&&
             <CourseContent
               contents={courseData?.courseDetail?.courseContents}
               meetingsData={meetingsData}
-            />
+            />}
             <div style={{ margin: '2rem 0 2rem 0' }} className={styles.feedback}>
               <h3 className={styles.jobHeading}>FeedBack</h3>
               <div className={styles.feedbacks}>
@@ -219,6 +222,7 @@ export default function CourseDetail({ }) {
               </div>
 
               {/* new added for job container */}
+              { courseData?.studentsGotJob?.length>0 &&
               <div className={styles.jobContainer}>
                 <h3 className={styles.jobHeading}>Student Got Job</h3>
                 <div className={styles.jobCardContainer}>
@@ -246,7 +250,7 @@ export default function CourseDetail({ }) {
                     ))}
                   </Swiper>
                 </div>
-              </div>
+              </div>}
 
               <QuerysForm />
 
