@@ -38,7 +38,7 @@ function CourseCard({ courseData }) {
   const [time, setTime] = useState(0)
 
   const handleClick = () => {
-    // router.push("/package/blockchain-development-bootcamp/1ty5a5f34");
+    //router.push("/package/blockchain-development-bootcamp/1ty5a5f34");
   };
 
   useEffect(() => {
@@ -81,7 +81,7 @@ function CourseCard({ courseData }) {
                   flexDirection: "column",
                   alignItems: "flex-start",
                 }} >
-          <p className={style.starEnrolled}>
+          <p className={stylesAcc.starEnrolled}>
           {courseData?.course?.rating} <Stars value={courseData?.course?.rating} />
           </p>
           <p>Enrolled engineers ({courseData?.course?.learnerCount})</p>

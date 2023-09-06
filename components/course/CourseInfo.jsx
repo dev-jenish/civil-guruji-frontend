@@ -35,9 +35,11 @@ export default function CourseInfo({ learnings = [] }) {
         </TabList>
         <hr></hr>
         <TabPanels>
+        { learnings.length>0 &&
           <TabPanel>
             <Learnings learnings={learnings} />
           </TabPanel>
+          }
           <TabPanel>
             <div className={styles.career}>
               <div>
@@ -75,7 +77,7 @@ function Learnings({ learnings }) {
     <div className={styles.flex}>
       <div className={styles.points}>
         {firstHalf.map((learn, i) => (
-          <span key={i + 1}>
+           learn?.value&& <span key={i + 1}>
             <AiOutlineCheck className={styles.icon} />
             <p>{learn?.value}</p>
           </span>
@@ -83,7 +85,7 @@ function Learnings({ learnings }) {
       </div>
       <div className={styles.points}>
         {secondHalf.map((learn, i) => (
-          <span key={i + 1}>
+         learn?.value && <span key={i + 1}>
             <AiOutlineCheck className={styles.icon} />
             <p>{learn?.value}</p>
           </span>

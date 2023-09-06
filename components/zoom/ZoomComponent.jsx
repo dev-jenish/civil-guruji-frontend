@@ -33,13 +33,13 @@ function ZoomComponent({ meetingNumber, username, password, selectedTopic }) {
               isResizable: true,
               viewSizes: {
                 default: {
-                  width: 1000,
-                  height: 600
+                  width: 600,
+                  height: 500
                 },
-                ribbon: {
-                  width: 300,
-                  height: 700
-                },
+                // ribbon: {
+                //   width: 300,
+                //   height: 700
+                // },
               },
               popper: {
                 disableDraggable: true

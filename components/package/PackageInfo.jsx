@@ -28,14 +28,15 @@ export default function PackageInfo({ packageData }) {
     <div className={styles.contentWrapper}>
       <Tabs size="xl" variant="button">
         <TabList>
-          <Tab>Learnings</Tab>
+          {filteredLearnings&&<Tab>Learnings</Tab>}
           <Tab>Career</Tab>
         </TabList>
 
         <TabPanels>
+        {filteredLearnings&&
           <TabPanel>
             <Learnings learnings={filteredLearnings} />
-          </TabPanel>
+          </TabPanel>}
           <TabPanel>
             <div className={styles.career}>
               <div>

@@ -154,11 +154,12 @@ export default function Package({ }) {
               </div>
             </div>
             {/* new added for box of three content box */}
+            {(learningDuration>0||(packageData?.crackJobs && packageData?.crackJobs?.length > 0)||packageData?.skillsText )&&(
             <div className={styles.boxContainer}>
-              <div className={styles.contentBox}>
+             {learningDuration>0 &&(<div className={styles.contentBox}>
                 <h5 className={styles.boxHeading}>Learning Duration</h5>
                 <span className={styles.durationValue}>{`${learningDuration?.days > 0 ? `${learningDuration?.days + ' days'}` : ''} & ${learningDuration?.hours > 0 ? `${learningDuration?.hours + ' hours'}` : ''}`}</span>
-              </div>
+              </div>)}
               {
                 packageData?.crackJobs && packageData?.crackJobs?.length > 0 &&
                 <div className={styles.contentBox}>
@@ -182,7 +183,10 @@ export default function Package({ }) {
                 </div>
               }
             </div>
+            )
+            }
             {/* new added for job container */}
+          {(packageData?.studentsGotJob && packageData?.studentsGotJob?.length > 0 )&&
             <div className={styles.jobContainer}>
               <h3 className={styles.jobHeading}>Student Got Job</h3>
               <div className={styles.jobCardContainer}>
@@ -198,7 +202,7 @@ export default function Package({ }) {
                     disableOnInteraction: false,
                   }}
                 >
-                  {packageData?.studentsGotJob && packageData?.studentsGotJob?.length > 0 && packageData?.studentsGotJob.map((student, idx) => (
+                  { packageData?.studentsGotJob.map((student, idx) => (
                     <SwiperSlide key={idx} style={{ cursor: 'pointer' }}>
                       <div className={styles.jobCard}>
                         <div className={styles.Imagepart}>
@@ -210,7 +214,7 @@ export default function Package({ }) {
                   ))}
                 </Swiper>
               </div>
-            </div>
+            </div>}
 
 
             <PackageInfo packageData={packageData} />

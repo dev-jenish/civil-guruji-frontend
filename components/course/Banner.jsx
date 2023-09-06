@@ -20,6 +20,7 @@ export default function Banner({ bannersData, categories, selectedCategory, setS
         navigation={true}
         modules={[Navigation]}
         className="bannerSwiper"
+        style={{display:router.asPath==='/foryou'?"none":"block"}}
       >
         {
           bannersData?.length > 0 && bannersData.map((banner, index) => {
