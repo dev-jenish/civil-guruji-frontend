@@ -192,9 +192,8 @@ export default function CourseFloatCard({
                     ) : null}
                   </div>
                 </div>
-                <HStack justifyContent="flex-end" paddingTop="10px" >
+                <VStack justifyContent="flex-end" paddingTop="10px">
                   <Button
-                    
                     onClick={() =>
                       router.push(
                         `/checkout/${courseData?._id}/${displayPlan?._id}`
@@ -211,7 +210,19 @@ export default function CourseFloatCard({
                       ? "Already purchased"
                       : "Get Offer"}
                   </Button>
-                </HStack>
+                  {purchased.includes(displayPlan?._id) && (
+                    <Button
+                      ml={2}
+                      size="sm"
+                      variant="outline"
+                      onClick={() =>
+                        router.push(`/package-detail/${courseData?._id}`)
+                      }
+                    >
+                      Start Learning
+                    </Button>
+                  )}
+                </VStack>
               </HStack>
             ) : (
               <HStack
