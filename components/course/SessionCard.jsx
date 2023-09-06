@@ -3,7 +3,7 @@ import { AiOutlineVideoCamera } from "react-icons/ai";
 import styles from "@/styles/CourseDetail.module.css";
 import moment from "moment";
 
-export default function SessionCard({ meetingData, setSelectedTopic, fromDetails }) {
+export default function SessionCard({ key, index, selectedSession, setSelectedSession, meetingData, setSelectedTopic, fromDetails }) {
 
   const isLive = moment().isAfter(moment(meetingData?.start_time)) && !meetingData?.isEnded
 
@@ -16,11 +16,18 @@ export default function SessionCard({ meetingData, setSelectedTopic, fromDetails
     })
   }
 
+  const handleCardClick = (index) => {
+    console.log(index);
+    setSelectedSession(index);
+  };
+
   // Check if the start time is today
   const isToday = startTime.isSame(moment(), "day");
 
   return (
-    <div className={styles.sessionCard}>
+    <div onClick={()=>{
+      handleCardClick(index)
+    }} className={`${styles.sessionCard} ${selectedSession === index ? styles.active : ""}`}>
       <span>
         <AiOutlineVideoCamera id={styles.cameraIcon} />
         <p>
